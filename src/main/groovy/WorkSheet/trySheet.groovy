@@ -11,8 +11,6 @@ class CoOrdinate {
     long x
     long y
     long z
-    Tuple3<Long,Long,Long> tuple3D
-    Tuple3<Long,Long,Long> tuple2D
 
     CoOrdinate (List coOrds) {
         x = coOrds?[0] ?: 0
@@ -22,7 +20,8 @@ class CoOrdinate {
 
 
     List get2DReference () {
-        [x,y]
+        //new Imm
+        [x,y] as Immutable
     }
 
     Tuple get2DTuple () {
@@ -30,7 +29,7 @@ class CoOrdinate {
     }
 
     List get3DReference () {
-        [x, y, z]
+        [x, y, z] as Immutable
     }
 
     Tuple get3DTuple () {
