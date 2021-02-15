@@ -103,13 +103,11 @@ class Table {
 
     Cell getCell (final List ref) {
         CoOrdinate coOrdRef = new CoOrdinate(ref)
-        def cell = cells[coOrdRef]
-        cell
+        cells[coOrdRef]
     }
 
     Cell getCell (final CoOrdinate coOrdRef) {
-        def cell = cells[coOrdRef]
-        cell
+        cells[coOrdRef]
     }
 
 
