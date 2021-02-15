@@ -7,7 +7,7 @@ import groovy.transform.MapConstructor
 import java.util.concurrent.ConcurrentHashMap
 
 @MapConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode  //need this to ensure unique access via the cells map
 class CoOrdinate {
     //todo use tuple
     long x
@@ -66,7 +66,7 @@ class Cell {
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
- * a cell isnatcne can be indexed by its CoOrdinate
+ * a cell instance can be indexed by its CoOrdinate
  */
 class Table {
 
