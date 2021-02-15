@@ -17,7 +17,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy
 
     implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.7'
-    implementation group: 'org.groovyx', name: 'gpars', version: '2.0-SNAPSHOT'
+    implementation group: 'org.groovyx.gpars', name: 'gpars', version: '2.0-SNAPSHOT'
     testImplementation group: 'junit', name: 'junit', version: '4.13'
 
     // https://mvnrepository.com/artifact/org.spockframework/spock-core
