@@ -77,10 +77,17 @@ class Table {
     ConcurrentHashMap cells = new ConcurrentHashMap<CoOrdinate, Cell>()
 
     void setCell (Cell cell) {
-
+        if (cell.cellReference) {
+            cells.putIfAbsent(cell.cellReference, cell)
+            cell
+        }
+        else {
+            //should user callback to handle
+            println "error didnt save cell ref - if was invalid $cell.cellReference"
+        }
     }
 
-    void setCell (List ref, value) {
+    void setCell (final List ref, value) {
         CoOrdinate coOrdRef = new CoOrdinate(ref)
         def cell = cells[coOrdRef]
         if (cell) {
