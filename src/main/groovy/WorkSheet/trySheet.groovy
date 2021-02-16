@@ -26,6 +26,19 @@ class CellCoOrdinate {
         this.z = z as long
     }
 
+    /**
+     * moves the cell co-ordinates relative to existing location
+     * @param dx
+     * @param dy
+     * @param dz
+     */
+    CellCoOrdinate move (final long dx, final long dy, final long dz=0L) {
+        x = x + dx
+        y = y + dy
+        z = z + dz
+        this
+    }
+
     List get2DReference () {
         //new Immutable
         [x,y] as Immutable
@@ -64,6 +77,10 @@ class Cell {
     Optional<String> name = Optional.ofNullable(null)
     CellCoOrdinate cellReference
     def value
+
+    void setName (final String name) {
+        this.name = Optional<String>.of(name)
+    }
 
     String toString () {
         "cell @{$cellReference : $value}"
