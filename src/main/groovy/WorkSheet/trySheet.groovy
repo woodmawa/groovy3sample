@@ -46,6 +46,11 @@ class CoOrdinate {
     String toString () {
         "CoOrdinate[$x,$y,$z]"
     }
+
+    CoOrdinate asType (final List ref) {
+        assert ref
+        new CoOrdinate(ref)
+    }
 }
 
 /**
@@ -124,12 +129,14 @@ class Table {
 
 CoOrdinate origin = new CoOrdinate (0,0)
 
+
 Table table = new Table(name:'myTab')
 table.setCell([0,0], 10)
+table.setCell([1,1], "cell 1:1")
 Cell c = table.getCell([0,0])
 Cell c2 = table.getCell(origin)
 
 println table.name
 println c
 println c2
-println table.getCell(origin).value
+println table.getCell([1,1]).value
