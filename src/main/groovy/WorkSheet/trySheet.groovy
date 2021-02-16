@@ -8,19 +8,19 @@ import java.util.concurrent.ConcurrentHashMap
 
 @MapConstructor
 @EqualsAndHashCode  //need this to ensure unique access via the cells map
-class CoOrdinate {
+class CellCoOrdinate {
     //todo use tuple
     long x
     long y
     long z
 
-    CoOrdinate (final List coOrds) {
+    CellCoOrdinate(final List coOrds) {
         x = coOrds?[0] ?: 0
         y = coOrds?[1] ?: 0
         z = coOrds?[2] ?: 0
     }
 
-    CoOrdinate (final x, final y, final z = 0) {
+    CellCoOrdinate(final x, final y, final z = 0) {
         this.x = x as long
         this.y = y as long
         this.z = z as long
@@ -44,25 +44,25 @@ class CoOrdinate {
     }
 
     String toString () {
-        "CoOrdinate[$x,$y,$z]"
+        "CellCoOrdinate[$x,$y,$z]"
     }
 
-    CoOrdinate asType (Class clazz) {
+    CellCoOrdinate asType (Class clazz) {
         assert clazz
         if (clazz instanceof List) {
-            new CoOrdinate(ref)
+            new CellCoOrdinate(ref)
         } else null
     }
 }
 
 /**
  * cells can be optionally named
- * CoOrdinate:value pairing
+ * CellCoOrdinate:value pairing
  *
  */
 class Cell {
     Optional<String> name = Optional.ofNullable(null)
-    CoOrdinate cellReference
+    CellCoOrdinate cellReference
     def value
 
     String toString () {
@@ -73,7 +73,7 @@ class Cell {
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
- * a cell instance can be indexed by its CoOrdinate
+ * a cell instance can be indexed by its CellCoOrdinate
  */
 class Table {
 
@@ -84,11 +84,11 @@ class Table {
     Closure error = {println "error didnt save cell ref - if was invalid $it.cellReference", "error invalid co-ordinate for cell"}
     Closure success = {println "all went well saved $it in table", "OK"}
 
-    ConcurrentHashMap cells = new ConcurrentHashMap<CoOrdinate, Cell>()
+    ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CellCoOrdinate, Cell>()
 
     void setCell (Cell cell) {
         if (cell.cellReference) {
-            cells.putIfAbsent(cell.cellReference, cell)
+            cellsGrid.putIfAbsent(cell.cellReference, cell)
             cell
         }
         else {
@@ -97,39 +97,39 @@ class Table {
     }
 
     void setCell (final List ref, def value) {
-        CoOrdinate coOrdRef = new CoOrdinate(ref)
-        def cell = cells[coOrdRef]
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(ref)
+        def cell = cellsGrid[coOrdRef]
         if (cell) {
             cell.value = value
         } else {
             cell = new Cell(cellReference:coOrdRef,value:value)
-            cells.putIfAbsent(coOrdRef, cell)
+            cellsGrid.putIfAbsent(coOrdRef, cell)
         }
     }
 
-    void setCell (CoOrdinate coOrdRef, value) {
-        def cell = cells[coOrdRef]
+    void setCell (CellCoOrdinate coOrdRef, value) {
+        def cell = cellsGrid[coOrdRef]
         if (cell) {
             cell.value = value
         } else {
             cell = new Cell(cellReference:coOrdRef,value:value)
-            cells.putIfAbsent(coOrdRef, cell)
+            cellsGrid.putIfAbsent(coOrdRef, cell)
         }
     }
 
     Cell getCell (final List ref) {
-        CoOrdinate coOrdRef = new CoOrdinate(ref)
-        cells[coOrdRef]
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(ref)
+        cellsGrid[coOrdRef]
     }
 
-    Cell getCell (final CoOrdinate coOrdRef) {
-        cells[coOrdRef]
+    Cell getCell (final CellCoOrdinate coOrdRef) {
+        cellsGrid[coOrdRef]
     }
 
 
 }
 
-CoOrdinate origin = new CoOrdinate (0,0)
+CellCoOrdinate origin = new CellCoOrdinate (0,0)
 
 
 Table table = new Table(name:'myTab')
