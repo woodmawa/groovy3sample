@@ -47,9 +47,11 @@ class CoOrdinate {
         "CoOrdinate[$x,$y,$z]"
     }
 
-    CoOrdinate asType (final List ref) {
-        assert ref
-        new CoOrdinate(ref)
+    CoOrdinate asType (Class clazz) {
+        assert clazz
+        if (clazz instanceof List) {
+            new CoOrdinate(ref)
+        } else null
     }
 }
 
