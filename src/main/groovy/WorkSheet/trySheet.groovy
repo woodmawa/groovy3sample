@@ -74,6 +74,9 @@ class Table {
     ConcurrentHashMap namedRows = new ConcurrentHashMap<long, String>()
     ConcurrentHashMap namedColumns = new ConcurrentHashMap<long, String>()
 
+    Closure error = {println "error didnt save cell ref - if was invalid $it.cellReference", "error invalid co-ordinate for cell"}
+    Closure success = {println "all went well saved $it in table", "OK"}
+
     ConcurrentHashMap cells = new ConcurrentHashMap<CoOrdinate, Cell>()
 
     void setCell (Cell cell) {
@@ -82,12 +85,11 @@ class Table {
             cell
         }
         else {
-            //should user callback to handle
-            println "error didnt save cell ref - if was invalid $cell.cellReference"
+            error (cell)
         }
     }
 
-    void setCell (final List ref, value) {
+    void setCell (final List ref, def value) {
         CoOrdinate coOrdRef = new CoOrdinate(ref)
         def cell = cells[coOrdRef]
         if (cell) {
@@ -120,7 +122,7 @@ class Table {
 
 }
 
-def origin = new CoOrdinate (0,0)
+CoOrdinate origin = new CoOrdinate (0,0)
 
 Table table = new Table(name:'myTab')
 table.setCell([0,0], 10)
@@ -130,3 +132,4 @@ Cell c2 = table.getCell(origin)
 println table.name
 println c
 println c2
+println table.getCell(origin).value
