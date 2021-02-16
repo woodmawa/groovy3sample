@@ -254,6 +254,7 @@ Cell c = table.getCell([0,0])
 Cell c2 = table.getCell(origin)
 
 table.setRowName(1,"row 1")
+table.setColumnName(1,"thingy dooby")
 
 DatasetRow row = table.getRow (1)
 println "got row " + row.name
