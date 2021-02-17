@@ -12,6 +12,22 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
         this.name = Optional.of (name)
     }
 
+    @Override
+    String getName() {
+        //returns value if present of the default otherwise
+        name.orElse( "empty")
+    }
+
+    @Override
+    Collection getCellsCollection () {
+        columnCells.values().asImmutable()
+    }
+
+    @Override
+    List getCellsAsList () {
+        columnCells.values().asList().asImmutable()
+    }
+
     void putCell (final Cell cell) {
         assert cell
         long row = cell.cellReference.x

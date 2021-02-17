@@ -3,6 +3,10 @@ package WorkSheet
 import java.util.concurrent.ConcurrentHashMap
 
 interface DatasetColumn {
-   void setName (final String name)
+    void setName (final String name)
+    String getName()
     void putCell (final Cell cell)
+    Collection getCellsCollection ()
+    List getCellsAsList ()
+
 }

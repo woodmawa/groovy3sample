@@ -19,6 +19,15 @@ class DatasetRowHashMapImpl implements DatasetRow {
         name.orElse( "empty")
     }
 
+    @Override
+    Collection getCellsCollection () {
+        rowCells.values().asImmutable()
+    }
+
+    @Override
+    List getCellsAsList () {
+        rowCells.values().asList().asImmutable()
+    }
     void putCell (final Cell cell) {
         assert cell
         long row = cell.cellReference.x

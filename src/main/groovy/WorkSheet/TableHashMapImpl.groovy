@@ -49,8 +49,6 @@ class TableHashMapImpl implements Table {
      */
     //todo make this optional ?
     DatasetColumn getColumn (final String colName) {
-        def elem = rows.elements()  //returns enumeration
-        //List res = Stream.of(elem)
         Optional res = columns.values().stream()
                 .filter(col -> col.name == colName)
                 .findFirst()
@@ -66,9 +64,7 @@ class TableHashMapImpl implements Table {
      */
     //todo make this optional ?
     DatasetRow getRow (final String rowName) {
-        def elem = rows.elements()  //returns enumeration
-        //List res = Stream.of(elem)
-        Optional res = rows.values().stream()
+         Optional res = rows.values().stream()
                 .filter(row -> row.name == rowName)
                  .findFirst()
 

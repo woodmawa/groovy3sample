@@ -20,10 +20,17 @@ table.setRowName(1,"row 1")
 table.setColumnName(1,"thingy dooby")
 
 DatasetRow row = table.getRow (1)
-println "got row " + row.name
+println "got row: " + row.name
 
 row = table.getRow ('row 1')
+assert row.name == 'row 1'
 
+List rowCells = row.cellsAsList
+
+println "rowCells : $rowCells"
+
+DatasetColumn col = table.getColumn("thingy dooby")
+println "got col: " + col.name
 
 println table.name
 println c
