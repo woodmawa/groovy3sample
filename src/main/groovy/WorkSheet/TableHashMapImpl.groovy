@@ -99,7 +99,7 @@ class TableHashMapImpl implements Table {
     }
 
     void setCell (final long x_col_ref, final long y_row_ref, final def value) {
-        CoOrdinate coOrdRef = new CoOrdinate(aref)
+        CoOrdinate coOrdRef = new CoOrdinate(x_col_ref, y_row_ref)
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
     }

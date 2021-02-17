@@ -10,7 +10,7 @@ CoOrdinate origin = new CoOrdinate (0,0)
 
 
 TableHashMapImpl table = new TableHashMapImpl(name:'myTab')
-table.setCell([0,0], 10)
+table.setCell(0,0, 10)
 table.setCell([1,1], "cell 1:1")
 table.setCell([1,2], "cell 1:2")
 Cell c = table.getCell([0,0])
