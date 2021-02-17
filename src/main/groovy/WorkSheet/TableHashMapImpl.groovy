@@ -72,7 +72,7 @@ class TableHashMapImpl implements Table {
         row
    }
 
-    private void addCellToRow (long rowNumber, Cell cell) {
+    private void addCellToRow (long rowNumber, final Cell cell) {
         DatasetRow row = rows.get(rowNumber)
         if (row) {
             row.putCell(cell)
@@ -85,7 +85,7 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    private void addCellToColumn (long colNumber, Cell cell) {
+    private void addCellToColumn (long colNumber, final Cell cell) {
         DatasetColumn col = columns.get(colNumber)
         if (col) {
             col.putCell(cell)
@@ -98,7 +98,7 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    void setCell (Cell cell) {
+    void setCell (final Cell cell) {
         if (cell.cellReference) {
             cellsGrid.put (cell.cellReference, cell)
             addCellToRow (cell.cellReference.x, cell)
@@ -111,13 +111,13 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    void setCell (final List ref, def value) {
-        CoOrdinate coOrdRef = new CoOrdinate(ref)
+    void setCell (final List aref, def value) {
+        CoOrdinate coOrdRef = new CoOrdinate(aref)
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
     }
 
-    void setCell (CoOrdinate coOrdRef, value) {
+    void setCell (final CoOrdinate coOrdRef, def value) {
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
     }

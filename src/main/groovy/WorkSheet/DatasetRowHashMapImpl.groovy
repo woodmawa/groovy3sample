@@ -28,6 +28,7 @@ class DatasetRowHashMapImpl implements DatasetRow {
     List getCellsAsList () {
         rowCells.values().asList().asImmutable()
     }
+
     void putCell (final Cell cell) {
         assert cell
         long row = cell.cellReference.x
