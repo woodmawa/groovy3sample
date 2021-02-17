@@ -18,10 +18,10 @@ class CoOrdinate {
         z = coOrds?[2] ?: 0
     }
 
-    CoOrdinate(final x, final y, final z = 0) {
-        this.x = x as long
-        this.y = y as long
-        this.z = z as long
+    CoOrdinate(final long x_col_index, final long y_row_index, final long z_index = 0) {
+        this.x = x_col_index as long
+        this.y = y_row_index as long
+        this.z = z_index as long
     }
 
     /**

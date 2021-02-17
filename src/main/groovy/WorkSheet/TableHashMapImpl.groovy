@@ -98,6 +98,12 @@ class TableHashMapImpl implements Table {
         }
     }
 
+    void setCell (final long x_col_ref, final long y_row_ref, final def value) {
+        CoOrdinate coOrdRef = new CoOrdinate(aref)
+        Cell cell = new Cell (cellReference: coOrdRef, value: value )
+        setCell (cell)
+    }
+
     void setCell (final Cell cell) {
         if (cell.cellReference) {
             cellsGrid.put (cell.cellReference, cell)
