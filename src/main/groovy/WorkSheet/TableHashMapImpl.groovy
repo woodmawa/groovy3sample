@@ -1,6 +1,8 @@
 package WorkSheet
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Stream
+import static java.util.stream.Collectors.*
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
@@ -35,11 +37,44 @@ class TableHashMapImpl implements Table {
         columns.get (colNumber)
     }
 
-    DatasetRow getRow (long rowNumber) {
-
-        def row = rows.get (rowNumber)
-        row
+    //direct index access
+    DatasetRow getRow (final long rowNumber) {
+        rows?[rowNumber]
     }
+
+    /** not as efficient as it has to filter out looking for name match
+     *
+     * @param rowName
+     * @return
+     */
+    //todo make this optional ?
+    DatasetColumn getColumn (final String colName) {
+        def elem = rows.elements()  //returns enumeration
+        //List res = Stream.of(elem)
+        Optional res = columns.values().stream()
+                .filter(col -> col.name == colName)
+                .findFirst()
+
+        def col = res.orElse(null)
+        col
+    }
+
+    /** not as efficient as it has to filter out looking for name match
+     *
+     * @param rowName
+     * @return
+     */
+    //todo make this optional ?
+    DatasetRow getRow (final String rowName) {
+        def elem = rows.elements()  //returns enumeration
+        //List res = Stream.of(elem)
+        Optional res = rows.values().stream()
+                .filter(row -> row.name == rowName)
+                 .findFirst()
+
+        def row = res.orElse(null)
+        row
+   }
 
     private void addCellToRow (long rowNumber, Cell cell) {
         DatasetRow row = rows.get(rowNumber)

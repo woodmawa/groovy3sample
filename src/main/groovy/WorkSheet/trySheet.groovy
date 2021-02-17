@@ -22,6 +22,9 @@ table.setColumnName(1,"thingy dooby")
 DatasetRow row = table.getRow (1)
 println "got row " + row.name
 
+row = table.getRow ('row 1')
+
+
 println table.name
 println c
 println c2
