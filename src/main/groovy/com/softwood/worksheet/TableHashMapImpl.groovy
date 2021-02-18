@@ -1,8 +1,6 @@
-package WorkSheet
+package com.softwood.worksheet
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.stream.Stream
-import static java.util.stream.Collectors.*
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map

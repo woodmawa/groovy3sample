@@ -1,6 +1,4 @@
-package WorkSheet
-
-import java.util.concurrent.ConcurrentHashMap
+package com.softwood.worksheet
 
 interface DatasetColumn {
     void setName (final String name)

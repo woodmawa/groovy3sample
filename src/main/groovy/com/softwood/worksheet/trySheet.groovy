@@ -1,10 +1,4 @@
-package WorkSheet
-
-import groovy.transform.EqualsAndHashCode
-import groovy.transform.Immutable
-import groovy.transform.MapConstructor
-
-import java.util.concurrent.ConcurrentHashMap
+package com.softwood.worksheet
 
 CoOrdinate origin = new CoOrdinate (0,0)
 

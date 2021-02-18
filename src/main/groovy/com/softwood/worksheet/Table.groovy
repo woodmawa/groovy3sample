@@ -1,4 +1,4 @@
-package WorkSheet
+package com.softwood.worksheet
 
 interface Table {
     void setColumnName (long colNumber, final String name)

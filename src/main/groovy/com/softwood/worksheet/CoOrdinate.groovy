@@ -1,4 +1,4 @@
-package WorkSheet
+package com.softwood.worksheet
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
