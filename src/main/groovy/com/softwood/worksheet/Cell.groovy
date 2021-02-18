@@ -36,6 +36,18 @@ class Cell {
         this.name = Optional<String>.of(name)
     }
 
+    String getName () {
+        name.orElse("--Unnamed Cell--")
+    }
+
+    CoOrdinate getCoOrdinate () {
+        cellReference
+    }
+
+    List<Long> getCoOrdinateAsList () {
+        //cellReference.
+    }
+
     void updateValue (final update) {
         value = update
     }

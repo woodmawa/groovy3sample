@@ -37,20 +37,19 @@ class CoOrdinate {
         this
     }
 
-    List get2DReference () {
-        //new Immutable
+    List<Long> getTwoDimensionalReference () {
         [x,y] as Immutable
     }
 
-    Tuple get2DTuple () {
+    Tuple getTwoDimensionalTuple () {
         new Tuple2 (x,y)
     }
 
-    List get3DReference () {
+    List<Long> getThreeDimensionalReference () {
         [x, y, z] as Immutable
     }
 
-    Tuple get3DTuple () {
+    Tuple getThreeDimensionalTuple () {
         new Tuple3 (x,y,z)
     }
 
@@ -61,7 +60,7 @@ class CoOrdinate {
     CoOrdinate asType (Class clazz) {
         assert clazz
         if (clazz instanceof List) {
-            new CoOrdinate(ref)
+            new CoOrdinate(x,y,z)
         } else null
     }
 }
