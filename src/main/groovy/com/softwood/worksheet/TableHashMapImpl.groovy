@@ -102,13 +102,13 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    void setCell (final long x_col_ref, final long y_row_ref, final def value) {
+    Cell setCell (final long x_col_ref, final long y_row_ref, final def value) {
         CoOrdinate coOrdRef = new CoOrdinate(x_col_ref, y_row_ref)
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
     }
 
-    void setCell (final Cell cell) {
+    Cell setCell (final Cell cell) {
         if (cell.cellReference) {
             cellsGrid.put (cell.cellReference, cell)
             addCellToRow (cell.cellReference.x, cell)
@@ -118,18 +118,24 @@ class TableHashMapImpl implements Table {
         }
         else {
             error (cell)
+            cell
         }
     }
 
-    void setCell (final List<Long> aref, def value) {
+    Cell setCell (final List<Long> aref, def value) {
         CoOrdinate coOrdRef = new CoOrdinate(aref)
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
     }
 
-    void setCell (final CoOrdinate coOrdRef, def value) {
+    Cell setCell (final CoOrdinate coOrdRef, def value) {
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
+    }
+
+    Cell getCell (final long x, final long y, final long z=0) {
+        CoOrdinate coOrdRef = new CoOrdinate(x,y,z)
+        cellsGrid[coOrdRef]
     }
 
     Cell getCell (final List<Long> ref) {
