@@ -8,6 +8,11 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     long columnNumber
     ConcurrentHashMap columnCells = new ConcurrentHashMap<Long, Cell> ()
 
+    @Override
+    int size() {
+        columnCells.size()
+    }
+
     void setName (final String name) {
         this.name = Optional.of (name)
     }

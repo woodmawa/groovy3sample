@@ -9,6 +9,11 @@ class DatasetRowHashMapImpl implements DatasetRow {
     ConcurrentHashMap rowCells = new ConcurrentHashMap<Long, Cell> ()
 
     @Override
+    int size() {
+        rowCells.size()
+    }
+
+    @Override
     void setName (final String name) {
         this.name = Optional.of (name)
     }

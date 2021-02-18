@@ -6,5 +6,6 @@ interface DatasetColumn {
     void putCell (final Cell cell)
     Collection getCellsCollection ()
     List<Cell> getCellsAsList ()
+    int size()
 
 }
