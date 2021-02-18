@@ -26,18 +26,29 @@ class CoOrdinate {
 
     /**
      * moves the cell co-ordinates relative to existing location
+     * returns same instance but relocated co-ordinates
      * @param dx
      * @param dy
      * @param dz
      */
-    CoOrdinate move (final long dx, final long dy, final long dz=0L) {
+    CoOrdinate relocate (final long dx, final long dy, final long dz=0L) {
         x = x + dx
         y = y + dy
         z = z + dz
         this
     }
 
-    List<Long> getTwoDimensionalReference () {
+    /**
+     * moves the cell co-ordinates returns a new CoOrdinate instance
+     * @param dx
+     * @param dy
+     * @param dz
+     */
+    CoOrdinate translate (final long dx, final long dy, final long dz=0L) {
+        new CoOrdinate (x + dx, y + dy, z + dz )
+   }
+
+    List<Long> getTwoDimensionalCoOrdinateAsList () {
         [x,y] as Immutable
     }
 
@@ -45,7 +56,7 @@ class CoOrdinate {
         new Tuple2 (x,y)
     }
 
-    List<Long> getThreeDimensionalReference () {
+    List<Long> getThreeDimensionalCoOrdinateAsList () {
         [x, y, z] as Immutable
     }
 
