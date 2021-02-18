@@ -133,6 +133,7 @@ class TableHashMapImpl implements Table {
         setCell (cell)
     }
 
+    //should this return optional<Cell>
     Cell getCell (final long x, final long y, final long z=0) {
         CoOrdinate coOrdRef = new CoOrdinate(x,y,z)
         cellsGrid[coOrdRef]
