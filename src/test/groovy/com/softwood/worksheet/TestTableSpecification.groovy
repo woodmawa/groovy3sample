@@ -25,7 +25,10 @@ class TestTableSpecification extends Specification {
         table.setName ("my second table")
         table.setCell([0,0], "origin")
         DatasetRow row = table.getRow(0)
+        DatasetColumn col = table.getColumn(0)
         List<Cell> l = row.cellsAsList
+        Cell c = l?[0]
+        Cell c2 = col.cellsAsList?[0]
 
         then:
         table.name == "my second table"
@@ -34,6 +37,8 @@ class TestTableSpecification extends Specification {
         row.size() == 1
         l.size() == 1
         l[0].valueAsText == "origin"
+        c.getName() == "--Unnamed Cell--"
+        c.equals(c2)
 
 
     }
