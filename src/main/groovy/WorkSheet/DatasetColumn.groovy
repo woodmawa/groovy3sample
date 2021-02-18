@@ -7,6 +7,6 @@ interface DatasetColumn {
     String getName()
     void putCell (final Cell cell)
     Collection getCellsCollection ()
-    List getCellsAsList ()
+    List<Cell> getCellsAsList ()
 
 }

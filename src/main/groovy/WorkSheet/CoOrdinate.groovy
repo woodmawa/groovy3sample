@@ -12,7 +12,7 @@ class CoOrdinate {
     long y
     long z
 
-    CoOrdinate(final List coOrds) {
+    CoOrdinate(final List<Long> coOrds) {
         x = coOrds?[0] ?: 0
         y = coOrds?[1] ?: 0
         z = coOrds?[2] ?: 0

@@ -25,7 +25,7 @@ class DatasetRowHashMapImpl implements DatasetRow {
     }
 
     @Override
-    List getCellsAsList () {
+    List<Cell> getCellsAsList () {
         rowCells.values().asList().asImmutable()
     }
 

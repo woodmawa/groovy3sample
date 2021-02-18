@@ -1,5 +1,6 @@
 package WorkSheet
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.MapConstructor
 
 /**
@@ -8,6 +9,7 @@ import groovy.transform.MapConstructor
  *
  */
 @MapConstructor
+@EqualsAndHashCode
 class Cell {
     Optional<String> name = Optional.ofNullable(null)
     CoOrdinate cellReference

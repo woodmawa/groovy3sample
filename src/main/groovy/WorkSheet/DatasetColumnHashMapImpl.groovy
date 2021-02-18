@@ -24,7 +24,7 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     }
 
     @Override
-    List getCellsAsList () {
+    List<Cell> getCellsAsList () {
         columnCells.values().asList().asImmutable()
     }
 

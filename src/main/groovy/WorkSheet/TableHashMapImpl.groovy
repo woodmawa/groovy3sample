@@ -20,21 +20,27 @@ class TableHashMapImpl implements Table {
     //look at jigsaw table to help here
     ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
 
-    void setColumnName (long colNumber, final String name) {
+    void setColumnName (final long colNumber, final String name) {
 
-        DatasetColumn col = columns.get (colNumber)
-        col.setName(name)
+        DatasetColumn col = columns?.get (colNumber)
+        if (col)
+            col.setName(name)
+        else
+            error ("error couldn't find column $colNumber")
     }
 
-    void setRowName (long rowNumber, final String name) {
+    void setRowName (final long rowNumber, final String name) {
 
-        DatasetRow row = rows.get (rowNumber)
-        row.setName(name)
+        DatasetRow row = rows?.get (rowNumber)
+        if (row)
+            row.setName(name)
+        else
+            error ("error couldn't find row $rowNumber")
     }
 
-    DatasetColumn getColumn (long colNumber) {
+    DatasetColumn getColumn (final long colNumber) {
 
-        columns.get (colNumber)
+        columns?.get (colNumber)
     }
 
     //direct index access
@@ -72,7 +78,7 @@ class TableHashMapImpl implements Table {
         row
    }
 
-    private void addCellToRow (long rowNumber, final Cell cell) {
+    private void addCellToRow (final long rowNumber, final Cell cell) {
         DatasetRow row = rows.get(rowNumber)
         if (row) {
             row.putCell(cell)
@@ -85,7 +91,7 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    private void addCellToColumn (long colNumber, final Cell cell) {
+    private void addCellToColumn (final long colNumber, final Cell cell) {
         DatasetColumn col = columns.get(colNumber)
         if (col) {
             col.putCell(cell)
@@ -117,7 +123,7 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    void setCell (final List aref, def value) {
+    void setCell (final List<Long> aref, def value) {
         CoOrdinate coOrdRef = new CoOrdinate(aref)
         Cell cell = new Cell (cellReference: coOrdRef, value: value )
         setCell (cell)
@@ -128,7 +134,7 @@ class TableHashMapImpl implements Table {
         setCell (cell)
     }
 
-    Cell getCell (final List ref) {
+    Cell getCell (final List<Long> ref) {
         CoOrdinate coOrdRef = new CoOrdinate(ref)
         cellsGrid[coOrdRef]
     }
