@@ -68,7 +68,7 @@ class CoOrdinate {
         "CoOrdinate[$x,$y,$z]"
     }
 
-    List asType (Class clazz) {
+    def asType (Class clazz) {
         assert clazz
         if (clazz == List) {
             //new CoOrdinate(x,y,z)
