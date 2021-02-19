@@ -43,4 +43,21 @@ class TestTableSpecification extends Specification {
         cell1 == table.getCell(0,0)
 
     }
+
+    def "row and column streams test " () {
+        given:
+        Table table = new TableHashMapImpl()
+
+        when:
+        table.setName ("my second table")
+        def origin = table.setCell([0,0], "origin")
+        DatasetRow row = table.getRow(0)
+        DatasetColumn col = table.getColumn(0)
+
+        then:
+        row.stream().count() == 1
+        col.stream().count() == 1
+        table.stream().count() == 1
+
+    }
 }

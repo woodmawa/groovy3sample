@@ -37,4 +37,16 @@ class TestCoOrdinateSpecification extends Specification {
         new Tuple2 (2,2).equals( cOrd.twoDimensionalTuple)
 
     }
+
+    def "as type convertion test" (){
+        given:
+        CoOrdinate cOrd = [2,2] as CoOrdinate
+
+        when:
+        List arr = cOrd as List
+
+        then:
+        arr == [2,2,0]
+
+    }
 }

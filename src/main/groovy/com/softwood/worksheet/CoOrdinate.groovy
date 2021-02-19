@@ -70,7 +70,7 @@ class CoOrdinate {
 
     List asType (Class clazz) {
         assert clazz
-        if (clazz instanceof List) {
+        if (clazz == List) {
             //new CoOrdinate(x,y,z)
             getThreeDimensionalCoOrdinateAsList ()
         } else null
