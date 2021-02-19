@@ -36,11 +36,11 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
 
     void putCell (final Cell cell) {
         assert cell
-        long row = cell.cellReference.x
-        long col = cell.cellReference.y
+        long rowNumber = cell.cellReference.y
+        long colNumber = cell.cellReference.x
 
-        if (columnNumber == col) {
-            columnCells.put(row, cell)
+        if (columnNumber == colNumber) {
+            columnCells.put(rowNumber, cell)
         }
     }
 

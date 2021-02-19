@@ -37,10 +37,10 @@ class DatasetRowHashMapImpl implements DatasetRow {
 
     void putCell (final Cell cell) {
         assert cell
-        long row = cell.cellReference.x
-        long col = cell.cellReference.y
+        long rowNumber = cell.cellReference.y
+        long col = cell.cellReference.x
 
-        if (rowNumber == row) {
+        if (rowNumber == this.rowNumber) {
             rowCells.put(col, cell)
         }
     }

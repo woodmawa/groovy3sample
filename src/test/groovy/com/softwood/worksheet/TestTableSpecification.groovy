@@ -62,4 +62,25 @@ class TestTableSpecification extends Specification {
         table.stream().count() == 1
 
     }
+
+    def "add two cells in same row" () {
+        given:
+        Table table = new TableHashMapImpl()
+
+        when:
+        table.setName ("my third table")
+        def c = table.setCell([2,1], "cell 2:1")
+         c = table.setCell([2,2], "cell 2:2")
+        c = table.setCell([2,3], "cell 2:3")
+
+        DatasetRow row = table.getRow(3)
+        DatasetColumn col = table.getColumn (2)
+
+
+        then:
+        row.stream().count() == 1
+        col.stream().count() == 3
+
+
+    }
 }

@@ -116,15 +116,17 @@ class TableHashMapImpl implements Table {
 
     Cell setCell (final long x_col_ref, final long y_row_ref, final def value) {
         CoOrdinate coOrdRef = new CoOrdinate(x_col_ref, y_row_ref)
-        Cell cell = new Cell (cellReference: coOrdRef, value: value )
+        Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
 
     Cell setCell (final Cell cell) {
         if (cell.cellReference) {
             cellsGrid.put (cell.cellReference, cell)
-            addCellToRow (cell.cellReference.x, cell)
-            addCellToColumn (cell.cellReference.y, cell)
+            //get row number (which is y axis ref) and add cell to this row
+            addCellToRow (cell.cellReference.y, cell)
+            //get column number (which is x axis ref) and add cell to this column
+            addCellToColumn (cell.cellReference.x, cell)
 
             cell
         }
