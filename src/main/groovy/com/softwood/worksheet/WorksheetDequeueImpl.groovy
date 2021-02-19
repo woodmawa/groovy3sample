@@ -28,7 +28,7 @@ class WorksheetDequeueImpl implements Worksheet {
             worksheets.add(ws)
         }
     }
-    
+
     static boolean removeWorksheet (Worksheet ws) {
         if (worksheets.contains(ws)) {
             worksheets.remove(ws)

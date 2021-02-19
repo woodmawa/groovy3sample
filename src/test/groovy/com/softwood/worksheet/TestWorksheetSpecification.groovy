@@ -16,6 +16,7 @@ class TestWorksheetSpecification extends Specification {
         then:
         ws.stream().count() == 1
         ws.name == "worksheet 1"
+        ws.worksheets.size() == 1
 
     }
 
