@@ -4,9 +4,24 @@ import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.stream.Stream
 
 class WorksheetDequeueImpl implements Worksheet {
+
+    static ConcurrentLinkedDeque<Worksheet> worksheets = new ConcurrentLinkedDeque<Worksheet>()
+
     private Optional<String> name
     private ConcurrentLinkedDeque<Table> tables = new ConcurrentLinkedDeque<Table>()
 
+    static void addWorksheet (Worksheet ws) {
+        if (!worksheets.contains(ws)) {
+            worksheets.add(ws)
+        }
+    }
+
+    static boolean removeWorksheet (Worksheet ws) {
+        if (worksheets.contains(ws)) {
+            worksheets.remove(ws)
+        } else
+            false
+    }
 
     void setName (final String name) {
         this.name = Optional<String>.of(name)
