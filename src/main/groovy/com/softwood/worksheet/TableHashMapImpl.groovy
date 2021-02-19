@@ -1,6 +1,7 @@
 package com.softwood.worksheet
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Stream
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
@@ -148,5 +149,7 @@ class TableHashMapImpl implements Table {
         cellsGrid[coOrdRef]
     }
 
-
+    Stream<Cell> stream () {
+        cellsGrid.values().stream()
+    }
 }

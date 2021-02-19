@@ -1,5 +1,7 @@
 package com.softwood.worksheet
 
+import java.util.stream.Stream
+
 interface Table {
     void setColumnName (long colNumber, final String name)
     void setRowName (long rowNumber, final String name)
@@ -16,4 +18,5 @@ interface Table {
     Cell getCell (final List<Long> ref)
     Cell getCell (final CoOrdinate coOrdRef)
 
+    Stream<Cell> stream()
 }
