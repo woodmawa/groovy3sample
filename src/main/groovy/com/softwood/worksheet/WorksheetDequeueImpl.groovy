@@ -16,6 +16,10 @@ class WorksheetDequeueImpl implements Worksheet {
         name.orElse("--Unnamed Worksheet--")
     }
 
+    List<Table> getTables() {
+        tables.asList().asImmutable()
+    }
+
     void addTable (Table table) {
         tables.add(table)
     }

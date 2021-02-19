@@ -37,5 +37,6 @@ class TestWorksheetSpecification extends Specification {
         opt.isPresent()
         opt.get().name == "myTable"
         opt.get() == table
+        ws.tables[0] == table
     }
 }
