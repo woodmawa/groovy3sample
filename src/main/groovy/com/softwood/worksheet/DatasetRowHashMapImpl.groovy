@@ -45,6 +45,16 @@ class DatasetRowHashMapImpl implements DatasetRow {
         }
     }
 
+    /**
+     * if cell.value is a number, then multiply and save the new value
+     * @param multiplier
+     */
+    void times (double multiplier ) {
+        rowCells?.values().stream()
+        .filter (cell -> cell.value instanceof Number)
+        .forEach(cell -> cell.updateValue(cell.value as Double * multiplier))
+    }
+
     Stream<Cell> stream () {
         rowCells?.values().stream()
     }

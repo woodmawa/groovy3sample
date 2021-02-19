@@ -9,6 +9,7 @@ interface DatasetRow {
     Collection getCellsCollection ()
     List<Cell> getCellsAsList()
     int size()
+    void times (double multiplier)
 
     Stream<Cell> stream()
 }

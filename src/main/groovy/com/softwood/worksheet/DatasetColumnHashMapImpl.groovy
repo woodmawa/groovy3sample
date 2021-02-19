@@ -44,6 +44,16 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
         }
     }
 
+    /**
+     * if cell.value is a number, then multiply and save the new value
+     * @param multiplier
+     */
+    void times (double multiplier ) {
+        columnCells?.values().stream()
+                .filter (cell -> cell.value instanceof Number)
+                .forEach(cell -> cell.updateValue(cell.value as Double * multiplier))
+    }
+
     Stream<Cell> stream () {
         columnCells?.values().stream()
     }

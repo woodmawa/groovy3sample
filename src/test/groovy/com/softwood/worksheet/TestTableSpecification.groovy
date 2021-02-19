@@ -87,6 +87,30 @@ class TestTableSpecification extends Specification {
         colValList == ["cell 2:1","cell 2:2", "cell 2:3"]
         row3ValList == ["cell 2:3"]
         table.stream().count() == 3
+        table.getCell([2,3]).valueAsText == "cell 2:3"
+    }
+
+    def "test multiplier action " () {
+        given:
+        Table table = new TableHashMapImpl()
+
+        when:
+        table.setName ("my third table")
+        def c = table.setCell([2,1], "cell 2:1")
+        c = table.setCell([2,2], 2)
+        c = table.setCell([2,3], 4.0)
+
+        DatasetRow row = table.getRow(3)
+        DatasetColumn col = table.getColumn (2)
+        col.times (2)
+
+        then:
+        row.stream().count() == 1
+        col.stream().count() == 3
+        table.getCell([2,3]).value == 8.0D
+        table.getCell([2,2]).value == 4.0D
+        table.getCell([2,1]).value == "cell 2:1"
+
 
     }
 }
