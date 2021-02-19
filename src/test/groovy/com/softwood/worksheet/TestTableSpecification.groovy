@@ -86,6 +86,7 @@ class TestTableSpecification extends Specification {
         col.stream().count() == 3
         colValList == ["cell 2:1","cell 2:2", "cell 2:3"]
         row3ValList == ["cell 2:3"]
+        table.stream().count() == 3
 
     }
 }
