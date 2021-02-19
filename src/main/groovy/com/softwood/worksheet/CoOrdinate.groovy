@@ -68,10 +68,11 @@ class CoOrdinate {
         "CoOrdinate[$x,$y,$z]"
     }
 
-    CoOrdinate asType (Class clazz) {
+    List asType (Class clazz) {
         assert clazz
         if (clazz instanceof List) {
-            new CoOrdinate(x,y,z)
+            //new CoOrdinate(x,y,z)
+            getThreeDimensionalCoOrdinateAsList ()
         } else null
     }
 }
