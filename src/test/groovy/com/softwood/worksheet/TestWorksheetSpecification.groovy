@@ -35,5 +35,7 @@ class TestWorksheetSpecification extends Specification {
         ws.stream().count() == 1
         ws.name == "worksheet 2"
         opt.isPresent()
+        opt.get().name == "myTable"
+        opt.get() == table
     }
 }

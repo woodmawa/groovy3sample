@@ -1,5 +1,7 @@
 package com.softwood.worksheet
 
+import groovy.transform.EqualsAndHashCode
+
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Stream
 
@@ -7,6 +9,7 @@ import java.util.stream.Stream
  * table is named block of cells in a grid.  cells are stored in a map
  * a cell instance can be indexed by its CoOrdinate
  */
+@EqualsAndHashCode
 class TableHashMapImpl implements Table {
 
     private Optional<String> name
