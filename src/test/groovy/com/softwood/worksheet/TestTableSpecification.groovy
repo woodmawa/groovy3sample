@@ -76,13 +76,16 @@ class TestTableSpecification extends Specification {
 
         DatasetRow row = table.getRow(3)
         DatasetColumn col = table.getColumn (2)
-        List valList = col.stream().map(ce -> ce.valueAsText).collect(toList())
+        List colValList = col.stream().map(ce -> ce.valueAsText).collect(toList())
+
+        List row3ValList = row.stream().map(ce -> ce.valueAsText).collect(toList())
 
 
         then:
         row.stream().count() == 1
         col.stream().count() == 3
-        valList == ["cell 2:1","cell 2:2", "cell 2:3"]
+        colValList == ["cell 2:1","cell 2:2", "cell 2:3"]
+        row3ValList == ["cell 2:3"]
 
     }
 }
