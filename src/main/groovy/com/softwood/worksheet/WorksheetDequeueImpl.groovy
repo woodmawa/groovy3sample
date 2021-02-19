@@ -23,6 +23,10 @@ class WorksheetDequeueImpl implements Worksheet {
         this
     }
 
+    /**
+     * static methods to add or remove a ws from the the static list of worksheets
+     * @param ws
+     */
     static void addWorksheet (Worksheet ws) {
         if (!worksheets.contains(ws)) {
             worksheets.add(ws)
@@ -42,6 +46,8 @@ class WorksheetDequeueImpl implements Worksheet {
      */
     void delete () {
         removeWorksheet(this)
+        tables = null
+        name = Optional.of("--deleted--")
     }
 
     void setName (final String name) {
@@ -71,4 +77,6 @@ class WorksheetDequeueImpl implements Worksheet {
     Stream<Table> stream() {
         tables.stream()
     }
+
+
 }

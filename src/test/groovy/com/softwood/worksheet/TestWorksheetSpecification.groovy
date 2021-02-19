@@ -18,6 +18,13 @@ class TestWorksheetSpecification extends Specification {
         ws.name == "worksheet 1"
         ws.worksheets.size() == 1
 
+        and:
+        //detach this worksheet from master static list
+        ws.removeWorksheet(ws)
+
+        then:
+        ws.worksheets.size() == 0
+
     }
 
     def "add named worksheet " () {

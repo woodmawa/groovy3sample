@@ -10,4 +10,6 @@ interface Worksheet {
     Optional<Table> findTable (String name)
     List<Table> getTables()
     Stream<Table> stream()
+    void delete ()
+    //boolean removeWorksheet (Worksheet ws)  // static function
 }
