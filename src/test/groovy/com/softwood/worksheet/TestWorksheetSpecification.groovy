@@ -17,6 +17,23 @@ class TestWorksheetSpecification extends Specification {
         ws.stream().count() == 1
         ws.name == "worksheet 1"
 
+    }
 
+    def "add named worksheet " () {
+        given:
+        Worksheet ws = new WorksheetDequeueImpl()
+        Table table = new TableHashMapImpl()
+        table.name = "myTable"
+
+        when:
+        ws.addTable(table)
+        ws.name = "worksheet 2"
+
+        Optional<Table> opt = ws.findTable("myTable")
+
+        then:
+        ws.stream().count() == 1
+        ws.name == "worksheet 2"
+        opt.isPresent()
     }
 }
