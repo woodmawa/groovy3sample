@@ -3,6 +3,8 @@ package com.softwood.worksheet
 import java.util.stream.Stream
 
 interface Table {
+    void setName (String name)
+    String getName ()
     void setColumnName (long colNumber, final String name)
     void setRowName (long rowNumber, final String name)
     DatasetColumn getColumn (long colNumber)

@@ -9,7 +9,7 @@ import java.util.stream.Stream
  */
 class TableHashMapImpl implements Table {
 
-    String name
+    private Optional<String> name
     ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
     ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
 
@@ -18,6 +18,14 @@ class TableHashMapImpl implements Table {
 
     //look at jigsaw table to help here
     ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
+
+    void setName (String name) {
+        this.name = Optional.of (name)
+    }
+
+    String getName () {
+        name.orElse("--UnNamed--")
+    }
 
     void setColumnName (final long colNumber, final String name) {
 

@@ -11,8 +11,8 @@ import groovy.transform.MapConstructor
 @MapConstructor
 @EqualsAndHashCode
 class Cell {
-    Optional<String> name = Optional.ofNullable(null)
-    CoOrdinate cellReference
+    private Optional<String> name = Optional.ofNullable(null)
+    private CoOrdinate cellReference
     def value
 
     Cell (CoOrdinate cellReference, def value){
@@ -50,6 +50,10 @@ class Cell {
 
     void updateValue (final update) {
         value = update
+    }
+
+    void setValue (final value) {
+        this.value = value
     }
 
     String getValueAsText () {
