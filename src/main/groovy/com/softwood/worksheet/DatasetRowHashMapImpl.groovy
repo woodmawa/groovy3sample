@@ -1,6 +1,7 @@
 package com.softwood.worksheet
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Stream
 
 class DatasetRowHashMapImpl implements DatasetRow {
 
@@ -44,4 +45,7 @@ class DatasetRowHashMapImpl implements DatasetRow {
         }
     }
 
+    Stream<Cell> stream () {
+        rowCells?.values().stream()
+    }
 }

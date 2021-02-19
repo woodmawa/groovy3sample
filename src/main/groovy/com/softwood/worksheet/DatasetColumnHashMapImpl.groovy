@@ -1,6 +1,7 @@
 package com.softwood.worksheet
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Stream
 
 class DatasetColumnHashMapImpl implements DatasetColumn {
 
@@ -41,5 +42,9 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
         if (columnNumber == col) {
             columnCells.put(row, cell)
         }
+    }
+
+    Stream<Cell> stream () {
+        columnCells?.values().stream()
     }
 }
