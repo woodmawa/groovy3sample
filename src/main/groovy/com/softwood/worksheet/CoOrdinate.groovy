@@ -73,7 +73,12 @@ class CoOrdinate {
         if (clazz == List) {
             //new CoOrdinate(x,y,z)
             getThreeDimensionalCoOrdinateAsList ()
-        } else null
+        } else if (clazz == Tuple2) {
+            getTwoDimensionalTuple()
+        } else if (clazz == Tuple3 || clazz == Tuple) {
+            getThreeDimensionalTuple()
+        }else
+            null
     }
 }
 
