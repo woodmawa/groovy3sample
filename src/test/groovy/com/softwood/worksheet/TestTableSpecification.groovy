@@ -57,6 +57,8 @@ class TestTableSpecification extends Specification {
         then:
         row.stream().count() == 1
         col.stream().count() == 1
+        col.name == "--UnNamed Column--"
+        row.name == "--UnNamed Row--"
         table.stream().count() == 1
 
     }

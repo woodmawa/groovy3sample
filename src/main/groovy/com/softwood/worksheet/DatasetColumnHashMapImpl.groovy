@@ -21,7 +21,7 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     @Override
     String getName() {
         //returns value if present of the default otherwise
-        name.orElse( "empty")
+        name.orElse( "--UnNamed Column--")
     }
 
     @Override

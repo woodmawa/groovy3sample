@@ -27,7 +27,7 @@ class TableHashMapImpl implements Table {
     }
 
     String getName () {
-        name.orElse("--UnNamed--")
+        name.orElse("--UnNamed Table--")
     }
 
     void setColumnName (final long colNumber, final String name) {
@@ -136,12 +136,12 @@ class TableHashMapImpl implements Table {
 
     Cell setCell (final List<Long> aref, def value) {
         CoOrdinate coOrdRef = new CoOrdinate(aref)
-        Cell cell = new Cell (cellReference: coOrdRef, value: value )
+        Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
 
     Cell setCell (final CoOrdinate coOrdRef, def value) {
-        Cell cell = new Cell (cellReference: coOrdRef, value: value )
+        Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
 
