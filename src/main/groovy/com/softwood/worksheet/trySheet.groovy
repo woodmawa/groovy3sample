@@ -1,5 +1,7 @@
 package com.softwood.worksheet
 
+import static java.util.stream.Collectors.*;
+
 CoOrdinate origin = new CoOrdinate (0,0)
 
 
@@ -30,3 +32,6 @@ println table.name
 println c
 println c2
 println table.getCell([1,1]).valueAsText
+
+List tabCells = table.stream().collect(toList())
+println "cells in table " +tabCells
