@@ -35,3 +35,4 @@ println table.getCell([1,1]).valueAsText
 
 List tabCells = table.stream().collect(toList())
 println "cells in table " +tabCells
+println "table values : "+ table.stream().map(cell -> cell.value).collect(toList())
