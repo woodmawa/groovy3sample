@@ -16,11 +16,24 @@ class WorksheetDequeueImpl implements Worksheet {
         }
     }
 
+    WorksheetDequeueImpl (final String name = null) {
+        if (name) {
+            this.name = Optional.of (name)
+        }
+
+        worksheets.add(this)
+        this
+    }
+
     static boolean removeWorksheet (Worksheet ws) {
         if (worksheets.contains(ws)) {
             worksheets.remove(ws)
         } else
             false
+    }
+    
+    void delete () {
+        removeWorksheet(this)
     }
 
     void setName (final String name) {
