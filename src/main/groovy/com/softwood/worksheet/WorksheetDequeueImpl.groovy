@@ -10,12 +10,10 @@ class WorksheetDequeueImpl implements Worksheet {
     private Optional<String> name
     private ConcurrentLinkedDeque<Table> tables = new ConcurrentLinkedDeque<Table>()
 
-    static void addWorksheet (Worksheet ws) {
-        if (!worksheets.contains(ws)) {
-            worksheets.add(ws)
-        }
-    }
-
+    /**
+     * constructor
+     * @param name - optional name for the worksheet
+     */
     WorksheetDequeueImpl (final String name = null) {
         if (name) {
             this.name = Optional.of (name)
@@ -25,13 +23,23 @@ class WorksheetDequeueImpl implements Worksheet {
         this
     }
 
+    static void addWorksheet (Worksheet ws) {
+        if (!worksheets.contains(ws)) {
+            worksheets.add(ws)
+        }
+    }
+    
     static boolean removeWorksheet (Worksheet ws) {
         if (worksheets.contains(ws)) {
             worksheets.remove(ws)
         } else
             false
     }
-    
+
+    /**
+     * delete this worksheet - and remove from static list if present
+     *
+     */
     void delete () {
         removeWorksheet(this)
     }
