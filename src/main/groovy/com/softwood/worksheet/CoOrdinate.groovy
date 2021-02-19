@@ -75,8 +75,10 @@ class CoOrdinate {
             getThreeDimensionalCoOrdinateAsList ()
         } else if (clazz == Tuple2) {
             getTwoDimensionalTuple()
-        } else if (clazz == Tuple3 || clazz == Tuple) {
+        } else if (clazz == Tuple3) {
             getThreeDimensionalTuple()
+        } else if (clazz == Tuple) {
+            new Tuple (x,y,z)
         }else
             null
     }

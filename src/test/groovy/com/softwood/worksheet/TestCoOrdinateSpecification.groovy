@@ -44,9 +44,11 @@ class TestCoOrdinateSpecification extends Specification {
 
         when:
         List arr = cOrd as List
+        Tuple tup = cOrd as Tuple
 
         then:
         arr == [2,2,0]
+        tup.equals(new Tuple(2,2,0))
 
     }
 }
