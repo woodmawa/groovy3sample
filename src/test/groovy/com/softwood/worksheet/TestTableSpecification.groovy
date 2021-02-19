@@ -2,6 +2,7 @@ package com.softwood.worksheet
 
 import spock.lang.Specification
 import com.softwood.worksheet.*
+import static java.util.stream.Collectors.*
 
 class TestTableSpecification extends Specification {
 
@@ -75,12 +76,13 @@ class TestTableSpecification extends Specification {
 
         DatasetRow row = table.getRow(3)
         DatasetColumn col = table.getColumn (2)
+        List valList = col.stream().map(ce -> ce.valueAsText).collect(toList())
 
 
         then:
         row.stream().count() == 1
         col.stream().count() == 3
-
+        valList == ["cell 2:1","cell 2:2", "cell 2:3"]
 
     }
 }
