@@ -10,6 +10,7 @@ interface DatasetRow {
     List<Cell> getCellsAsList()
     int size()
     void times (double multiplier)
+    void timesAsLong (double multiplier)
 
     Stream<Cell> stream()
 }

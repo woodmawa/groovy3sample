@@ -55,6 +55,12 @@ class DatasetRowHashMapImpl implements DatasetRow {
         .forEach(cell -> cell.updateValue(cell.value as Double * multiplier))
     }
 
+    void timesAsLong (double multiplier ) {
+        rowCells?.values().stream()
+                .filter (cell -> cell.value instanceof Number)
+                .forEach(cell -> cell.updateValue( Math.round(cell.value as Double * multiplier)) )
+    }
+
     Stream<Cell> stream () {
         rowCells?.values().stream()
     }
