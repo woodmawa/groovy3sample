@@ -13,14 +13,31 @@ import java.util.stream.Stream
 class TableHashMapImpl implements Table {
 
     private Optional<String> name
-    ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
-    ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
-
-    Closure error = {println "error didnt save cell ref - if was invalid $it.cellReference", "error invalid co-ordinate for cell"}
-    Closure success = {println "all went well saved $it in table", "OK"}
+    private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
+    private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
 
     //look at jigsaw table to help here
-    ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
+    private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
+
+    boolean hasError = false
+
+    TableHashMaplImpl () {}
+
+    TableHashMaplImpl (List<Cell> cellList) {
+        assert cellList
+        cellList.stream().forEach ({ cell ->
+            addCellToColumn(cell)
+            addCellToRow(cell)
+            cellsGrid.add(cell.coOrdinate, cell)
+        })
+
+    }
+
+
+    void clearError() {hasError = false}
+
+    Closure error = {val, status -> println "$val", hasError=true, status}
+    Closure success = {println "$it", hasError=false, "OK"}
 
     void setName (String name) {
         this.name = Optional.of (name)
@@ -36,7 +53,7 @@ class TableHashMapImpl implements Table {
         if (col)
             col.setName(name)
         else
-            error ("error couldn't find column $colNumber")
+            error.call ("error couldn't find column $colNumber", "No such Column")
     }
 
     void setRowName (final long rowNumber, final String name) {
@@ -45,7 +62,11 @@ class TableHashMapImpl implements Table {
         if (row)
             row.setName(name)
         else
-            error ("error couldn't find row $rowNumber")
+            error.call ("error couldn't find row $rowNumber", "No such Row")
+    }
+
+    Map<CoOrdinate, Cell> getCellsGrid () {
+        cellsGrid.asImmutable()
     }
 
     DatasetColumn getColumn (final long colNumber) {
@@ -116,6 +137,21 @@ class TableHashMapImpl implements Table {
         }
     }
 
+    private void addCellToRow (final Cell cell) {
+        assert cell
+        long rowNumber = cell.coOrdinate.y
+        DatasetRow row = rows.get(rowNumber)
+        if (row) {
+            row.putCell(cell)
+        } else {
+            row = new DatasetRowHashMapImpl()
+            row.rowNumber = rowNumber
+            row.putCell(cell)
+            rows.put (rowNumber, row)
+
+        }
+    }
+
     private void addCellToColumn (final long colNumber, final Cell cell) {
         DatasetColumn col = columns.get(colNumber)
         if (col) {
@@ -144,6 +180,21 @@ class TableHashMapImpl implements Table {
         }
     }
 
+    private void addCellToColumn (final Cell cell) {
+        assert cell
+        long colNumber = cell.coOrdinate.x
+        DatasetColumn col = columns.get(colNumber)
+        if (col) {
+            col.putCell(cell)
+        } else {
+            col = new DatasetColumnHashMapImpl()
+            col.columnNumber = colNumber
+            col.putCell(cell)
+            columns.put(colNumber, col)
+
+        }
+    }
+
     Cell setCell (final long x_col_ref, final long y_row_ref, final def value) {
         CoOrdinate coOrdRef = new CoOrdinate(x_col_ref, y_row_ref)
         Cell cell = new Cell (coOrdRef, value )
@@ -151,17 +202,17 @@ class TableHashMapImpl implements Table {
     }
 
     Cell setCell (final Cell cell) {
-        if (cell.cellReference) {
-            cellsGrid.put (cell.cellReference, cell)
+        if (cell.coOrdinate) {
+            cellsGrid.put (cell.coOrdinate, cell)
             //get row number (which is y axis ref) and add cell to this row
-            addCellToRow (cell.cellReference.y, cell)
+            addCellToRow (cell.coOrdinate.y, cell)
             //get column number (which is x axis ref) and add cell to this column
-            addCellToColumn (cell.cellReference.x, cell)
+            addCellToColumn (cell.coOrdinate.x, cell)
 
             cell
         }
         else {
-            error (cell)
+            error.call (cell)
             cell
         }
     }

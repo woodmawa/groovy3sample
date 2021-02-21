@@ -11,6 +11,7 @@ interface Table {
     DatasetColumn getColumn (final String colName)
     DatasetRow getRow (long rowNumber)
     DatasetRow getRow (final String colName)
+    Map<CoOrdinate, Cell> getCellsGrid()
     Cell setCell (Cell cell)
     Cell setCell (final long x_col_ref, final long y_row_ref, final def value)
     Cell setCell (final List<Long> ref, def value)
@@ -20,6 +21,7 @@ interface Table {
     Cell getCell (final List<Long> ref)
     Cell getCell (final CoOrdinate coOrdRef)
     Optional<Table> intersect (final Table table2)
+    void clearError()
 
     Stream<Cell> stream()
 }
