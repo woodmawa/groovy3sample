@@ -212,7 +212,7 @@ class TableHashMapImpl implements Table {
             cell
         }
         else {
-            error.call (cell)
+            error.call (cell, "error cell has invalid coOrdinate")
             cell
         }
     }
@@ -253,6 +253,7 @@ class TableHashMapImpl implements Table {
             Table iTable = new TableHashMapImpl()
             iTable.cellsGrid.putAll(mapOfCells)
             mapOfCells.entrySet().stream().forEach(entry ->addCellToColumn (entry.key, entry.value) )
+            iTable
         } else
             return null
     }
