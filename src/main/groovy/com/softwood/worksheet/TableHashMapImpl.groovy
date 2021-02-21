@@ -101,7 +101,37 @@ class TableHashMapImpl implements Table {
         }
     }
 
+    private void addCellToRow (final CoOrdinate coOrd, final Cell cell) {
+        assert CoOrdinate
+        long rowNumber = coOrd.y
+        DatasetRow row = rows.get(rowNumber)
+        if (row) {
+            row.putCell(cell)
+        } else {
+            row = new DatasetRowHashMapImpl()
+            row.rowNumber = rowNumber
+            row.putCell(cell)
+            rows.put (rowNumber, row)
+
+        }
+    }
+
     private void addCellToColumn (final long colNumber, final Cell cell) {
+        DatasetColumn col = columns.get(colNumber)
+        if (col) {
+            col.putCell(cell)
+        } else {
+            col = new DatasetColumnHashMapImpl()
+            col.columnNumber = colNumber
+            col.putCell(cell)
+            columns.put(colNumber, col)
+
+        }
+    }
+
+    private void addCellToColumn (final CoOrdinate coOrd, final Cell cell) {
+        assert coOrd
+        long colNumber = coOrd.x
         DatasetColumn col = columns.get(colNumber)
         if (col) {
             col.putCell(cell)
@@ -160,6 +190,20 @@ class TableHashMapImpl implements Table {
 
     Cell getCell (final CoOrdinate coOrdRef) {
         cellsGrid[coOrdRef]
+    }
+
+    Optional<Table> intersect(final Table table2) {
+        Map<CoOrdinate, Cell> intersectionMap = this.cellsGrid.intersect(table2.cellsGrid)
+        Optional.ofNullable (buildTableRowsAndColumns (intersectionMap))
+    }
+
+    private Table buildTableRowsAndColumns (Map<CoOrdinate, Cell> mapOfCells) {
+        if (mapOfCells) {
+            Table iTable = new TableHashMapImpl()
+            iTable.cellsGrid.putAll(mapOfCells)
+            mapOfCells.entrySet().stream().forEach(entry ->addCellToColumn (entry.key, entry.value) )
+        } else
+            return null
     }
 
     Stream<Cell> stream () {

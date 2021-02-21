@@ -19,6 +19,7 @@ interface Table {
     Cell getCell (final long x, final long y, final long z)
     Cell getCell (final List<Long> ref)
     Cell getCell (final CoOrdinate coOrdRef)
+    Optional<Table> intersect (final Table table2)
 
     Stream<Cell> stream()
 }

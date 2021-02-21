@@ -11,7 +11,7 @@ interface DatasetColumn {
     int size()
     void times (double multiplier)
     void timesAsLong (double multiplier)
-    
+
 
     Stream<Cell> stream()
 }

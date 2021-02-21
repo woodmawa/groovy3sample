@@ -110,7 +110,27 @@ class TestTableSpecification extends Specification {
         table.getCell([2,3]).value == 8.0D
         table.getCell([2,2]).value == 4.0D
         table.getCell([2,1]).value == "cell 2:1"
+    }
 
+    def "test multiplierAsLong action " () {
+        given:
+        Table table = new TableHashMapImpl()
 
+        when:
+        table.setName ("my third table")
+        def c = table.setCell([2,1], "cell 2:1")
+        c = table.setCell([2,2], 2.5)
+        c = table.setCell([2,3], 4.0)
+
+        DatasetRow row = table.getRow(3)
+        DatasetColumn col = table.getColumn (2)
+        col.timesAsLong (2)
+
+        then:
+        row.stream().count() == 1
+        col.stream().count() == 3
+        table.getCell([2,3]).value == 8L
+        table.getCell([2,2]).value == 5L
+        table.getCell([2,1]).value == "cell 2:1"
     }
 }

@@ -8,9 +8,9 @@ import groovy.transform.MapConstructor
 @EqualsAndHashCode  //need this to ensure unique access via the cells map
 class CoOrdinate {
     //todo use tuple
-    long x
-    long y
-    long z
+    private long x
+    private long y
+    private long z
 
     CoOrdinate(final List<Long> coOrds) {
         x = coOrds?[0] ?: 0
@@ -23,6 +23,10 @@ class CoOrdinate {
         this.y = y_row_index as long
         this.z = z_index as long
     }
+
+    long getX () { x }
+    long getY () { y }
+    long getZ () { z }
 
     /**
      * moves the cell co-ordinates relative to existing location
