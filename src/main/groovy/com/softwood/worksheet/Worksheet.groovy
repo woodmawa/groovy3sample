@@ -11,4 +11,7 @@ interface Worksheet {
     List<Table> getTables()
     Stream<Table> stream()
     void delete ()
+    Worksheet getDefaultWorksheet()
+    Collection<Worksheet> getWorksheets ()
+    String toString()
 }

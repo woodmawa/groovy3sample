@@ -16,7 +16,8 @@ class TestWorksheetSpecification extends Specification {
         then:
         ws.stream().count() == 1
         ws.name == "worksheet 1"
-        ws.worksheets.size() == 1
+        ws.worksheets.size() == 2 //default + this one 
+        ws.defaultWorksheet.name == "--Default Worksheet--"
 
         and:
         //detach this worksheet from master static list

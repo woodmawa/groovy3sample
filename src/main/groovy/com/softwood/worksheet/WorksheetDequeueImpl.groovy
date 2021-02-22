@@ -6,9 +6,9 @@ import java.util.stream.Stream
 class WorksheetDequeueImpl implements Worksheet {
 
     static ConcurrentLinkedDeque<Worksheet> worksheets = new ConcurrentLinkedDeque<Worksheet>()
-    static defaultWorksheet = new WorksheetDequeueImpl ("--Default Worksheet--")
+    static defaultMasterWorksheet = new WorksheetDequeueImpl ("--Default Worksheet--")
     static {
-        worksheets.add(defaultWorksheet)
+        worksheets.add(defaultMasterWorksheet)
     }
 
 
@@ -26,6 +26,18 @@ class WorksheetDequeueImpl implements Worksheet {
 
         worksheets.add(this)
         this
+    }
+
+    /**
+     * return reference to static default worksheet
+     * @return defaultWorksheet
+     */
+    Worksheet getDefaultWorksheet () {
+        defaultMasterWorksheet
+    }
+
+    Collection<Worksheet> getWorksheets () {
+        this.@worksheets.asImmutable()
     }
 
     /**
@@ -85,5 +97,8 @@ class WorksheetDequeueImpl implements Worksheet {
         tables.stream()
     }
 
+    String toString() {
+        "Worksheet ($name)"
+    }
 
 }

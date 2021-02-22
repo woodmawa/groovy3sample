@@ -16,7 +16,7 @@ class TableHashMapImpl implements Table {
     private Optional<String> name
     private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
     private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
-    private Optional<Worksheet> worksheet = Optional.of (WorksheetDequeueImpl.defaultWorksheet)
+    private Optional<Worksheet> worksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
 
     //look at jigsaw table to help here
     private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
