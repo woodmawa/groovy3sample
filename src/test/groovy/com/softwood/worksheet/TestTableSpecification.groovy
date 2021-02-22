@@ -133,4 +133,25 @@ class TestTableSpecification extends Specification {
         table.getCell([2,2]).value == 5L
         table.getCell([2,1]).value == "cell 2:1"
     }
+
+    def "test intersection of two tables action " () {
+        given:
+        Table table1 = new TableHashMapImpl()
+        Table table2 = new TableHashMapImpl()
+
+        when:
+        table1.setName ("my primary table")
+        table2.setName ("my secondary table")
+
+        def c = table1.setCell([0,0], "cell 0:0 primary")
+        table1.setCell([1,0], "cell 1:0 primary")
+        c = table2.setCell([1,0], "cell 1:0 - secondary")
+        c = table2.setCell([2,0], "cell 2:0 - secondary")
+
+        Optional<Table> intersection = table1.intersect(table2)
+        Table t = intersection.orElse (new TableHashMapImpl())
+
+        then:
+        t.cellsGrid.size() == 1
+    }
 }

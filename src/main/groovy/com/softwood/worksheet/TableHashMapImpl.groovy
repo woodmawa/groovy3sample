@@ -21,18 +21,20 @@ class TableHashMapImpl implements Table {
 
     boolean hasError = false
 
-    TableHashMaplImpl () {}
+    TableHashMapImpl () {super()}
 
-    TableHashMaplImpl (List<Cell> cellList) {
+    /*
+    TableHashMapImpl (List<Cell> cellList) {
+
         assert cellList
         cellList.stream().forEach ({ cell ->
             addCellToColumn(cell)
             addCellToRow(cell)
             cellsGrid.add(cell.coOrdinate, cell)
         })
-
+        this
     }
-
+*/
 
     void clearError() {hasError = false}
 
@@ -193,6 +195,15 @@ class TableHashMapImpl implements Table {
             columns.put(colNumber, col)
 
         }
+    }
+
+    void setCellList (List<Cell> cellList) {
+        assert cellList
+        cellList.stream().forEach ({ cell ->
+            addCellToColumn(cell)
+            addCellToRow(cell)
+            cellsGrid.add(cell.coOrdinate, cell)
+        })
     }
 
     Cell setCell (final long x_col_ref, final long y_row_ref, final def value) {
