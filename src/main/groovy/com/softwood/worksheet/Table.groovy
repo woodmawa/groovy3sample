@@ -20,7 +20,12 @@ interface Table {
     Cell getCell (final long x, final long y, final long z)
     Cell getCell (final List<Long> ref)
     Cell getCell (final CoOrdinate coOrdRef)
-    Optional<Table> intersect (final Table table2)
+    Optional<Table> intersectionByKey (final Table table2)
+    void linkWorksheet (Worksheet ws)
+    void unlinkWorksheet ()
+    void setWorksheet (Worksheet ws)
+    Optional<Worksheet> getWorksheet()
+
     void clearError()
 
     Stream<Cell> stream()

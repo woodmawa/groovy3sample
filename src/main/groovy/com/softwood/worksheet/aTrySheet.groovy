@@ -1,8 +1,26 @@
 package com.softwood.worksheet
 
+import java.util.concurrent.ConcurrentHashMap
+
 import static java.util.stream.Collectors.*;
 
 CoOrdinate origin = new CoOrdinate (0,0)
+println origin.hashCode()
+CoOrdinate oneAndOne = new CoOrdinate (1,1)
+println oneAndOne.hashCode()
+CoOrdinate twoAndTwo = new CoOrdinate (2,2)
+CoOrdinate again = new CoOrdinate (2,2)
+
+assert again == twoAndTwo
+
+Map m1 = new ConcurrentHashMap<CoOrdinate, float>([(origin): 0, (oneAndOne): 1.0])
+Map m2 = new ConcurrentHashMap<CoOrdinate, float>([(oneAndOne): 1.01, (twoAndTwo): 2.0])
+
+Map m3 = m1.intersect(m2)
+
+def m4
+
+m4 = m1.entrySet().stream().collect(toMap(Map.Entry::getKey, Map.Entry::getValue))
 
 
 TableHashMapImpl table = new TableHashMapImpl(name:'myFirstTable')

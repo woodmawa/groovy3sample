@@ -12,9 +12,11 @@ class TestTableSpecification extends Specification {
 
         when:
         table.setName ("my first table")
+        Worksheet ws = table.getWorksheet().orElse(null)
 
         then:
         table.name == "my first table"
+        ws.name == "--Default Worksheet--"
     }
 
     def "new table test with one cell" () {
@@ -148,7 +150,7 @@ class TestTableSpecification extends Specification {
         c = table2.setCell([1,0], "cell 1:0 - secondary")
         c = table2.setCell([2,0], "cell 2:0 - secondary")
 
-        Optional<Table> intersection = table1.intersect(table2)
+        Optional<Table> intersection = table1.intersectionByKey(table2)
         Table t = intersection.orElse (new TableHashMapImpl())
 
         then:

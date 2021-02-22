@@ -6,6 +6,11 @@ import java.util.stream.Stream
 class WorksheetDequeueImpl implements Worksheet {
 
     static ConcurrentLinkedDeque<Worksheet> worksheets = new ConcurrentLinkedDeque<Worksheet>()
+    static defaultWorksheet = new WorksheetDequeueImpl ("--Default Worksheet--")
+    static {
+        worksheets.add(defaultWorksheet)
+    }
+
 
     private Optional<String> name
     private ConcurrentLinkedDeque<Table> tables = new ConcurrentLinkedDeque<Table>()
@@ -64,10 +69,12 @@ class WorksheetDequeueImpl implements Worksheet {
 
     void addTable (Table table) {
         tables.add(table)
+        table.linkWorksheet(this)
     }
 
     boolean deleteTable (Table table) {
         tables.remove(table)
+        table.unlinkWorksheet ()
     }
 
     Optional<Table> findTable (String name) {

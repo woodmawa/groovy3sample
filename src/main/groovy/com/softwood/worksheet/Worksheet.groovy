@@ -11,5 +11,4 @@ interface Worksheet {
     List<Table> getTables()
     Stream<Table> stream()
     void delete ()
-    //boolean removeWorksheet (Worksheet ws)  // static function
 }

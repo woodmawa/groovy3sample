@@ -9,7 +9,7 @@ import groovy.transform.MapConstructor
  *
  */
 @MapConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode (includeFields = true)
 class Cell {
     private Optional<String> name = Optional.ofNullable(null)
     private CoOrdinate cellReference

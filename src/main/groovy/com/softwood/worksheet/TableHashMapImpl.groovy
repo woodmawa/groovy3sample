@@ -4,6 +4,7 @@ import groovy.transform.EqualsAndHashCode
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Stream
+import static java.util.stream.Collectors.*
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
@@ -15,6 +16,7 @@ class TableHashMapImpl implements Table {
     private Optional<String> name
     private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
     private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
+    private Optional<Worksheet> worksheet = Optional.of (WorksheetDequeueImpl.defaultWorksheet)
 
     //look at jigsaw table to help here
     private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
@@ -23,8 +25,8 @@ class TableHashMapImpl implements Table {
 
     TableHashMapImpl () {super()}
 
-    /*
-    TableHashMapImpl (List<Cell> cellList) {
+
+    /*TableHashMapImpl (List<Cell> cellList) {
 
         assert cellList
         cellList.stream().forEach ({ cell ->
@@ -33,8 +35,18 @@ class TableHashMapImpl implements Table {
             cellsGrid.add(cell.coOrdinate, cell)
         })
         this
+    }*/
+
+    /**
+     * overide the default worksheet assignment
+     */
+    void setWorksheet (Worksheet ws) {
+        worksheet = Optional.ofNullable(ws)
     }
-*/
+
+    Optional<Worksheet> getWorksheet () {
+        worksheet
+    }
 
     void clearError() {hasError = false}
 
@@ -212,9 +224,16 @@ class TableHashMapImpl implements Table {
         setCell (cell)
     }
 
+    /**
+     * main method for doing the work of setting a sell into the grid
+     *
+     * @param cell
+     * @return
+     */
     Cell setCell (final Cell cell) {
         if (cell.coOrdinate) {
-            cellsGrid.put (cell.coOrdinate, cell)
+            CoOrdinate cOrd = cell.coOrdinate
+            cellsGrid.put ((cell.coOrdinate), cell)
             //get row number (which is y axis ref) and add cell to this row
             addCellToRow (cell.coOrdinate.y, cell)
             //get column number (which is x axis ref) and add cell to this column
@@ -254,19 +273,45 @@ class TableHashMapImpl implements Table {
         cellsGrid[coOrdRef]
     }
 
-    Optional<Table> intersect(final Table table2) {
-        Map<CoOrdinate, Cell> intersectionMap = this.cellsGrid.intersect(table2.cellsGrid)
+    Optional<Table> intersectionByKey(final Table table2) {
+        //Map<CoOrdinate, Cell> intersectionMap = this.cellsGrid.intersect(table2.cellsGrid)
+        List<CoOrdinate> keys = cellsGrid.entrySet().stream()
+                .map(entry -> entry.getKey())
+                .collect(toList())
+        List<CoOrdinate> keys2 = table2.cellsGrid.entrySet().stream()
+                .map(entry -> entry.key)
+                .collect(toList())
+
+        List keyIntersect = keys.intersect(keys2)
+        //cellsGrid.stream().map({ })
+
+        Map intersectionMap = new ConcurrentHashMap<>()
+        cellsGrid.entrySet().stream()
+                .filter(entry -> keyIntersect.contains(entry.key))
+                //.map(entry -> entry)
+                //.collect(toMap(Map.Entry::getKey , Map.Entry::getValue))
+                .forEach(entry -> intersectionMap.put(entry.key, entry.value))
         Optional.ofNullable (buildTableRowsAndColumns (intersectionMap))
     }
 
     private Table buildTableRowsAndColumns (Map<CoOrdinate, Cell> mapOfCells) {
         if (mapOfCells) {
-            Table iTable = new TableHashMapImpl()
-            iTable.cellsGrid.putAll(mapOfCells)
-            mapOfCells.entrySet().stream().forEach(entry ->addCellToColumn (entry.key, entry.value) )
+            TableHashMapImpl iTable = new TableHashMapImpl()
+            //use private field access here to make sure its mutable
+            //iTable.@cellsGrid.putAll(mapOfCells)
+            mapOfCells.entrySet().stream()
+                    .forEach(entry -> iTable.setCell(entry.key, entry.value))
             iTable
         } else
             return null
+    }
+
+    void linkWorksheet (Worksheet ws) {
+        this.setWorksheet (ws)
+    }
+
+    void unlinkWorksheet() {
+        worksheet = Optional.of (null)
     }
 
     Stream<Cell> stream () {

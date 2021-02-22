@@ -5,7 +5,7 @@ import groovy.transform.Immutable
 import groovy.transform.MapConstructor
 
 @MapConstructor
-@EqualsAndHashCode  //need this to ensure unique access via the cells map
+@EqualsAndHashCode (includeFields=true)  //need this to ensure unique access via the cells map
 class CoOrdinate {
     //todo use tuple
     private long x
@@ -22,6 +22,7 @@ class CoOrdinate {
         this.x = x_col_index as long
         this.y = y_row_index as long
         this.z = z_index as long
+        this
     }
 
     long getX () { x }
