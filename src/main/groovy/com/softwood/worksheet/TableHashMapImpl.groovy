@@ -32,7 +32,7 @@ class TableHashMapImpl implements Table {
         cellList.stream().forEach ({ cell ->
             addCellToColumn(cell)
             addCellToRow(cell)
-            cellsGrid.add(cell.coOrdinate, cell)
+            cellsGrid.put(cell.coOrdinate, cell)
         })
         this
     }
@@ -117,7 +117,7 @@ class TableHashMapImpl implements Table {
     //todo make this optional ?
     DatasetRow getRow (final String rowName) {
          Optional res = rows.values().stream()
-                .filter(row -> row.name == rowName)
+                 .filter(row -> row.name == rowName)
                  .findFirst()
 
         def row = res.orElse(null)
@@ -139,32 +139,19 @@ class TableHashMapImpl implements Table {
 
     private void addCellToRow (final CoOrdinate coOrd, final Cell cell) {
         assert CoOrdinate
-        long rowNumber = coOrd.y
-        DatasetRow row = rows.get(rowNumber)
-        if (row) {
-            row.putCell(cell)
-        } else {
-            row = new DatasetRowHashMapImpl()
-            row.rowNumber = rowNumber
-            row.putCell(cell)
-            rows.put (rowNumber, row)
+        assert cell.coOrdinate
 
-        }
+        long rowNumber = coOrd.y
+        addCellToRow (rowNumber, cell)
     }
 
     private void addCellToRow (final Cell cell) {
         assert cell
-        long rowNumber = cell.coOrdinate.y
-        DatasetRow row = rows.get(rowNumber)
-        if (row) {
-            row.putCell(cell)
-        } else {
-            row = new DatasetRowHashMapImpl()
-            row.rowNumber = rowNumber
-            row.putCell(cell)
-            rows.put (rowNumber, row)
+        assert cell.coOrdinate
 
-        }
+        long rowNumber = cell.coOrdinate.y
+        addCellToRow (rowNumber, cell)
+
     }
 
     private void addCellToColumn (final long colNumber, final Cell cell) {
@@ -182,32 +169,19 @@ class TableHashMapImpl implements Table {
 
     private void addCellToColumn (final CoOrdinate coOrd, final Cell cell) {
         assert coOrd
-        long colNumber = coOrd.x
-        DatasetColumn col = columns.get(colNumber)
-        if (col) {
-            col.putCell(cell)
-        } else {
-            col = new DatasetColumnHashMapImpl()
-            col.columnNumber = colNumber
-            col.putCell(cell)
-            columns.put(colNumber, col)
+        assert cell.coOrdinate
 
-        }
+        long colNumber = coOrd.x
+        addCellToColumn (colNumber, cell)
     }
 
     private void addCellToColumn (final Cell cell) {
         assert cell
-        long colNumber = cell.coOrdinate.x
-        DatasetColumn col = columns.get(colNumber)
-        if (col) {
-            col.putCell(cell)
-        } else {
-            col = new DatasetColumnHashMapImpl()
-            col.columnNumber = colNumber
-            col.putCell(cell)
-            columns.put(colNumber, col)
+        assert cell.coOrdinate
 
-        }
+        long colNumber = cell.coOrdinate.x
+        addCellToColumn (colNumber, cell)
+
     }
 
     void setCellList (List<Cell> cellList) {
@@ -215,7 +189,7 @@ class TableHashMapImpl implements Table {
         cellList.stream().forEach ({ cell ->
             addCellToColumn(cell)
             addCellToRow(cell)
-            cellsGrid.add(cell.coOrdinate, cell)
+            cellsGrid.put(cell.coOrdinate, cell)
         })
     }
 
@@ -233,7 +207,6 @@ class TableHashMapImpl implements Table {
      */
     Cell setCell (final Cell cell) {
         if (cell.coOrdinate) {
-            CoOrdinate cOrd = cell.coOrdinate
             cellsGrid.put ((cell.coOrdinate), cell)
             //get row number (which is y axis ref) and add cell to this row
             addCellToRow (cell.coOrdinate.y, cell)

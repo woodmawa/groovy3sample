@@ -3,6 +3,13 @@ package com.softwood.worksheet
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.stream.Stream
 
+/**
+ * Worksheet is  a container for tables
+ * 
+ * a defaultMasterWorksheet is automatically setup, and any new table defaults to this worksheet
+ *
+ *
+ */
 class WorksheetDequeueImpl implements Worksheet {
 
     static ConcurrentLinkedDeque<Worksheet> worksheets = new ConcurrentLinkedDeque<Worksheet>()
