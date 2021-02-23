@@ -52,7 +52,7 @@ class Cell {
     }
 
     List<Long> getCoOrdinateAsList () {
-        //cellReference.
+        cellReference?.threeDimensionalCoOrdinateAsList
     }
 
     /**
@@ -83,7 +83,7 @@ class Cell {
         this.firePropertyChange("value", value ?: Optional.empty(), this.value = value)
     }
 
-    def getValue (final value) {
+    def getValue () {
         value
     }
 
