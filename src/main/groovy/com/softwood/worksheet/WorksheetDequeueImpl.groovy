@@ -96,6 +96,10 @@ class WorksheetDequeueImpl implements Worksheet {
         tables?.stream()
     }
 
+    Stream<Worksheet> streamOfWorksheets() {
+        worksheets?.stream()
+    }
+
     String toString() {
         "Worksheet ($name)"
     }

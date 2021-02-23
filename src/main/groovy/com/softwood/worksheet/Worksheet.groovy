@@ -13,5 +13,6 @@ interface Worksheet {
     void delete ()
     Worksheet getDefaultWorksheet()
     Collection<Worksheet> getWorksheets ()
+    Stream<Worksheet> streamOfWorksheets()
     String toString()
 }
