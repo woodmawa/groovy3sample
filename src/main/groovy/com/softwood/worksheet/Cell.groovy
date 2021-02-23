@@ -1,7 +1,10 @@
 package com.softwood.worksheet
 
+import groovy.beans.Bindable
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.MapConstructor
+
+import java.beans.PropertyChangeListener
 
 /**
  * cells can be optionally named
@@ -13,7 +16,11 @@ import groovy.transform.MapConstructor
 class Cell {
     private Optional<String> name = Optional.empty()
     private CoOrdinate cellReference
-    def value
+    static String BLANK_STRING = ""
+
+    //sends property change events to subscribers on cell values
+    @Bindable def value
+    Closure function = {args -> }
 
     Cell (CoOrdinate cellReference, def value){
         this.cellReference = cellReference
@@ -48,7 +55,28 @@ class Cell {
         //cellReference.
     }
 
+    /**
+     * subscribe and unsubscribe for changes to value property
+     * @param changeListener
+     */
+    void addCellValueListener (PropertyChangeListener changeListener) {
+        this.addPropertyChangeListener("value", changeListener)
+    }
+
+    void removeCellValueListener (PropertyChangeListener changeListener) {
+        this.removePropertyChangeListener("value", changeListener)
+    }
+
+    List<PropertyChangeListener> getCellValueListenersList ( ) {
+        this.getPropertyChangeListeners("value")
+    }
+
+    /**
+     * updates the cell value and fires any listeners with PropertyChangeEvent
+     * @param update value to save on cell
+     */
     void updateValue (final update) {
+        this.firePropertyChange("value", this.value, update)
         value = update
     }
 
@@ -60,8 +88,11 @@ class Cell {
         value
     }
 
+    def calculate (List args) {
+        function.call (args)
+    }
+
     String getValueAsText () {
-        String BLANK_STRING = ""
         if (value) {
             if (value instanceof String)
                 value
