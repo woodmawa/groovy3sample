@@ -152,8 +152,10 @@ class TestTableSpecification extends Specification {
 
         Optional<Table> intersection = table1.intersectionByKey(table2)
         Table t = intersection.orElse (new TableHashMapImpl())
+        Cell ref = t.getCell(1,0)
 
         then:
         t.cellsGrid.size() == 1
+        t.getCell(1,0).valueAsText == "cell 1:0 primary"
     }
 }

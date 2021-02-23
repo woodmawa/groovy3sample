@@ -56,10 +56,19 @@ class Cell {
         this.value = value
     }
 
+    def getValue (final value) {
+        value
+    }
+
     String getValueAsText () {
         String BLANK_STRING = ""
         if (value) {
-            value.toString()
+            if (value instanceof String)
+                value
+            else if (value.getClass() == Optional) {
+                value.orElse "BLANK_STRING"
+            } else
+                value.toString()
         } else {
             BLANK_STRING
         }

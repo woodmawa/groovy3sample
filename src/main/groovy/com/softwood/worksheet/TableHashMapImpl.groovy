@@ -291,7 +291,7 @@ class TableHashMapImpl implements Table {
                 .filter(entry -> keyIntersect.contains(entry.key))
                 //.map(entry -> entry)
                 //.collect(toMap(Map.Entry::getKey , Map.Entry::getValue))
-                .forEach(entry -> intersectionMap.put(entry.key, entry.value))
+                .forEach(entry -> intersectionMap.put(entry.key, entry?.value))
         Optional.ofNullable (buildTableRowsAndColumns (intersectionMap))
     }
 
@@ -301,7 +301,7 @@ class TableHashMapImpl implements Table {
             //use private field access here to make sure its mutable
             //iTable.@cellsGrid.putAll(mapOfCells)
             mapOfCells.entrySet().stream()
-                    .forEach(entry -> iTable.setCell(entry.key, entry.value))
+                    .forEach(entry -> iTable.setCell(entry.value))
             iTable
         } else
             return null
