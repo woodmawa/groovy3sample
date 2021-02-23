@@ -89,7 +89,7 @@ class WorksheetDequeueImpl implements Worksheet {
     }
 
     Optional<Table> findTable (String name) {
-        tables?.stream().filter(table -> table.name == name).findFirst()
+        tables?.stream().filter(table -> table?.name == name).findFirst()
     }
 
     Stream<Table> stream() {
