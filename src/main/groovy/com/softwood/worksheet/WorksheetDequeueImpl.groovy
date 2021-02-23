@@ -61,7 +61,7 @@ class WorksheetDequeueImpl implements Worksheet {
      */
     void delete () {
         removeWorksheet(this)
-        tables = null
+        tables.clear()
         name = Optional.of("--Deleted Worksheet--")
     }
 
