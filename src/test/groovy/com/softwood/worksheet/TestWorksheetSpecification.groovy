@@ -38,8 +38,9 @@ class TestWorksheetSpecification extends Specification {
         table.name = "myTable"
 
         when:
+        assert table.worksheet.get() == WorksheetDequeueImpl.defaultMasterWorksheet
         ws.name = "worksheet 2"     //name the ws
-        ws.addTable(table)          //add the table
+        ws.addTable(table)          //add the table to new ws
 
         Optional<Table> opt = ws.findTable("myTable")
 
