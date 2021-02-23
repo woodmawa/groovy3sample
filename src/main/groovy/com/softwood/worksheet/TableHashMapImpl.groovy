@@ -42,10 +42,6 @@ class TableHashMapImpl implements Table {
      */
     void setWorksheet (Worksheet ws) {
         currentWorksheet.ifPresent (wsheet -> wsheet.removeTable(this))    //unlink from loosing worksheet list of tables
-        /*if (ws) {
-            ws.addTable(this)
-        }*/
-
         currentWorksheet = Optional.ofNullable(ws)
     }
 
