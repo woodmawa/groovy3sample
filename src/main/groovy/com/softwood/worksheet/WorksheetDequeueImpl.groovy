@@ -7,12 +7,8 @@ class WorksheetDequeueImpl implements Worksheet {
 
     static ConcurrentLinkedDeque<Worksheet> worksheets = new ConcurrentLinkedDeque<Worksheet>()
     static defaultMasterWorksheet = new WorksheetDequeueImpl ("--Default Worksheet--")
-    static {
-        worksheets.add(defaultMasterWorksheet)
-    }
 
-
-    private Optional<String> name
+    private Optional<String> name = Optional.empty()
     private ConcurrentLinkedDeque<Table> tables = new ConcurrentLinkedDeque<Table>()
 
     /**
@@ -24,7 +20,9 @@ class WorksheetDequeueImpl implements Worksheet {
             this.name = Optional.of (name)
         }
 
-        worksheets.add(this)
+        if ( !worksheets.contains(this) ) {
+            worksheets.add(this)
+        }
         this
     }
 
@@ -64,7 +62,7 @@ class WorksheetDequeueImpl implements Worksheet {
     void delete () {
         removeWorksheet(this)
         tables = null
-        name = Optional.of("--deleted--")
+        name = Optional.of("--Deleted Worksheet--")
     }
 
     void setName (final String name) {
@@ -72,7 +70,7 @@ class WorksheetDequeueImpl implements Worksheet {
     }
 
     String getName () {
-        name.orElse("--Unnamed Worksheet--")
+        name.orElse("--UnNamed Worksheet--")
     }
 
     List<Table> getTables() {
@@ -80,13 +78,14 @@ class WorksheetDequeueImpl implements Worksheet {
     }
 
     void addTable (Table table) {
-        tables.add(table)
         table.linkWorksheet(this)
+        if (!tables.contains(table))
+            tables.add(table)
     }
 
     boolean deleteTable (Table table) {
-        tables.remove(table)
         table.unlinkWorksheet ()
+        tables.remove(table)
     }
 
     Optional<Table> findTable (String name) {

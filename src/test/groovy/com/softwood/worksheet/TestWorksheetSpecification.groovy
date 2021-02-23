@@ -7,24 +7,30 @@ class TestWorksheetSpecification extends Specification {
     def "new worksheet " () {
         given:
         Worksheet ws = new WorksheetDequeueImpl()
+        Collection wsl = ws.worksheets
         Table table = new TableHashMapImpl()
 
         when:
+        wsl = ws.worksheets
+        def initialName = ws.name
         ws.addTable(table)
         ws.name = "worksheet 1"
+        wsl = ws.worksheets
 
         then:
+        initialName == "--UnNamed Worksheet--"
         ws.stream().count() == 1
         ws.name == "worksheet 1"
-        ws.worksheets.size() == 2 //default + this one 
+        ws.worksheets.size() == 2 //default + this one
         ws.defaultWorksheet.name == "--Default Worksheet--"
 
         and:
         //detach this worksheet from master static list
-        ws.removeWorksheet(ws)
+        ws.delete()
 
         then:
-        ws.worksheets.size() == 0
+        ws.worksheets.size() == 1
+        ws.name == "--Deleted Worksheet--"
 
     }
 

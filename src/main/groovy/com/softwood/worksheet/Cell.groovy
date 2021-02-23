@@ -11,7 +11,7 @@ import groovy.transform.MapConstructor
 @MapConstructor
 @EqualsAndHashCode (includeFields = true)
 class Cell {
-    private Optional<String> name = Optional.ofNullable(null)
+    private Optional<String> name = Optional.empty()
     private CoOrdinate cellReference
     def value
 

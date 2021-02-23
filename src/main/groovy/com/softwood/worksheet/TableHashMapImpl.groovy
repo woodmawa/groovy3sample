@@ -10,13 +10,13 @@ import static java.util.stream.Collectors.*
  * table is named block of cells in a grid.  cells are stored in a map
  * a cell instance can be indexed by its CoOrdinate
  */
-@EqualsAndHashCode
+@EqualsAndHashCode (includeFields = true)
 class TableHashMapImpl implements Table {
 
-    private Optional<String> name
+    private Optional<String> name = Optional.empty()
     private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
     private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
-    private Optional<Worksheet> worksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
+    private Optional<Worksheet> currentWorksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
 
     //look at jigsaw table to help here
     private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
@@ -26,7 +26,7 @@ class TableHashMapImpl implements Table {
     TableHashMapImpl () {super()}
 
 
-    /*TableHashMapImpl (List<Cell> cellList) {
+    TableHashMapImpl (List<Cell> cellList) {
 
         assert cellList
         cellList.stream().forEach ({ cell ->
@@ -35,17 +35,17 @@ class TableHashMapImpl implements Table {
             cellsGrid.add(cell.coOrdinate, cell)
         })
         this
-    }*/
+    }
 
     /**
      * overide the default worksheet assignment
      */
     void setWorksheet (Worksheet ws) {
-        worksheet = Optional.ofNullable(ws)
+        currentWorksheet = Optional.ofNullable(ws)
     }
 
     Optional<Worksheet> getWorksheet () {
-        worksheet
+        currentWorksheet
     }
 
     void clearError() {hasError = false}
@@ -311,10 +311,14 @@ class TableHashMapImpl implements Table {
     }
 
     void unlinkWorksheet() {
-        worksheet = Optional.of (null)
+        currentWorksheet = Optional.of (null)
     }
 
     Stream<Cell> stream () {
         cellsGrid.values().stream()
+    }
+
+    String toString() {
+        "Table ($name)"
     }
 }
