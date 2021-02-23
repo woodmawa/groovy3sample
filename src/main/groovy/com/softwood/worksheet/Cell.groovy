@@ -34,7 +34,7 @@ class Cell {
     }
 
     Cell (final long x_col_index, final long y_row_index, final long z_index = 0, def value){
-        CoOrdinate cellRef = new CoOrdinate(x_col_index, y_row_index )
+        CoOrdinate cellRef = new CoOrdinate(x_col_index, y_row_index, z_index )
         this.cellReference = cellRef
         this.value = value
     }
