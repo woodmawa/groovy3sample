@@ -76,12 +76,11 @@ class Cell {
      * @param update value to save on cell
      */
     void updateValue (final update) {
-        this.firePropertyChange("value", this.value, update)
-        value = update
+        this.firePropertyChange("value", this.value, value = update)
     }
 
     void setValue (final value) {
-        this.value = value
+        this.firePropertyChange("value", value ?: Optional.empty(), this.value = value)
     }
 
     def getValue (final value) {

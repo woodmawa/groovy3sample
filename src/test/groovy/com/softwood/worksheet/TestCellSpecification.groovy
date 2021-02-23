@@ -15,8 +15,8 @@ class TestCellSpecification extends Specification {
         PropertyChangeEvent pce
         PropertyChangeListener l = { event -> pce = event}
         cell.addCellValueListener(  l )
-        cell.updateValue(10)
         List<PropertyChangeListener> listeners = cell.getCellValueListenersList()
+        cell.updateValue(10)
 
         then:
         cell.getPropertyChangeListeners().size() == 1
@@ -24,5 +24,15 @@ class TestCellSpecification extends Specification {
         pce.oldValue == "orig text"
         pce.newValue == 10
         cell.value == 10
+
+        and:
+        cell.setValue(100)
+        
+        then:
+        pce.oldValue == 10
+        pce.newValue == 100
+        cell.value == 100
+
+
     }
 }
