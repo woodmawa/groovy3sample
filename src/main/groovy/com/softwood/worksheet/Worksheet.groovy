@@ -7,6 +7,7 @@ interface Worksheet {
     String getName ()
     void addTable (Table table)
     boolean deleteTable (Table table)
+    boolean removeTable (Table table)
     Optional<Table> findTable (String name)
     List<Table> getTables()
     Stream<Table> streamOfTables()

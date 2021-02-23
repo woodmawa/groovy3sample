@@ -78,9 +78,27 @@ class WorksheetDequeueImpl implements Worksheet {
     }
 
     void addTable (Table table) {
-        table.linkWorksheet(this)
+        Optional<Worksheet> tableWorksheet = table?.worksheet
+        tableWorksheet.ifPresent({ tableCurrentWorksheet ->
+            if (this != tableCurrentWorksheet) {
+                //adding a table to another worksheet
+                tableCurrentWorksheet.removeTable(table)
+            }
+        })
+
+
+        //set tables worksheet to this worksheet
+        table.setWorksheet(this)
+
+        //if this table is not in this worksheets list of tables, add it
         if (!tables?.contains(table))
             tables?.add(table)
+
+    }
+
+    boolean removeTable (Table table) {
+        table.unlinkWorksheet ()
+        tables?.remove(table)
     }
 
     boolean deleteTable (Table table) {

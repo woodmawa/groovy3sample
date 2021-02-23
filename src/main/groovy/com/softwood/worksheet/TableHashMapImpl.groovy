@@ -41,6 +41,11 @@ class TableHashMapImpl implements Table {
      * overide the default worksheet assignment
      */
     void setWorksheet (Worksheet ws) {
+        currentWorksheet.ifPresent (wsheet -> wsheet.removeTable(this))    //unlink from loosing worksheet list of tables
+        /*if (ws) {
+            ws.addTable(this)
+        }*/
+
         currentWorksheet = Optional.ofNullable(ws)
     }
 
@@ -311,7 +316,7 @@ class TableHashMapImpl implements Table {
     }
 
     void unlinkWorksheet() {
-        currentWorksheet = Optional.of (null)
+        currentWorksheet = Optional.empty()
     }
 
     Stream<Cell> stream () {

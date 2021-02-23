@@ -51,4 +51,42 @@ class TestWorksheetSpecification extends Specification {
         opt.get() == table
         ws.tables[0] == table
     }
+
+    def "move table between two worksheets" () {
+        given:
+        Worksheet ws1 = new WorksheetDequeueImpl("worksheet 1")
+        Worksheet ws2 = new WorksheetDequeueImpl("worksheet 2")
+        Table table = new TableHashMapImpl()
+        table.name = "myTable"
+
+        when:
+        ws1.addTable(table)          //assign table from default to the ws
+        Worksheet defaultWS = WorksheetDequeueImpl.defaultMasterWorksheet
+        List defaultTables = defaultWS.tables
+
+        Optional<Table> opt = ws1.findTable("myTable")
+
+        then:
+        defaultTables.size() == 0
+        ws1.streamOfTables().count() == 1    //confirm only one table in ws
+        ws1.name == "worksheet 1"
+        opt.isPresent()
+        opt.get().name == "myTable"
+        opt.get() == table
+        ws1.tables[0] == table
+
+        when:
+        ws2.addTable(table)
+        Optional<Table> opt2 = ws2.findTable("myTable")
+
+
+        then:
+        ws2.streamOfTables().count() == 1
+        opt2.isPresent()
+        opt2.get().name == "myTable"
+        ws2.tables[0] == table
+
+        ws1.tables.size() == 0
+
+    }
 }
