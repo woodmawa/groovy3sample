@@ -27,11 +27,25 @@ class TestCellSpecification extends Specification {
 
         and:
         cell.setValue(100)
-        
+
         then:
         pce.oldValue == 10
         pce.newValue == 100
         cell.value == 100
+
+
+    }
+
+    def "test cell calculation " () {
+        given:
+        Cell cell = new Cell ([0,0], "orig text")
+        cell.function = {"hello there with $it"}
+
+        when:
+        def result = cell.evaluate([1,2,3])
+
+        then:
+        result == "hello there with [1, 2, 3]"
 
 
     }

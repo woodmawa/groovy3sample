@@ -17,10 +17,10 @@ class Cell {
     private Optional<String> name = Optional.empty()
     private CoOrdinate cellReference
     static String BLANK_STRING = ""
+    private Closure function = {args -> }  //null function
 
     //sends property change events to subscribers on cell values
     @Bindable def value
-    Closure function = {args -> }
 
     Cell (CoOrdinate cellReference, def value){
         this.cellReference = cellReference
@@ -87,7 +87,9 @@ class Cell {
         value
     }
 
-    def calculate (List args) {
+    def setFunction (Closure fnc) {function = fnc }
+
+    def evaluate (List args) {
         function.call (args)
     }
 
