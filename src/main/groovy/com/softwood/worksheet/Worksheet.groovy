@@ -9,7 +9,7 @@ interface Worksheet {
     boolean deleteTable (Table table)
     Optional<Table> findTable (String name)
     List<Table> getTables()
-    Stream<Table> stream()
+    Stream<Table> streamOfTables()
     void delete ()
     Worksheet getDefaultWorksheet()
     Collection<Worksheet> getWorksheets ()

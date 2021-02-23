@@ -61,7 +61,7 @@ class WorksheetDequeueImpl implements Worksheet {
      */
     void delete () {
         removeWorksheet(this)
-        tables.clear()
+        tables?.clear()
         name = Optional.of("--Deleted Worksheet--")
     }
 
@@ -74,26 +74,26 @@ class WorksheetDequeueImpl implements Worksheet {
     }
 
     List<Table> getTables() {
-        tables.asList().asImmutable()
+        tables?.asList().asImmutable()
     }
 
     void addTable (Table table) {
         table.linkWorksheet(this)
-        if (!tables.contains(table))
-            tables.add(table)
+        if (!tables?.contains(table))
+            tables?.add(table)
     }
 
     boolean deleteTable (Table table) {
         table.unlinkWorksheet ()
-        tables.remove(table)
+        tables?.remove(table)
     }
 
     Optional<Table> findTable (String name) {
         tables?.stream().filter(table -> table?.name == name).findFirst()
     }
 
-    Stream<Table> stream() {
-        tables.stream()
+    Stream<Table> streamOfTables() {
+        tables?.stream()
     }
 
     String toString() {

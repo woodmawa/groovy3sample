@@ -34,20 +34,20 @@ class TestWorksheetSpecification extends Specification {
 
     }
 
-    def "add named worksheet " () {
+    def "add named table to new worksheet" () {
         given:
         Worksheet ws = new WorksheetDequeueImpl()
         Table table = new TableHashMapImpl()
         table.name = "myTable"
 
         when:
-        ws.addTable(table)
-        ws.name = "worksheet 2"
+        ws.name = "worksheet 2"     //name the ws
+        ws.addTable(table)          //add the table
 
         Optional<Table> opt = ws.findTable("myTable")
 
         then:
-        ws.stream().count() == 1
+        ws.streamOfTables().count() == 1    //confirm only one table in ws
         ws.name == "worksheet 2"
         opt.isPresent()
         opt.get().name == "myTable"
