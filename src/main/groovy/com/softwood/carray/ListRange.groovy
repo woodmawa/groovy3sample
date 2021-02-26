@@ -83,6 +83,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
         return value
     }
 
+    @Override
     public int size() {
         if (size == -1) {
             if ((from instanceof Integer || from instanceof Long)
@@ -105,33 +106,44 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 size = sizeNum.intValue()
             } else if (from instanceof ComparableArrayList || to instanceof ComparableArrayList) {
                 //calculate the number of entries in the range between the list start and end
-                ArrayList upper = to.getElements() [-1] as ArrayList
-                ArrayList lower = from.getElements() [0] as ArrayList
-                int upperBoundOfRows = upper[1]
-                int lowerBoundOfColumns = lower[0]
-                int numberOfColumns = (upper[0] - lower[0]) + 1
-                int numberOfRows = (upper[1] - lower[1]) + 1
-                size = (numberOfColumns*numberOfRows)
+                def upper = to.getElements() [-1]
+                def lower = from.getElements() [0]
+                if (upper instanceof ArrayList && lower instanceof ArrayList ) {
+                    int upperBoundOfRows = upper[1]
+                    int lowerBoundOfColumns = lower[0]
+                    int numberOfColumns = (upper[0] - lower[0]) + 1
+                    int numberOfRows = (upper[1] - lower[1]) + 1
+                    size = (numberOfColumns * numberOfRows)
+                } else if (upper instanceof Number && lower instanceof Number) {
+                    size = (upper - lower) + 1
+                } else {
+                    size = lazySizeCalculator ()
+                }
             }
             else {
                 // let's lazily calculate the size
-                size = 0;
-                Comparable first = from;
-                Comparable value = from;
-                while (compareTo(to, value) >= 0) {
-                    value = (Comparable) increment(value)
-                    size++
-                    if (compareTo(first, value) >= 0) break // handle back to beginning due to modulo incrementing
-                }
-            }
+                size = lazySizeCalculator ()
+           }
         }
-        return size;
+        return size
     }
 
+    //general comparable - calculate size by walking to point where next incremented value is >=0
+    private lazySizeCalculator () {
+        Comparable first = from;
+        Comparable value = from;
+        while (compareTo(to, value) >= 0) {
+            value = (Comparable) increment(value)
+            size++
+            if (compareTo(first, value) >= 0) break // handle back to beginning due to modulo incrementing
+        }
+    }
+
+    @Override
     public String inspect() {
-        String toText = InvokerHelper.inspect(to);
-        String fromText = InvokerHelper.inspect(from);
-        return reverse ? "" + toText + ".." + fromText : "" + fromText + ".." + toText;
+        String toText = InvokerHelper.inspect(to)
+        String fromText = InvokerHelper.inspect(from)
+        return reverse ? "" + toText + ".." + fromText : "" + fromText + ".." + toText
     }
 
     /**
@@ -140,8 +152,56 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
      * @param value the value to increment
      * @return the incremented value
      */
+    @Override
     protected Object increment(Object value) {
-        return InvokerHelper.invokeMethod(value, "next", null);
+
+        println "range increment for $value of class ${value.class}"
+
+        if (value instanceof ArrayList) {
+            def upper = ((ArrayList) super.to) [-1]
+            def lower = ((ArrayList) super.from) [0]
+            ComparableArrayList element = new ComparableArrayList()
+            if (upper instanceof ArrayList && lower instanceof ArrayList) {
+                int upperBoundOfRows = upper[1]
+                int lowerBoundOfRows = lower[1]
+
+                int upperBoundOfColumns = upper[0]
+                int lowerBoundOfColumns = lower[0]
+
+                def currentRow
+                def currentColumn
+                boolean multiArrayValue = false
+                if (value[0] instanceof ArrayList) {
+                    currentRow = value[0][1]
+                    currentColumn = value[0][0]
+                    multiArrayValue = true
+                } else if (value[0] instanceof Number) {
+                    currentRow = value[1]
+                    currentColumn = value[0]
+
+                    //todo - can this happen ?
+                }
+                if (multiArrayValue) {
+                    if (currentRow + 1 <= upperBoundOfRows) {
+                        element.add([[currentColumn, currentRow + 1]])
+                    } else if (currentColumn + 1 <= upperBoundOfColumns) {
+                        element.add([[currentColumn + 1, lowerBoundOfRows]])
+                    } else {
+                        element.add([[]])
+                    }
+                } else {
+                    if (currentRow + 1 <= upperBoundOfRows) {
+                        element.add([currentColumn, currentRow + 1])
+                    } else if (currentColumn + 1 <= upperBoundOfColumns) {
+                        element.add([currentColumn + 1, lowerBoundOfRows])
+                    } else {
+                        element.add([])
+                    }
+                }
+                return element
+            }
+        } else
+            return InvokerHelper.invokeMethod(value, "next", null)
     }
 
     /**
@@ -150,9 +210,13 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
      * @param value the value to decrement
      * @return the decremented value
      */
+    @Override
     protected Object decrement(Object value) {
-        return InvokerHelper.invokeMethod(value, "previous", null);
+        return InvokerHelper.invokeMethod(value, "previous", null)
     }
 
-
+    @Override
+    public String toString() {
+        return reverse ? "" + to + ".." + from : "" + from + ".." + to
+    }
 }

@@ -27,6 +27,8 @@ ComparableArrayList grid = [
 grid.name = "grid"
 println "grid elements : " + grid.elements
 
+def sizeOfGrid = grid.size()
+
 ComparableArrayList ca4 = new ComparableArrayList<>([[1,1]])
 ca4.name = "ca4"
 ComparableArrayList ca5 = new ComparableArrayList<>([[2,3]])
@@ -35,6 +37,7 @@ ca4.name = "ca5"
 println "ca 4: "+ ca4
 println "ca 5: " + ca5
 
+def sizeOfCa5  = ca5.size()
 
 ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
 
