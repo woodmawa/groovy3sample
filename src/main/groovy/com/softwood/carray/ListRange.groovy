@@ -177,8 +177,8 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                     currentColumn = value[0][0]
                     multiArrayValue = true
                 } else if (value[0] instanceof Number) {
-                    currentRow = value[1]
-                    currentColumn = value[0]
+                    currentRow = value[1] as int
+                    currentColumn = value[0] as int
 
                     //todo - can this happen ?
                 }
