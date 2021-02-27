@@ -15,7 +15,7 @@ assert ca1.compareTo(ca1) == 0
 assert ca2.compareTo(ca3) == -1
 
 def iter = ca1.iterator()
-println "ca1 elements : " + ca1.elements
+println "\t>> ca1 elements : " + ca1.elements
 
 ComparableArrayList grid = [
         [0,0], [0,1], [0,2], [0,3],
@@ -25,17 +25,17 @@ ComparableArrayList grid = [
 ]
 
 grid.name = "grid"
-println "grid elements : " + grid.elements
+println "\t>> grid elements : " + grid.elements
 
 def sizeOfGrid = grid.size()
 
-ComparableArrayList ca4 = new ComparableArrayList<>([[1,1]])
+ComparableArrayList ca4 = new ComparableArrayList<>([1,1])
 ca4.name = "ca4"
-ComparableArrayList ca5 = new ComparableArrayList<>([[2,3]])
+ComparableArrayList ca5 = new ComparableArrayList<>([2,3])
 ca4.name = "ca5"
 
-println "ca 4: "+ ca4
-println "ca 5: " + ca5
+println "\t>> ca 4: "+ ca4
+println "\t>> ca 5: " + ca5
 
 def sizeOfCa5  = ca5.size()
 
@@ -46,7 +46,7 @@ ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
 def start = range.from
 def end =  range.to
 
-println "start : $start to end $end"
+println "\t>> start : $start to end $end"
 println range.inspect()
 
 def size = range.size()
@@ -54,7 +54,7 @@ def size = range.size()
 def first = range.get(0)
 def second = range.get(1)
 
-println range.dump()
+//println range.dump()
 
 
 //List l = range.step(1)

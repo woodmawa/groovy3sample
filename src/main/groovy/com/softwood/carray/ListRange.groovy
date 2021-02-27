@@ -2,6 +2,7 @@ package com.softwood.carray
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
+import groovy.transform.ToString
 import org.codehaus.groovy.runtime.InvokerHelper
 
 @InheritConstructors
@@ -29,45 +30,45 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
     }
 
     //returns new anonymous inner class morphed to Iterator
-    public Iterator iterator() {
+    Iterator iterator() {
         return new Iterator() {
-            private int index;
-            private Object value = reverse ? to : from;
+            private int index
+            private Object value = reverse ? to : from
 
-            public boolean hasNext() {
-                return index < size();
+            boolean hasNext() {
+                return index < size()
             }
 
-            public Object next() {
+            Object next() {
                 if (index++ > 0) {
                     if (index > size()) {
-                        value = null;
+                        value = null
                     } else {
                         if (reverse) {
-                            value = decrement(value);
+                            value = decrement(value)
                         } else {
-                            value = increment(value);
+                            value = increment(value)
                         }
                     }
                 }
-                return value;
+                return value
             }
 
-            public void remove() {
-                ListRange.this.remove(index);
+            void remove() {
+                ListRange.this.remove(index)
             }
         }
     }
 
     @ Override
-    public Comparable get(int index) {
+    Comparable get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + " should not be negative")
         }
         if (index >= size()) {
             throw new IndexOutOfBoundsException("Index: " + index + " is too big for range: " + this)
         }
-        Object value;
+        Object value
         if (reverse) {
             value = to
 
@@ -75,16 +76,16 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 value = decrement(value)
             }
         } else {
-            value = from;
+            value = from
             for (int i = 0; i < index; i++) {
                 value = increment(value)
             }
         }
-        return value
+        return value as Comparable
     }
 
     @Override
-    public int size() {
+    int size() {
         if (size == -1) {
             if ((from instanceof Integer || from instanceof Long)
                     && (to instanceof Integer || to instanceof Long)) {
@@ -94,7 +95,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 size = (int) (toNum - fromNum + 1)
             } else if (from instanceof Character && to instanceof Character) {
                 // let's fast calculate the size
-                char fromNum = (Character) from;
+                char fromNum = (Character) from
                 char toNum = (Character) to
                 size = toNum - fromNum + 1
             } else if (from instanceof BigDecimal || to instanceof BigDecimal ||
@@ -109,8 +110,8 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 def upper = to.getElements() [-1]
                 def lower = from.getElements() [0]
                 if (upper instanceof ArrayList && lower instanceof ArrayList ) {
-                    int upperBoundOfRows = upper[1]
-                    int lowerBoundOfColumns = lower[0]
+                    int upperBoundOfRows = upper[1] as int
+                    int lowerBoundOfColumns = lower[0] as int
                     int numberOfColumns = (upper[0] - lower[0]) + 1
                     int numberOfRows = (upper[1] - lower[1]) + 1
                     size = (numberOfColumns * numberOfRows)
@@ -129,9 +130,9 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
     }
 
     //general comparable - calculate size by walking to point where next incremented value is >=0
-    private lazySizeCalculator () {
-        Comparable first = from;
-        Comparable value = from;
+    private int lazySizeCalculator () {
+        Comparable first = from
+        Comparable value = from
         while (compareTo(to, value) >= 0) {
             value = (Comparable) increment(value)
             size++
@@ -140,7 +141,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
     }
 
     @Override
-    public String inspect() {
+    String inspect() {
         String toText = InvokerHelper.inspect(to)
         String fromText = InvokerHelper.inspect(from)
         return reverse ? "" + toText + ".." + fromText : "" + fromText + ".." + toText
@@ -162,14 +163,14 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
             def lower = ((ArrayList) super.from) [0]
             ComparableArrayList element = new ComparableArrayList()
             if (upper instanceof ArrayList && lower instanceof ArrayList) {
-                int upperBoundOfRows = upper[1]
-                int lowerBoundOfRows = lower[1]
+                int upperBoundOfRows = upper[1] as int
+                int lowerBoundOfRows = lower[1] as int
 
-                int upperBoundOfColumns = upper[0]
-                int lowerBoundOfColumns = lower[0]
+                int upperBoundOfColumns = upper[0] as int
+                int lowerBoundOfColumns = lower[0] as int
 
-                def currentRow
-                def currentColumn
+                int currentRow
+                int currentColumn
                 boolean multiArrayValue = false
                 if (value[0] instanceof ArrayList) {
                     currentRow = value[0][1]
@@ -216,7 +217,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
     }
 
     @Override
-    public String toString() {
+    String toString() {
         return reverse ? "" + to + ".." + from : "" + from + ".." + to
     }
 }
