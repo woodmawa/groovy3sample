@@ -158,48 +158,63 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
 
         println "range increment for $value of class ${value.class}"
 
+        /*  value might be a [[x,y]] or just [x,y] */
+        boolean nested = false
+        def upper, lower
+        if (value?[0] instanceof ArrayList){
+            upper = ((ArrayList) super.to) [-1]
+            lower = ((ArrayList) super.from) [0]
+            nested = true
+        } else {
+            upper =  super.to as ArrayList
+            lower =  super.from as ArrayList
+        }
+
+        int upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
+        upperBoundOfRows = upper[1] as int
+        lowerBoundOfRows = lower[1] as int
+
+        upperBoundOfColumns = upper[0] as int
+        lowerBoundOfColumns = lower[0] as int
+
+        ComparableArrayList element = new ComparableArrayList()
+        int currentRow, currentColumn
         if (value instanceof ArrayList) {
-            def upper = ((ArrayList) super.to) [-1]
-            def lower = ((ArrayList) super.from) [0]
-            ComparableArrayList element = new ComparableArrayList()
             if (upper instanceof ArrayList && lower instanceof ArrayList) {
-                int upperBoundOfRows = upper[1] as int
-                int lowerBoundOfRows = lower[1] as int
-
-                int upperBoundOfColumns = upper[0] as int
-                int lowerBoundOfColumns = lower[0] as int
-
-                int currentRow
-                int currentColumn
-                boolean multiArrayValue = false
-                if (value[0] instanceof ArrayList) {
+                if (nested) {
                     currentRow = value[0][1]
                     currentColumn = value[0][0]
-                    multiArrayValue = true
                 } else if (value[0] instanceof Number) {
                     currentRow = value[1] as int
                     currentColumn = value[0] as int
 
                     //todo - can this happen ?
                 }
-                if (multiArrayValue) {
-                    if (currentRow + 1 <= upperBoundOfRows) {
-                        element.add([[currentColumn, currentRow + 1]])
-                    } else if (currentColumn + 1 <= upperBoundOfColumns) {
-                        element.add([[currentColumn + 1, lowerBoundOfRows]])
-                    } else {
-                        element.add([[]])
-                    }
-                } else {
+                if (nested) {
                     if (currentRow + 1 <= upperBoundOfRows) {
                         element.add([currentColumn, currentRow + 1])
                     } else if (currentColumn + 1 <= upperBoundOfColumns) {
                         element.add([currentColumn + 1, lowerBoundOfRows])
                     } else {
-                        element.add([])
+                        element.add([[]])
+                    }
+                } else {
+                    if (currentRow + 1 <= upperBoundOfRows) {
+                        element.addAll([currentColumn, currentRow + 1])
+                    } else if (currentColumn + 1 <= upperBoundOfColumns) {
+                        element.addAll([currentColumn + 1, lowerBoundOfRows])
+                    } else {
+                        element.add()
                     }
                 }
                 return element
+            } else if (upper instanceof Number && lower instanceof Number) {
+                upperBoundOfRows = upper[1] as int
+                lowerBoundOfRows = lower[1] as int
+
+                upperBoundOfColumns = upper[0] as int
+                lowerBoundOfColumns = lower[0] as int
+
             }
         } else
             return InvokerHelper.invokeMethod(value, "next", null)
