@@ -7,7 +7,7 @@ import org.codehaus.groovy.runtime.InvokerHelper
 
 @InheritConstructors
 @EqualsAndHashCode (includeFields = true)
-class ListRange extends ObjectRange  implements Range<Comparable>{
+class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     //Object[] elements = super.toArray().sort()         //get private reference to supers elements
 
     int size = -1 //will be -1 if not computed
@@ -19,18 +19,16 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
 
     @ Override
     Comparable getFrom () {
-        def from = super.from
-        from
+        super.from
     }
 
     @ Override
     Comparable getTo () {
-        def to = super.to
-        to
+        super.to
     }
 
     //returns new anonymous inner class morphed to Iterator
-    Iterator iterator() {
+    Iterator<E> iterator() {
         return new Iterator() {
             private int index
             private Object value = reverse ? to : from
@@ -68,15 +66,23 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
         if (index >= size()) {
             throw new IndexOutOfBoundsException("Index: " + index + " is too big for range: " + this)
         }
-        Object value
+        List value
         if (reverse) {
-            value = to
+            //if nested array unpack first level and get first element
+            if (from[0] instanceof List)
+                value = from[0]
+            else
+                value = from
 
             for (int i = 0; i < index; i++) {
                 value = decrement(value)
             }
         } else {
-            value = from
+            //if nested array unpack first level and get first element
+            if (from[0] instanceof List)
+                value = from[0]
+            else
+                value = from
             for (int i = 0; i < index; i++) {
                 value = increment(value)
             }
@@ -86,6 +92,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
 
     @Override
     int size() {
+
         if (size == -1) {
             if ((from instanceof Integer || from instanceof Long)
                     && (to instanceof Integer || to instanceof Long)) {
@@ -107,15 +114,28 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 size = sizeNum.intValue()
             } else if (from instanceof ComparableArrayList || to instanceof ComparableArrayList) {
                 //calculate the number of entries in the range between the list start and end
-                def upper = to.getElements() [-1]
-                def lower = from.getElements() [0]
+                boolean nested = false
+                def upper, lower
+                if (from?[0] instanceof ArrayList) {
+                    //its nested array  of array so get last and first entries
+                    upper = to.getElements() [-1]
+                    lower = from.getElements() [0]
+                    nested = true
+                } else {
+                    //not nested so just get the entry as an array directly
+                    upper = to.getElements() as ArrayList
+                    lower = from.getElements() as ArrayList
+                }
                 if (upper instanceof ArrayList && lower instanceof ArrayList ) {
                     int upperBoundOfRows = upper[1] as int
+                    int lowerBoundOfRows = lower[1] as int
+                    int upperBoundOfColumns = upper[0] as int
                     int lowerBoundOfColumns = lower[0] as int
-                    int numberOfColumns = (upper[0] - lower[0]) + 1
-                    int numberOfRows = (upper[1] - lower[1]) + 1
+                    int numberOfColumns = (upperBoundOfColumns - lowerBoundOfColumns) + 1
+                    int numberOfRows = (upperBoundOfRows - lowerBoundOfRows) + 1
                     size = (numberOfColumns * numberOfRows)
                 } else if (upper instanceof Number && lower instanceof Number) {
+                    //to and from are just numbers in a range
                     size = (upper - lower) + 1
                 } else {
                     size = lazySizeCalculator ()
@@ -131,6 +151,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
 
     //general comparable - calculate size by walking to point where next incremented value is >=0
     private int lazySizeCalculator () {
+        int size = 0
         Comparable first = from
         Comparable value = from
         while (compareTo(to, value) >= 0) {
@@ -138,6 +159,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
             size++
             if (compareTo(first, value) >= 0) break // handle back to beginning due to modulo incrementing
         }
+        size
     }
 
     @Override
@@ -170,6 +192,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
             lower =  super.from as ArrayList
         }
 
+        int currentRow, currentColumn
         int upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
         upperBoundOfRows = upper[1] as int
         lowerBoundOfRows = lower[1] as int
@@ -178,7 +201,7 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
         lowerBoundOfColumns = lower[0] as int
 
         ComparableArrayList element = new ComparableArrayList()
-        int currentRow, currentColumn
+
         if (value instanceof ArrayList) {
             if (upper instanceof ArrayList && lower instanceof ArrayList) {
                 if (nested) {
@@ -187,8 +210,6 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 } else if (value[0] instanceof Number) {
                     currentRow = value[1] as int
                     currentColumn = value[0] as int
-
-                    //todo - can this happen ?
                 }
                 if (nested) {
                     if (currentRow + 1 <= upperBoundOfRows) {
@@ -209,14 +230,21 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
                 }
                 return element
             } else if (upper instanceof Number && lower instanceof Number) {
+                def currentValue = value as int
+                def incrementedValue = currentValue + 1
                 upperBoundOfRows = upper[1] as int
                 lowerBoundOfRows = lower[1] as int
 
                 upperBoundOfColumns = upper[0] as int
                 lowerBoundOfColumns = lower[0] as int
 
+                //todo - need to think about how to handle this
+                element.add(incrementedValue)
+                return element
+
             }
         } else
+            //todo - cant call next on value, have to use an iterator
             return InvokerHelper.invokeMethod(value, "next", null)
     }
 
@@ -228,7 +256,75 @@ class ListRange extends ObjectRange  implements Range<Comparable>{
      */
     @Override
     protected Object decrement(Object value) {
-        return InvokerHelper.invokeMethod(value, "previous", null)
+
+        println "range increment for $value of class ${value.class}"
+
+        /*  value might be a [[x,y]] or just [x,y] */
+        boolean nested = false
+        def upper, lower
+        if (value?[0] instanceof ArrayList){
+            upper = ((ArrayList) super.to) [-1]
+            lower = ((ArrayList) super.from) [0]
+            nested = true
+        } else {
+            upper =  super.to as ArrayList
+            lower =  super.from as ArrayList
+        }
+
+        int currentRow, currentColumn
+        int upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
+        upperBoundOfRows = upper[1] as int
+        lowerBoundOfRows = lower[1] as int
+
+        upperBoundOfColumns = upper[0] as int
+        lowerBoundOfColumns = lower[0] as int
+
+        ComparableArrayList element = new ComparableArrayList()
+
+        if (value instanceof ArrayList) {
+            if (upper instanceof ArrayList && lower instanceof ArrayList) {
+                if (nested) {
+                    currentRow = value[0][1]
+                    currentColumn = value[0][0]
+                } else if (value[0] instanceof Number) {
+                    currentRow = value[1] as int
+                    currentColumn = value[0] as int
+                }
+                if (nested) {
+                    if (currentRow - 1 >= lowerBoundOfRows) {
+                        element.add([currentColumn, currentRow - 1])
+                    } else if (currentColumn - 1 >= lowerBoundOfColumns) {
+                        element.add([currentColumn - 1, lowerBoundOfRows])
+                    } else {
+                        element.add([[]])
+                    }
+                } else {
+                    if (currentRow - 1 >= lowerBoundOfRows) {
+                        element.addAll([currentColumn, currentRow - 1])
+                    } else if (currentColumn - 1 >= lowerBoundOfColumns) {
+                        element.addAll([currentColumn - 1, lowerBoundOfRows])
+                    } else {
+                        element.add()
+                    }
+                }
+                return element
+            } else if (upper instanceof Number && lower instanceof Number) {
+                def currentValue = value as int
+                def decrementedValue = currentValue - 1
+                upperBoundOfRows = upper[1] as int
+                lowerBoundOfRows = lower[1] as int
+
+                upperBoundOfColumns = upper[0] as int
+                lowerBoundOfColumns = lower[0] as int
+
+                //todo - need to think about how to handle this
+                element.add(decrementedValue)
+                return element
+            }
+        } else {
+            //to - cant previous on value - fix this
+            return InvokerHelper.invokeMethod(value, "previous", null)
+        }
     }
 
     @Override

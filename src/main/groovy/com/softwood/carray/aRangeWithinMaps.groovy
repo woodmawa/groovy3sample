@@ -54,6 +54,13 @@ def size = range.size()
 def first = range.get(0)
 def second = range.get(1)
 
+ iter = range.iterator()
+
+println "\t>> try loop through range "
+while (iter.hasNext()){
+    println iter.next()
+}
+println "\t>> loop completed "
 //println range.dump()
 
 
@@ -62,4 +69,4 @@ def second = range.get(1)
 //def iter = range.iterator()
 
 println grid + " with class " +grid.class
-println range + " with class " + range.class + " and size " + range.size()
+println range + "  with class " + range.class + " and size " + range.size()
