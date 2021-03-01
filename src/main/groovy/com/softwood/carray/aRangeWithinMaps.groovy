@@ -58,11 +58,9 @@ def second = range.get(1)
 
 println "\t>> try loop through range "
 while (iter.hasNext()){
-    println iter.next()
+    print iter.next()
 }
-println "\t>> loop completed "
-//println range.dump()
-
+println "\n\t>> loop completed "
 
 //List l = range.step(1)
 
@@ -70,6 +68,7 @@ println "\t>> loop completed "
 
 println "\t>> grid toString(): " + grid.toString()
 println "\t>> grid: " + grid        //doesnt invoke tostring - semms to calll ? to get a dump
-println "\t>> grid dump(): " + grid.dump()
+//println "\t>> grid dump(): " + grid.dump()  //causes reflection warning
+
 print "\t>> range : " +range
 println "  with class " + range.class + " and size " + range.size()
