@@ -32,7 +32,7 @@ def sizeOfGrid = grid.size()
 ComparableArrayList ca4 = new ComparableArrayList<>([1,1])
 ca4.name = "ca4"
 ComparableArrayList ca5 = new ComparableArrayList<>([2,3])
-ca4.name = "ca5"
+ca5.name = "ca5"
 
 println "\t>> ca 4: "+ ca4
 println "\t>> ca 5: " + ca5
@@ -47,7 +47,7 @@ def start = range.from
 def end =  range.to
 
 println "\t>> start : $start to end $end"
-println range.inspect()
+println "\t>> inspect() : "+ range.inspect()
 
 def size = range.size()
 
@@ -68,5 +68,8 @@ println "\t>> loop completed "
 
 //def iter = range.iterator()
 
-println grid + " with class " +grid.class
-println range + "  with class " + range.class + " and size " + range.size()
+println "\t>> grid toString(): " + grid.toString()
+println "\t>> grid: " + grid        //doesnt invoke tostring - semms to calll ? to get a dump
+println "\t>> grid dump(): " + grid.dump()
+print "\t>> range : " +range
+println "  with class " + range.class + " and size " + range.size()

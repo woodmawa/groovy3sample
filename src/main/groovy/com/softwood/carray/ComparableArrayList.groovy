@@ -1,14 +1,15 @@
 package com.softwood.carray
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
 
 @InheritConstructors
+@EqualsAndHashCode(includeFields = true)
 class ComparableArrayList<E> extends ArrayList implements Comparable {
 
     String name
 
     ComparableArrayList (List args) {
-        println "ComparableArrayList constructor called with list "
         super.addAll(args)
         this
     }
@@ -67,7 +68,6 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
 
     @Override
     Iterator<E> iterator() {
-        println "iterator() called to get a new Iterator"
         return new ArrayListIterator()
     }
 
@@ -98,7 +98,6 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
             if (!hasNext()) throw new java.util.NoSuchElementException()
 
             def elem = elements[current]
-            println "next() was called at index ($current) and about to return (${elements[current]})"
             current++
 
             return elem
@@ -109,7 +108,10 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
         }
     }
 
+
+    @Override
     String toString() {
-        "ComparableArrayList (${name ?: "--unnamed--"}) (starts at $elements[0])"
+        def firstElement = elements[0]
+        "ComparableArrayList ${name ? "(name: $name)" : "(--unnamed--)"} size:${size()} (starts at $firstElement)"
     }
 }

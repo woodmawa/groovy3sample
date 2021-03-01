@@ -29,17 +29,19 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     //returns new anonymous inner class morphed to Iterator
     Iterator<E> iterator() {
-        return new Iterator() {
+        def iter = new Iterator() {
             private int index
             private Object value = reverse ? to : from
+            private ListRange parent = ListRange.this  //get the containing class instance
+
 
             boolean hasNext() {
-                return index < size()
+                return index < parent.size()
             }
 
             Object next() {
                 if (index++ > 0) {
-                    if (index > size()) {
+                    if (index > parent.size()) {
                         value = null
                     } else {
                         if (reverse) {
@@ -56,6 +58,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                 ListRange.this.remove(index)
             }
         }
+        return iter
     }
 
     @ Override
@@ -162,13 +165,6 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         size
     }
 
-    @Override
-    String inspect() {
-        String toText = InvokerHelper.inspect(to)
-        String fromText = InvokerHelper.inspect(from)
-        return reverse ? "" + toText + ".." + fromText : "" + fromText + ".." + toText
-    }
-
     /**
      * Increments by one
      *
@@ -177,9 +173,6 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
      */
     @Override
     protected Object increment(Object value) {
-
-        println "range increment for $value of class ${value.class}"
-
         /*  value might be a [[x,y]] or just [x,y] */
         boolean nested = false
         def upper, lower
@@ -256,9 +249,6 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
      */
     @Override
     protected Object decrement(Object value) {
-
-        println "range increment for $value of class ${value.class}"
-
         /*  value might be a [[x,y]] or just [x,y] */
         boolean nested = false
         def upper, lower
@@ -325,6 +315,13 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             //to - cant previous on value - fix this
             return InvokerHelper.invokeMethod(value, "previous", null)
         }
+    }
+
+    @Override
+    String inspect() {
+        String toText = InvokerHelper.inspect(to)
+        String fromText = InvokerHelper.inspect(from)
+        return reverse ? "new ListRange (from, to) -- " + toText + ".." + fromText: "new ListRange (from, to) -- " + fromText + ".." + toText
     }
 
     @Override
