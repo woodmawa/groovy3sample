@@ -41,7 +41,8 @@ def sizeOfCa5  = ca5.size()
 
 ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
 
-
+ListRange sublist = range.subList(2,4)
+println "\t>> sublist : " + sublist
 
 def start = range.from
 def end =  range.to

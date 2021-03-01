@@ -19,7 +19,8 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     }
 
     ListRange (ComparableArrayList from, ComparableArrayList to, boolean reverse){
-        super(from, to, (Boolean) reverse)
+        super(from, to)
+        this.reverse(true)
         this
     }
 
@@ -320,7 +321,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             toValue = iter.next()
         }
 
-        return new ObjectRange(fromValue, toValue, reverse)
+        return new ListRange(fromValue, toValue, reverse)
     }
 
 
