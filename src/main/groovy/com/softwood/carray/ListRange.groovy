@@ -13,8 +13,13 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     int size = -1 //will be -1 if not computed
 
-    ListRange (ComparableArrayList from, ComparableArrayList to, Boolean reverse=false){
-        super(from, to, reverse)
+    ListRange (ComparableArrayList from, ComparableArrayList to){
+        super(from, to)
+        this
+    }
+
+    ListRange (ComparableArrayList from, ComparableArrayList to, boolean reverse){
+        super(from, to, (Boolean) reverse)
         this
     }
 
