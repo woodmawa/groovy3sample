@@ -24,14 +24,10 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     }
 
     @ Override
-    Comparable getFrom () {
-        super.from
-    }
+    Comparable getFrom () { super.from }
 
     @ Override
-    Comparable getTo () {
-        super.to
-    }
+    Comparable getTo () { super.to }
 
     //use protected checkBoundaryCompatibility () from ObjectRange parent
     //https://github.com/apache/groovy/blob/master/src/main/java/groovy/lang/ObjectRange.java
