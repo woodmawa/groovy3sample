@@ -57,9 +57,9 @@ def second = range.get(1)
 
  iter = range.iterator()
 
-println "\t>> try loop through range "
+print "\t>> try loop through range \n\t\t"
 while (iter.hasNext()){
-    print iter.next()
+    print "${iter.next()}"
 }
 println "\n\t>> loop completed "
 
