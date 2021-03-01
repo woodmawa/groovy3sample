@@ -2,7 +2,6 @@ package com.softwood.carray
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
-import groovy.transform.ToString
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.IteratorClosureAdapter
 import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
@@ -79,7 +78,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
         private StepIterator(ObjectRange range, final int desiredStep) {
             if (desiredStep == 0 && range.compareTo(range.getFrom(), range.getTo()) != 0) {
-                throw new GroovyRuntimeException("Infinite loop detected due to step size of 0");
+                throw new GroovyRuntimeException("Infinite loop detected due to step size of 0")
             }
             this.range = range
             if (range.isReverse()) {
@@ -95,12 +94,12 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         }
 
         @Override
-        public void remove() {
+        void remove() {
             range.remove(index)
         }
 
         @Override
-        public Comparable next() {
+        Comparable next() {
             // not thread safe
             if (!hasNext()) {
                 throw new NoSuchElementException()
@@ -111,7 +110,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         }
 
         @Override
-        public boolean hasNext() {
+        boolean hasNext() {
             // not thread safe
             if (!nextFetched) {
                 value = peek()
@@ -135,7 +134,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                 final int positiveStep = -step
                 Comparable peekValue = value
                 for (int i = 0; i < positiveStep; i++) {
-                    peekValue = (Comparable) range.decrement(peekValue);
+                    peekValue = (Comparable) range.decrement(peekValue)
                     // handle back to beginning due to modulo decrementing
                     if (range.compareTo(peekValue, range.to) >= 0) return null
                 }
@@ -156,7 +155,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         if (index >= size()) {
             throw new IndexOutOfBoundsException("Index: " + index + " is too big for range: " + this)
         }
-        List value
+        Object value
         if (reverse) {
             //if nested array unpack first level and get first element
             if (from[0] instanceof List)
@@ -209,13 +208,11 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                 size = sizeNum.intValue()
             } else if (from instanceof ComparableArrayList || to instanceof ComparableArrayList) {
                 //calculate the number of entries in the range between the list start and end
-                boolean nested = false
                 def upper, lower
                 if (from?[0] instanceof ArrayList) {
                     //its nested array  of array so get last and first entries
                     upper = to.getElements() [-1]
                     lower = from.getElements() [0]
-                    nested = true
                 } else {
                     //not nested so just get the entry as an array directly
                     upper = to.getElements() as ArrayList
@@ -252,12 +249,12 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         final iter = iterator()
 
         while (iter.hasNext()) {
-            tempsize++;
+            tempsize++
             // integer overflow
             if (tempsize < 0) {
-                break;
+                break
             }
-            iter.next();
+            iter.next()
         }
         // integer overflow
         if (tempsize < 0) {
@@ -293,13 +290,13 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     @Override
     List<Comparable> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0) {
-            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex)
         }
         if (fromIndex > toIndex) {
-            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")")
         }
         if (fromIndex == toIndex) {
-            return new EmptyRange<Comparable>(from);
+            return new EmptyRange<Comparable>(from)
         }
 
         // Performance detail:
@@ -307,22 +304,22 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         final Iterator<Comparable> iter = new StepIterator(this, 1)
 
         Comparable toValue = iter.next();
-        int i = 0;
+        int i = 0
         for (; i < fromIndex; i++) {
             if (!iter.hasNext()) {
-                throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this);
+                throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
-            toValue = iter.next();
+            toValue = iter.next()
         }
         final Comparable fromValue = toValue;
         for (; i < toIndex - 1; i++) {
             if (!iter.hasNext()) {
-                throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this);
+                throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
-            toValue = iter.next();
+            toValue = iter.next()
         }
 
-        return new ObjectRange(fromValue, toValue, reverse);
+        return new ObjectRange(fromValue, toValue, reverse)
     }
 
 
@@ -490,7 +487,6 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                         element.add()
                     }
                 }
-                return element
             } else if (upper instanceof Number && lower instanceof Number) {
                 def currentValue = value as int
                 def decrementedValue = currentValue - 1
@@ -502,12 +498,13 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
                 //todo - need to think about how to handle this
                 element.add(decrementedValue)
-                return element
             }
         } else {
             //to - cant previous on value - fix this
             return InvokerHelper.invokeMethod(value, "previous", null)
         }
+        return element
+
     }
 
     @Override
