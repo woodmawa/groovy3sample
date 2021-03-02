@@ -7,7 +7,6 @@ import groovy.transform.MapConstructor
 @MapConstructor
 @EqualsAndHashCode (includeFields=true)  //need this to ensure unique access via the cells map
 class CellCoOrdinate implements Comparable {
-    //todo use tuple
     private long x
     private long y
     private long z
