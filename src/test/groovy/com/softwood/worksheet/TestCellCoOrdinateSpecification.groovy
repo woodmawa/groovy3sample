@@ -60,10 +60,19 @@ class TestCellCoOrdinateSpecification extends Specification {
         when:
         CellCoOrdinate add = cOrd1 + cOrd2
         CellCoOrdinate minus = cOrd2 - cOrd1
+        CellCoOrdinate translated = cOrd1.translate(5,5)
 
         then:
         add.getTwoDimensionalCoOrdinateAsList() == [3,3]
         minus.getTwoDimensionalCoOrdinateAsList() == [1,1]
+        translated.getTwoDimensionalCoOrdinateAsList() == [6,6]
 
+        and:
+        CellCoOrdinate reloc = cOrd1.relocate(5,5)  //relocates moves this instance to new place
+
+        then:
+        reloc.is(cOrd1)
+        !translated.is(cOrd1)
+        reloc == translated  //have same co-ord values but no the same instances
     }
 }
