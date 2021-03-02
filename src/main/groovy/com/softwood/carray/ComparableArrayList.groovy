@@ -15,7 +15,7 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
     }
 
     Object[] getElements () {
-        super.toArray()
+        super.toArray().sort()
     }
 
     @Override
@@ -54,7 +54,7 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
             def m = a[i]
             def n = b[i]
             if (m instanceof List && n instanceof List ) {
-                compareTwoEqualSizedLists (m, n)
+                return compareTwoEqualSizedLists (m, n)
             } else {
                 if (m.equals(n))
                     return 0

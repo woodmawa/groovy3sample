@@ -13,6 +13,11 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     int size = -1 //will be -1 if not computed
 
+    ListRange (ArrayList fromAL, ArrayList toAL) {
+        super (new ComparableArrayList(fromAL),  new ComparableArrayList(toAL))
+        this
+    }
+
     ListRange (ComparableArrayList from, ComparableArrayList to){
         super(from, to)
         this
@@ -410,7 +415,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                     } else if (currentColumn + 1 <= upperBoundOfColumns) {
                         element.addAll([currentColumn + 1, lowerBoundOfRows])
                     } else {
-                        element.add()
+                        element.add(null)
                     }
                 }
                 return element
