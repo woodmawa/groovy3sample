@@ -51,4 +51,19 @@ class TestCellCoOrdinateSpecification extends Specification {
         tup.equals(new Tuple(2,2,0))
 
     }
+
+    def "add and subtract locations" () {
+        given:
+        CellCoOrdinate cOrd1 = [1, 1] as CellCoOrdinate
+        CellCoOrdinate cOrd2 = [2, 2] as CellCoOrdinate
+
+        when:
+        CellCoOrdinate add = cOrd1 + cOrd2
+        CellCoOrdinate minus = cOrd2 - cOrd1
+
+        then:
+        add.getTwoDimensionalCoOrdinateAsList() == [3,3]
+        minus.getTwoDimensionalCoOrdinateAsList() == [1,1]
+
+    }
 }

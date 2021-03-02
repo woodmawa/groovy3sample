@@ -57,7 +57,7 @@ class CellCoOrdinate implements Comparable {
      * @param another
      * @return new location
      */
-    CellCoOrdinate add (CellCoOrdinate another) {
+    CellCoOrdinate plus (CellCoOrdinate another) {
         assert another
         new CellCoOrdinate(x + another.x, y + another.y, z + another.z)
     }
@@ -67,7 +67,7 @@ class CellCoOrdinate implements Comparable {
      * @param another
      * @return new location
      */
-    CellCoOrdinate subtract (CellCoOrdinate another) {
+    CellCoOrdinate minus (CellCoOrdinate another) {
         assert another
         new CellCoOrdinate(x - another.x, y - another.y, z - another.z)
     }
