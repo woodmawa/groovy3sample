@@ -68,11 +68,11 @@ class TestCellCoOrdinateSpecification extends Specification {
         translated.getTwoDimensionalCoOrdinateAsList() == [6,6]
 
         and:
-        CellCoOrdinate reloc = cOrd1.relocate(5,5)  //relocates moves this instance to new place
+        CellCoOrdinate relocated = cOrd1.relocate(5,5)  //relocates moves this instance to new place
 
         then:
-        reloc.is(cOrd1)
+        relocated.is(cOrd1)
         !translated.is(cOrd1)
-        reloc == translated  //have same co-ord values but no the same instances
+        relocated == translated  //have same co-ord values but no the same instances
     }
 }
