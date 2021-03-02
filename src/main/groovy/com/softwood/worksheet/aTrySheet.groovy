@@ -4,17 +4,17 @@ import java.util.concurrent.ConcurrentHashMap
 
 import static java.util.stream.Collectors.*;
 
-CoOrdinate origin = new CoOrdinate (0,0)
+CellCoOrdinate origin = new CellCoOrdinate (0,0)
 println origin.hashCode()
-CoOrdinate oneAndOne = new CoOrdinate (1,1)
+CellCoOrdinate oneAndOne = new CellCoOrdinate (1,1)
 println oneAndOne.hashCode()
-CoOrdinate twoAndTwo = new CoOrdinate (2,2)
-CoOrdinate again = new CoOrdinate (2,2)
+CellCoOrdinate twoAndTwo = new CellCoOrdinate (2,2)
+CellCoOrdinate again = new CellCoOrdinate (2,2)
 
 assert again == twoAndTwo
 
-Map m1 = new ConcurrentHashMap<CoOrdinate, float>([(origin): 0, (oneAndOne): 1.0])
-Map m2 = new ConcurrentHashMap<CoOrdinate, float>([(oneAndOne): 1.01, (twoAndTwo): 2.0])
+Map m1 = new ConcurrentHashMap<CellCoOrdinate, float>([(origin): 0, (oneAndOne): 1.0])
+Map m2 = new ConcurrentHashMap<CellCoOrdinate, float>([(oneAndOne): 1.01, (twoAndTwo): 2.0])
 
 Map m3 = m1.intersect(m2)
 

@@ -2,13 +2,13 @@ package com.softwood.worksheet
 
 import spock.lang.Specification
 
-class TestCoOrdinateSpecification extends Specification {
+class TestCellCoOrdinateSpecification extends Specification {
 
     def "basic Cordinate test" () {
         given:
-        CoOrdinate c1 = new CoOrdinate(0,0)
-        CoOrdinate c2 = [0,0] as CoOrdinate
-        CoOrdinate c3
+        CellCoOrdinate c1 = new CellCoOrdinate(0,0)
+        CellCoOrdinate c2 = [0, 0] as CellCoOrdinate
+        CellCoOrdinate c3
 
         when:
         c3 = c1.translate(1,1)
@@ -27,10 +27,10 @@ class TestCoOrdinateSpecification extends Specification {
 
         when:
         cell1.name = "first cell"
-        CoOrdinate cOrd = [2,2] as CoOrdinate
+        CellCoOrdinate cOrd = [2, 2] as CellCoOrdinate
 
         then:
-        cell1.cellReference == new CoOrdinate (0,0)
+        cell1.cellReference == new CellCoOrdinate (0,0)
         cell1.name == "first cell"
         cell1.valueAsText == "cell 0:0"
         [2,2]  == cOrd.twoDimensionalCoOrdinateAsList
@@ -40,7 +40,7 @@ class TestCoOrdinateSpecification extends Specification {
 
     def "as type convertion test" (){
         given:
-        CoOrdinate cOrd = [2,2] as CoOrdinate
+        CellCoOrdinate cOrd = [2, 2] as CellCoOrdinate
 
         when:
         List arr = cOrd as List

@@ -8,33 +8,33 @@ import java.beans.PropertyChangeListener
 
 /**
  * cells can be optionally named
- * CoOrdinate:value pairing
+ * CellCoOrdinate:value pairing
  *
  */
 @MapConstructor
 @EqualsAndHashCode (includeFields = true)
 class Cell {
     private Optional<String> name = Optional.empty()
-    private CoOrdinate cellReference
+    private CellCoOrdinate cellReference
     static String BLANK_STRING = ""
     private Closure function = {args -> }  //null function
 
     //sends property change events to subscribers on cell values
     @Bindable def value
 
-    Cell (CoOrdinate cellReference, def value){
+    Cell (CellCoOrdinate cellReference, def value){
         this.cellReference = cellReference
         this.value = value
     }
 
     Cell (final List array_ref, def value){
-        CoOrdinate cellRef = new CoOrdinate(array_ref)
+        CellCoOrdinate cellRef = new CellCoOrdinate(array_ref)
         this.cellReference = cellRef
         this.value = value
     }
 
     Cell (final long x_col_index, final long y_row_index, final long z_index = 0, def value){
-        CoOrdinate cellRef = new CoOrdinate(x_col_index, y_row_index, z_index )
+        CellCoOrdinate cellRef = new CellCoOrdinate(x_col_index, y_row_index, z_index )
         this.cellReference = cellRef
         this.value = value
     }
@@ -47,7 +47,7 @@ class Cell {
         name.orElse("--Unnamed Cell--")
     }
 
-    CoOrdinate getCoOrdinate () {
+    CellCoOrdinate getCoOrdinate () {
         cellReference
     }
 

@@ -8,7 +8,7 @@ import static java.util.stream.Collectors.*
 
 /**
  * table is named block of cells in a grid.  cells are stored in a map
- * a cell instance can be indexed by its CoOrdinate
+ * a cell instance can be indexed by its CellCoOrdinate
  */
 @EqualsAndHashCode (includeFields = true)
 class TableHashMapImpl implements Table {
@@ -19,7 +19,7 @@ class TableHashMapImpl implements Table {
     private Optional<Worksheet> currentWorksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
 
     //look at jigsaw table to help here
-    private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CoOrdinate, Cell>()
+    private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CellCoOrdinate, Cell>()
 
     boolean hasError = false
 
@@ -80,7 +80,7 @@ class TableHashMapImpl implements Table {
             error.call ("error couldn't find row $rowNumber", "No such Row")
     }
 
-    Map<CoOrdinate, Cell> getCellsGrid () {
+    Map<CellCoOrdinate, Cell> getCellsGrid () {
         cellsGrid.asImmutable()
     }
 
@@ -137,8 +137,8 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    private void addCellToRow (final CoOrdinate coOrd, final Cell cell) {
-        assert CoOrdinate
+    private void addCellToRow (final CellCoOrdinate coOrd, final Cell cell) {
+        assert CellCoOrdinate
         assert cell.coOrdinate
 
         long rowNumber = coOrd.y
@@ -167,7 +167,7 @@ class TableHashMapImpl implements Table {
         }
     }
 
-    private void addCellToColumn (final CoOrdinate coOrd, final Cell cell) {
+    private void addCellToColumn (final CellCoOrdinate coOrd, final Cell cell) {
         assert coOrd
         assert cell.coOrdinate
 
@@ -194,7 +194,7 @@ class TableHashMapImpl implements Table {
     }
 
     Cell setCell (final long x_col_ref, final long y_row_ref, final def value) {
-        CoOrdinate coOrdRef = new CoOrdinate(x_col_ref, y_row_ref)
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(x_col_ref, y_row_ref)
         Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
@@ -222,37 +222,37 @@ class TableHashMapImpl implements Table {
     }
 
     Cell setCell (final List<Long> aref, def value) {
-        CoOrdinate coOrdRef = new CoOrdinate(aref)
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(aref)
         Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
 
-    Cell setCell (final CoOrdinate coOrdRef, def value) {
+    Cell setCell (final CellCoOrdinate coOrdRef, def value) {
         Cell cell = new Cell (coOrdRef, value )
         setCell (cell)
     }
 
     //should this return optional<Cell>
     Cell getCell (final long x, final long y, final long z=0) {
-        CoOrdinate coOrdRef = new CoOrdinate(x,y,z)
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(x,y,z)
         cellsGrid[coOrdRef]
     }
 
     Cell getCell (final List<Long> ref) {
-        CoOrdinate coOrdRef = new CoOrdinate(ref)
+        CellCoOrdinate coOrdRef = new CellCoOrdinate(ref)
         cellsGrid[coOrdRef]
     }
 
-    Cell getCell (final CoOrdinate coOrdRef) {
+    Cell getCell (final CellCoOrdinate coOrdRef) {
         cellsGrid[coOrdRef]
     }
 
     Optional<Table> intersectionByKey(final Table table2) {
-        //Map<CoOrdinate, Cell> intersectionMap = this.cellsGrid.intersect(table2.cellsGrid)
-        List<CoOrdinate> keys = cellsGrid.entrySet().stream()
+        //Map<CellCoOrdinate, Cell> intersectionMap = this.cellsGrid.intersect(table2.cellsGrid)
+        List<CellCoOrdinate> keys = cellsGrid.entrySet().stream()
                 .map(entry -> entry.getKey())
                 .collect(toList())
-        List<CoOrdinate> keys2 = table2.cellsGrid.entrySet().stream()
+        List<CellCoOrdinate> keys2 = table2.cellsGrid.entrySet().stream()
                 .map(entry -> entry.key)
                 .collect(toList())
 
@@ -268,7 +268,7 @@ class TableHashMapImpl implements Table {
         Optional.ofNullable (buildTableRowsAndColumns (intersectionMap))
     }
 
-    private Table buildTableRowsAndColumns (Map<CoOrdinate, Cell> mapOfCells) {
+    private Table buildTableRowsAndColumns (Map<CellCoOrdinate, Cell> mapOfCells) {
         if (mapOfCells) {
             TableHashMapImpl iTable = new TableHashMapImpl()
             //use private field access here to make sure its mutable
