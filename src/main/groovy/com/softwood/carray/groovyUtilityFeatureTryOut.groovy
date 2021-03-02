@@ -32,7 +32,7 @@ assert adapter.delegate.is (lr)     //closure's delegate is set to the ListRange
 List lst =  adapter.asList()
 assert lst.size() == 0 //starts empty
 
-step(lr, 2, adapter)
+step(lr, 3, adapter)
 
 //when step is executed it takes the iterated values in ListRange adds them to adapterClosures internal list
 lst =  adapter.asList()
