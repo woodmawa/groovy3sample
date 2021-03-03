@@ -9,9 +9,7 @@ import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
 @InheritConstructors
 @EqualsAndHashCode (includeFields = true)
 class ListRange<E> extends ObjectRange  implements Range<Comparable>{
-    //Object[] elements = super.toArray().sort()         //get private reference to supers elements
-
-    int size = -1 //will be -1 if not computed
+    private int size = -1 //will be -1 if not computed
 
     ListRange (ArrayList fromAL, ArrayList toAL) {
         super (new ComparableArrayList(fromAL),  new ComparableArrayList(toAL))
@@ -158,8 +156,15 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     }
 
     @SuppressWarnings("unused")
-    private void setSize(int size) {
+    void setSize(int size) {
         throw new UnsupportedOperationException("size must not be changed")
+    }
+
+    int getSize() {
+        if (size == -1)
+            size()
+        else
+            size
     }
 
     @Override
