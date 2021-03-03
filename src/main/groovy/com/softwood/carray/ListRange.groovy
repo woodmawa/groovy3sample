@@ -9,20 +9,23 @@ import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
 @InheritConstructors
 @EqualsAndHashCode (includeFields = true)
 class ListRange<E> extends ObjectRange  implements Range<Comparable>{
-    private int size = -1 //will be -1 if not computed
+    private long size = -1 //will be -1 if not computed
 
     ListRange (ArrayList fromAL, ArrayList toAL) {
         super (new ComparableArrayList(fromAL),  new ComparableArrayList(toAL))
+        size()
         this
     }
 
     ListRange (ComparableArrayList from, ComparableArrayList to){
         super(from, to)
+        size()
         this
     }
 
     ListRange (ComparableArrayList from, ComparableArrayList to, boolean reverse){
         super(from, to)
+        size()
         this.reverse(true)
         this
     }
@@ -40,7 +43,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
     Iterator<E> iterator() {
         new com.softwood.carray.StepIterator(this, 1)
     }
-
+    
     /**
      * Non-thread-safe iterator which lazily produces the next element only on calls of hasNext() or next()
      */
@@ -98,13 +101,14 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         private Comparable peek() {
             if (step > 0) {
                 Comparable peekValue = value
+                int compared
                 for (int i = 0; i < step; i++) {
                     peekValue = (Comparable) range.increment(peekValue)
                     // handle back to beginning due to modulo incrementing
-                    if (range.compareTo(peekValue, range.from) <= 0) return null
+                    if (peekValue.compareTo(range.from) <= 0) return null
                 }
-                if (range.compareTo(peekValue, range.to) <= 0) {
-                    return peekValue
+                if (peekValue.compareTo(range.to) <= 0) {
+                        return peekValue
                 }
             } else {
                 final int positiveStep = -step
@@ -112,9 +116,9 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                 for (int i = 0; i < positiveStep; i++) {
                     peekValue = (Comparable) range.decrement(peekValue)
                     // handle back to beginning due to modulo decrementing
-                    if (range.compareTo(peekValue, range.to) >= 0) return null
+                    if (peekValue.compareTo(range.from) >= 0) return null
                 }
-                if (range.compareTo(peekValue, range.from) >= 0) {
+                if (peekValue.compareTo(range.from) >= 0) {
                     return peekValue
                 }
             }
@@ -201,13 +205,16 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
                     lower = from.getElements() as ArrayList
                 }
                 if (upper instanceof ArrayList && lower instanceof ArrayList ) {
-                    int upperBoundOfRows = upper[1] as int
-                    int lowerBoundOfRows = lower[1] as int
-                    int upperBoundOfColumns = upper[0] as int
-                    int lowerBoundOfColumns = lower[0] as int
-                    int numberOfColumns = (upperBoundOfColumns - lowerBoundOfColumns) + 1
-                    int numberOfRows = (upperBoundOfRows - lowerBoundOfRows) + 1
-                    size = (numberOfColumns * numberOfRows)
+                    long upperBoundOfZindex = upper?[2] ? upper[2] as long : 0
+                    long lowerBoundOfZindex = lower?[2] ? lower[2] as long : 0
+                    long upperBoundOfRows = upper?[1] ? upper[1] as long : 0
+                    long lowerBoundOfRows = lower?[1] ? lower[1] as long : 0
+                    long upperBoundOfColumns = upper?[0] ? upper[0] as long : 0
+                    long lowerBoundOfColumns = lower?[0] ? lower[0] as long : 0
+                    long numberOfZindex = (upperBoundOfZindex - lowerBoundOfZindex) + 1
+                    long numberOfColumns = (upperBoundOfColumns - lowerBoundOfColumns) + 1
+                    long numberOfRows = (upperBoundOfRows - lowerBoundOfRows) + 1
+                    size = (numberOfColumns * numberOfRows * numberOfZindex)
                 } else if (upper instanceof Number && lower instanceof Number) {
                     //to and from are just numbers in a range
                     size = (upper - lower) + 1
@@ -225,7 +232,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     //general comparable - calculate size by walking to point where next incremented value is >=0
     private int lazySizeCalculator () {
-        int tempsize = 0
+        long tempsize = 0
         Comparable first = from
         Comparable value = from
         final iter = iterator()
@@ -240,7 +247,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         }
         // integer overflow
         if (tempsize < 0) {
-            tempsize = Integer.MAX_VALUE
+            tempsize = Long.MAX_VALUE
         }
 
         size = tempsize
@@ -295,7 +302,8 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
         }
         final Comparable fromValue = toValue;
         for (; i < toIndex - 1; i++) {
-            if (!iter.hasNext()) {
+            boolean hasMore = iter.hasNext()
+            if (!hasMore) {
                 throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
             toValue = iter.next()
@@ -357,24 +365,30 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             lower =  super.from as ArrayList
         }
 
-        int currentRow, currentColumn
-        int upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
-        upperBoundOfRows = upper[1] as int
-        lowerBoundOfRows = lower[1] as int
+        long currentRow, currentColumn, currentZindex
+        long upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
+        long upperBoundOfZindex, lowerBoundOfZindex
+        upperBoundOfRows = upper?[1] ? upper[1] as long: 0  //set as 0 if no rows
+        lowerBoundOfRows = lower?[1] ? lower[1] as long: 0
 
-        upperBoundOfColumns = upper[0] as int
-        lowerBoundOfColumns = lower[0] as int
+        upperBoundOfColumns = upper?[0]? upper[0] as long : 0
+        lowerBoundOfColumns = upper?[0]? lower[0] as long : 0
+
+        upperBoundOfZindex = upper?[2] ? upper[2] as long : 0
+        lowerBoundOfZindex = lower?[2] ? lower[2] as long: 0
 
         ComparableArrayList element = new ComparableArrayList()
 
         if (value instanceof ArrayList) {
             if (upper instanceof ArrayList && lower instanceof ArrayList) {
                 if (nested) {
-                    currentRow = value[0][1]
-                    currentColumn = value[0][0]
+                    currentZindex = value[0]?[2] ? value[0][2] as long : 0
+                    currentRow = value[0]?[1] ? value[0][1] as long: 0
+                    currentColumn = value[0]?[0] ? value[0][0] as long: 0
                 } else if (value[0] instanceof Number) {
-                    currentRow = value[1] as int
-                    currentColumn = value[0] as int
+                    currentZindex = value?[2] ? value[2] as long : 0
+                    currentRow = value?[1] ? value[1] as long : 0
+                    currentColumn = value?[0] ? value[0] as long : 0
                 }
                 if (nested) {
                     if (currentRow + 1 <= upperBoundOfRows) {
@@ -397,11 +411,11 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             } else if (upper instanceof Number && lower instanceof Number) {
                 def currentValue = value as int
                 def incrementedValue = currentValue + 1
-                upperBoundOfRows = upper[1] as int
-                lowerBoundOfRows = lower[1] as int
+                upperBoundOfRows = upper?[1] ? upper[1] as long : 0
+                lowerBoundOfRows = lower?[1] ? lower[1] as long : 0
 
-                upperBoundOfColumns = upper[0] as int
-                lowerBoundOfColumns = lower[0] as int
+                upperBoundOfColumns = upper?[0] ? upper[0] as long : 0
+                lowerBoundOfColumns = lower?[0] ? lower[0] as long : 0
 
                 //todo - need to think about how to handle this
                 element.add(incrementedValue)
@@ -433,24 +447,29 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             lower =  super.from as ArrayList
         }
 
-        int currentRow, currentColumn
-        int upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns
-        upperBoundOfRows = upper[1] as int
-        lowerBoundOfRows = lower[1] as int
+        long currentRow, currentColumn, currentZindex
+        long upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns, upperBoundOfZindex, lowerBoundOfZindex
+        upperBoundOfZindex = upper?[2] ? upper[2] as long : 0
+        lowerBoundOfZindex = lower?[2] ? lower[2] as long : 0
 
-        upperBoundOfColumns = upper[0] as int
-        lowerBoundOfColumns = lower[0] as int
+        upperBoundOfRows = upper?[1] ? upper[1] as long : 0
+        lowerBoundOfRows = lower?[1] ? lower[1] as long : 0
+
+        upperBoundOfColumns = upper[0] as long
+        lowerBoundOfColumns = lower[0] as long
 
         ComparableArrayList element = new ComparableArrayList()
 
         if (value instanceof ArrayList) {
             if (upper instanceof ArrayList && lower instanceof ArrayList) {
                 if (nested) {
-                    currentRow = value[0][1]
-                    currentColumn = value[0][0]
-                } else if (value[0] instanceof Number) {
-                    currentRow = value[1] as int
-                    currentColumn = value[0] as int
+                    currentZindex = value[0]?[2]? value[0][2] as long: 0
+                    currentRow = value[0]?[1] ? value[0][1] as long : 0
+                    currentColumn = value[0][0] as long
+                } else if (value?[0] instanceof Number) {
+                    currentZindex = value?[2] ? value[2] as long : 0
+                    currentRow = value?[1] ? value[1] as long : 0
+                    currentColumn = value?[0] ? value[0] as long : 0
                 }
                 if (nested) {
                     if (currentRow - 1 >= lowerBoundOfRows) {
@@ -472,11 +491,11 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
             } else if (upper instanceof Number && lower instanceof Number) {
                 def currentValue = value as int
                 def decrementedValue = currentValue - 1
-                upperBoundOfRows = upper[1] as int
-                lowerBoundOfRows = lower[1] as int
+                upperBoundOfRows = upper?[1] ? upper[1] as long : 0
+                lowerBoundOfRows = lower?[1] ? lower[1] as long : 0
 
-                upperBoundOfColumns = upper[0] as int
-                lowerBoundOfColumns = lower[0] as int
+                upperBoundOfColumns = upper?[0] ? upper[0] as long : 0
+                lowerBoundOfColumns = lower?[0] ? lower[0] as long : 0
 
                 //todo - need to think about how to handle this
                 element.add(decrementedValue)

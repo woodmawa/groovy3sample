@@ -33,12 +33,12 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
                 m = this[i]
                 if (m instanceof List && n instanceof List)
                     res = compareTwoEqualSizedLists(m, n)
-                else if (m.equals(n) ) {
-                    res = 0
-                } else if (m < n) {
+                else if (m < n ) {
                     res = -1
-                } else {
+                } else if (m > n) {
                     res = 1
+                } else {
+                    res = 0
                 }
                 if (res != 0)
                     break
