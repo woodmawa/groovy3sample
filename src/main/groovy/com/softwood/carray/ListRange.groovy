@@ -164,7 +164,6 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     @Override
     int size() {
-
         if (size == -1) {
             if ((from instanceof Integer || from instanceof Long)
                     && (to instanceof Integer || to instanceof Long)) {
