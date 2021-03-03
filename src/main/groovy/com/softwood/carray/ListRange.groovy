@@ -40,36 +40,7 @@ class ListRange<E> extends ObjectRange  implements Range<Comparable>{
 
     //returns new anonymous inner class morphed to Iterator
     Iterator<E> iterator() {
-        def iter = new Iterator() {
-            private int index
-            private Object value = reverse ? to : from
-            private ListRange parent = ListRange.this  //get the containing class instance
-
-
-            boolean hasNext() {
-                return index < parent.size()
-            }
-
-            Object next() {
-                if (index++ > 0) {
-                    if (index > parent.size()) {
-                        value = null
-                    } else {
-                        if (reverse) {
-                            value = decrement(value)
-                        } else {
-                            value = increment(value)
-                        }
-                    }
-                }
-                return value
-            }
-
-            void remove() {
-                ListRange.this.remove(index)
-            }
-        }
-        return iter
+        new com.softwood.carray.StepIterator(this, 1)
     }
 
     /**
