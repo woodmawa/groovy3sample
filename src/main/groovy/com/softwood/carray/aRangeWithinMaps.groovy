@@ -2,6 +2,8 @@ package com.softwood.carray
 
 import com.softwood.carray.ComparableArrayList
 
+List l = [1,1,1] - [2,2,2]
+
 ComparableArrayList ca1 = [1,2]
 ComparableArrayList ca2 = [1,2,3]
 ComparableArrayList ca3 = [1,2,4]
@@ -29,9 +31,10 @@ println "\t>> grid elements : " + grid.elements
 
 def sizeOfGrid = grid.size()
 
-ComparableArrayList ca4 = new ComparableArrayList<>([1,1])
+
+ComparableArrayList ca4 = new ComparableArrayList<>([0,0,0])
 ca4.name = "ca4"
-ComparableArrayList ca5 = new ComparableArrayList<>([2,3])
+ComparableArrayList ca5 = new ComparableArrayList<>([1,1,1])
 ca5.name = "ca5"
 
 println "\t>> ca 4: "+ ca4
@@ -40,9 +43,20 @@ println "\t>> ca 5: " + ca5
 def sizeOfCa5  = ca5.size()
 
 ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
+ListRange revRange = new ListRange(ca4, ca5, true)//= 1..5 //[1,1]..[2,2]
+
+
+//ListRange sublist = range.subList(2,4)
+
+//println "\t>> sublist : " + sublist
+
+ListRange revSublist = revRange.subList(2,4)
+
+println "\t>> revSublist : ${revSublist.toString()} + rev:$revSublist.reverse, from:$revSublist.from, to:$revSublist.to"
 
 ListRange sublist = range.subList(2,4)
-println "\t>> sublist : " + sublist
+println "\t>> sublist : ${sublist.toString()} + rev:$sublist.reverse, from:$sublist.from, to:$sublist.to"
+
 
 def start = range.from
 def end =  range.to
