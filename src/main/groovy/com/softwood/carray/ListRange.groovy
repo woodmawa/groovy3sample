@@ -116,7 +116,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         private final int step
         private final ListRange range
         private int index = -1
-        private Comparable value
+        private ComparableArrayList value
         private boolean nextFetched = true
 
         private StepIterator(ListRange range, final int desiredStep) {
@@ -161,17 +161,21 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 value = peek()
                 nextFetched = true
             }
-            return value != null
+            if (value.isEmpty())
+                return false
+            else
+                return value != null
         }
 
         private Comparable peek() {
             if (step > 0) {
-                Comparable peekValue = value
+                ComparableArrayList peekValue = value
                 int compared
                 for (int i = 0; i < step; i++) {
                     peekValue = (Comparable) range.increment(peekValue)
                     // handle back to beginning due to modulo incrementing
-                    if (peekValue.compareTo(range.to) >= 0) return null
+                    if (peekValue.isEmpty() ) return null
+                    if (peekValue.compareTo(range.to) > 0) return null
                 }
                 if (range.gradient == Gradient.upward) {
                     if (peekValue.compareTo(range.to) <= 0) {

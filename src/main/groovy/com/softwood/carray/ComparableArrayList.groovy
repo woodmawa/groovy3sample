@@ -18,6 +18,14 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
         super.toArray().sort()
     }
 
+    int size() {
+        getElements().size()
+    }
+
+    boolean isEmpty () {
+        getElements().size() == 0
+    }
+
     @Override
     int compareTo(Object obj) {
         if (this.size() < obj.size()) {

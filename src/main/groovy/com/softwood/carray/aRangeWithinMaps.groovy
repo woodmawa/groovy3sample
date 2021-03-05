@@ -42,8 +42,18 @@ println "\t>> ca 5: " + ca5
 
 def sizeOfCa5  = ca5.size()
 
-ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
-ListRange revRange = new ListRange(ca4, ca5, true)//= 1..5 //[1,1]..[2,2]
+ListRange lr = new ListRange (new ComparableArrayList([0,0]), new ComparableArrayList([1,1]) )
+Iterator lri = lr.iterator()
+
+print "\t>> try loop through range [0,0]..[1,1] \n\t\t"
+while (lri.hasNext()){
+    def entry = lri.next()
+    print "$entry"
+}
+println "\n\t>> loop completed "
+
+ListRange range = new ListRange(ca4, ca5)
+ListRange revRange = new ListRange(ca4, ca5, true)
 
 ListRange revSublist = revRange.subList(2,4)
 println "\t>> revSublist : ${revSublist.toString()} + rev:$revSublist.reverse, from:$revSublist.from, to:$revSublist.to"
