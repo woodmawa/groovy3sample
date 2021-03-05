@@ -238,11 +238,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     }
 
     void add(int index, ComparableArrayList element) {
-
+        throw new UnsupportedOperationException("can't add an element on ListRange, elements are computed based on 'to' and 'from' values ")
     }
 
     Object set(int index, ComparableArrayList element) {
-        return null
+        throw new UnsupportedOperationException("can't set element on ListRange, elements are computed based on 'to' and 'from' values ")
     }
 
     @SuppressWarnings("unused")
@@ -276,19 +276,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 ComparableArrayList difference = calculateDifference(upper, lower)
 
                 if (upper instanceof ArrayList && lower instanceof ArrayList ) {
-                    size = difference.collect{Math.abs(it)+1}.inject(1){carryOver, value -> carryOver * value}
+                    size = difference
+                            .collect{Math.abs(it)+1}
+                            .inject(1){carryOver, value -> carryOver * value}
 
-                    /*
-                    long upperBoundOfZindex = upper?[2] ? upper[2] as long : 0
-                    long lowerBoundOfZindex = lower?[2] ? lower[2] as long : 0
-                    long upperBoundOfRows = upper?[1] ? upper[1] as long : 0
-                    long lowerBoundOfRows = lower?[1] ? lower[1] as long : 0
-                    long upperBoundOfColumns = upper?[0] ? upper[0] as long : 0
-                    long lowerBoundOfColumns = lower?[0] ? lower[0] as long : 0
-                    long numberOfZindex = (upperBoundOfZindex - lowerBoundOfZindex) + 1
-                    long numberOfColumns = (upperBoundOfColumns - lowerBoundOfColumns) + 1
-                    long numberOfRows = (upperBoundOfRows - lowerBoundOfRows) + 1
-                    size = (numberOfColumns * numberOfRows * numberOfZindex)*/
+
                 } else if (upper instanceof Number && lower instanceof Number) {
                     //to and from are just numbers in a range
                     size = (upper - lower) + 1

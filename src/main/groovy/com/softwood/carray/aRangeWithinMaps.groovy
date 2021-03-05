@@ -45,13 +45,7 @@ def sizeOfCa5  = ca5.size()
 ListRange range = new ListRange(ca4, ca5)//= 1..5 //[1,1]..[2,2]
 ListRange revRange = new ListRange(ca4, ca5, true)//= 1..5 //[1,1]..[2,2]
 
-
-//ListRange sublist = range.subList(2,4)
-
-//println "\t>> sublist : " + sublist
-
 ListRange revSublist = revRange.subList(2,4)
-
 println "\t>> revSublist : ${revSublist.toString()} + rev:$revSublist.reverse, from:$revSublist.from, to:$revSublist.to"
 
 ListRange sublist = range.subList(2,4)
@@ -76,10 +70,6 @@ while (iter.hasNext()){
     print "${iter.next()}"
 }
 println "\n\t>> loop completed "
-
-//List l = range.step(1)
-
-//def iter = range.iterator()
 
 println "\t>> grid toString(): " + grid.toString()
 println "\t>> grid: " + grid        //doesnt invoke tostring - semms to calll ? to get a dump
