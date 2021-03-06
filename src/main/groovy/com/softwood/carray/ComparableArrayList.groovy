@@ -22,8 +22,12 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
         getElements().size()
     }
 
+    /**
+     * if no entries in the list then its empty
+     * @return true or false
+     */
     boolean isEmpty () {
-        getElements().size() == 0
+        size() == 0
     }
 
     @Override

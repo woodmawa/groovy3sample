@@ -24,6 +24,7 @@ enum Direction {
 class ListRange<E> extends AbstractList  implements Range<Comparable>{
     private long size = -1 //will be -1 if not computed
 
+    //Indicates whether this is a reverse range which iterates backwards starting from the 'to' value and ending on the 'from' value
     protected boolean reverse = false
     protected ComparableArrayList to
     protected ComparableArrayList from
@@ -64,14 +65,19 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             throw new ExceptionInInitializerError ("to and from array list sizes must have the same number of elements")
         }
 
-        if (reverseDirection) {
+        //Indicates whether this is a reverse range which iterates backwards starting from the 'to' value and ending on the 'from' value
+        reverse = reverseDirection
+        from = fromCAL
+        to = toCAL
+        //may not need to switch
+        /*if (reverseDirection) {
             reverse = true
             from = toCAL as Comparable
             to = fromCAL as Comparable
         } else {
             from = fromCAL
             to = toCAL
-        }
+        }*/
         calculateGradient()
         size()
         this
@@ -79,7 +85,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
     private calculateGradient () {
         def result = from.compareTo (to)
-        if (result <= 0)
+        if (result < 0)
             gradient = Gradient.upward
         else
             gradient = Gradient.downward
@@ -96,7 +102,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         return reverse
     }
 
-//use protected checkBoundaryCompatibility () from ObjectRange parent
+    //use protected checkBoundaryCompatibility () from ObjectRange parent
     //https://github.com/apache/groovy/blob/master/src/main/java/groovy/lang/ObjectRange.java
 
     //returns new anonymous inner class morphed to Iterator
@@ -106,9 +112,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
     @Override
     boolean add(Object o) {
+        //can't add into a range
         return false
     }
-/**
+
+    /**
      * Non-thread-safe iterator which lazily produces the next element only on calls of hasNext() or next()
      */
     private static final class StepIterator implements Iterator<Comparable> {
@@ -130,12 +138,12 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 step = desiredStep
             }
             //if reverse range then from will be larger value than the to
-            value = range.getFrom()
- /*           if (step > 0) {
+            //value = range.getFrom()
+            if (step > 0) {
                 value = range.getFrom()
             } else {
                 value = range.getTo()
-            }*/
+            }
         }
 
         @Override
@@ -146,11 +154,13 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         @Override
         Comparable next() {
             // not thread safe
+            if (++index > range.size() - 1 ) {
+                throw new NoSuchElementException()
+            }
             if (!hasNext()) {
                 throw new NoSuchElementException()
             }
             nextFetched = false
-            index++
             return value
         }
 
@@ -161,10 +171,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 value = peek()
                 nextFetched = true
             }
-            if (value.isEmpty())
-                return false
-            else
-                return value != null
+            return value != null
         }
 
         private Comparable peek() {
@@ -172,10 +179,12 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 ComparableArrayList peekValue = value
                 int compared
                 for (int i = 0; i < step; i++) {
-                    peekValue = (Comparable) range.increment(peekValue)
+                    peekValue = (ComparableArrayList) range.increment(peekValue)
                     // handle back to beginning due to modulo incrementing
-                    if (peekValue.isEmpty() ) return null
-                    if (peekValue.compareTo(range.to) > 0) return null
+                    if (peekValue.isEmpty() )
+                        return null
+                    if (peekValue.compareTo(range.to) > 0)
+                        return null
                 }
                 if (range.gradient == Gradient.upward) {
                     if (peekValue.compareTo(range.to) <= 0) {
@@ -188,17 +197,19 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 }
             } else {
                 final int positiveStep = -step
-                Comparable peekValue = value
+                ComparableArrayList peekValue = value
                 for (int i = 0; i < positiveStep; i++) {
-                    peekValue = (Comparable) range.decrement(peekValue)
+                    peekValue = (ComparableArrayList) range.decrement(peekValue)
                     // handle back to beginning due to modulo decrementing
-                    if (peekValue.compareTo(range.from) >= 0) return null
+                    if (peekValue.compareTo(range.from) < 0) return null
                 }
                 if (range.gradient == Gradient.upward) {
-                    if (peekValue.compareTo(range.to) <= 0) {
+                    //stepping backwards on upward gradient so check against 'from' limit
+                    if (peekValue.compareTo(range.from) >= 0) {
                         return peekValue
                     }
                 } else {
+                    //stepping backwards on downward gradient so check against 'to' limit
                     if (peekValue.compareTo(range.to) >= 0) {
                         return peekValue
                     }
@@ -370,14 +381,14 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         // not using get(fromIndex), get(toIndex) in the following to avoid stepping over elements twice
         final Iterator<Comparable> iter = new StepIterator(this, 1)
 
-        Comparable toValue = iter.next()
-        final Comparable fromValue
+        Comparable endValue, startValue
+        startValue = iter.next()  //start with pre cached start value
         int i = 0
         for (; i < fromIndex; i++) {
             if (!iter.hasNext()) {
                 throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
-            fromValue = iter.next()
+            startValue = iter.next()
         }
 
         for (; i < toIndex; i++) {
@@ -385,13 +396,13 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             if (!hasMore) {
                 throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
-            toValue = iter.next()
+            endValue = iter.next()
         }
 
         if (reverse)
-            return new ListRange(toValue, fromValue, reverse)
+            return new ListRange(endValue, startValue, reverse)
         else
-            return new ListRange (fromValue, toValue)
+            return new ListRange (startValue, endValue)
     }
 
 
@@ -487,8 +498,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         element.add([currentColumn, currentRow + 1])
                     } else if (currentColumn + 1 <= upperBoundOfColumns) {
                         element.add([currentColumn + 1, lowerBoundOfRows])
-                    } else {
-                        element.add([[]])
                     }
                 } else {
                     if (multiDimensional) {
@@ -500,18 +509,13 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                                 element.addAll([currentColumn, currentRow + 1, currentZindex])
                             } else if (currentColumn + 1 <= upperBoundOfColumns) {
                                 element.addAll([currentColumn + 1, lowerBoundOfRows, currentZindex])
-                            } else {
-                                element.add(null)
                             }
                         }
-
                     } else {
                         if (currentRow + 1 <= upperBoundOfRows) {
                             element.addAll([currentColumn, currentRow + 1])
                         } else if (currentColumn + 1 <= upperBoundOfColumns) {
                             element.addAll([currentColumn + 1, lowerBoundOfRows])
-                        } else {
-                            element.add(null)
                         }
                     }
                 }
@@ -527,12 +531,14 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 //todo - need to think about how to handle this
                 element.add(incrementedValue)
-                return element
 
             }
-        } else
+        } else {
             //todo - cant call next on value, have to use an iterator
             return InvokerHelper.invokeMethod(value, "next", null)
+        }
+        return element
+
     }
 
     /**
@@ -594,8 +600,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         element.add([currentColumn, currentRow - 1])
                     } else if (currentColumn - 1 >= lowerBoundOfColumns) {
                         element.add([currentColumn - 1, lowerBoundOfRows])
-                    } else {
-                        element.add([[]])
                     }
                 } else {
                     if (multiDimensional) {
@@ -607,8 +611,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                                 element.addAll([currentColumn, currentRow - 1, currentZindex])
                             } else if (currentColumn - 1 >= lowerBoundOfColumns) {
                                 element.addAll([currentColumn - 1, upperBoundOfRows, currentZindex])
-                            } else {
-                                element.add(null)
                             }
                         }
 
@@ -617,8 +619,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                             element.addAll([currentColumn, currentRow - 1])
                         } else if (currentColumn - 1 >= lowerBoundOfColumns) {
                             element.addAll([currentColumn - 1, lowerBoundOfRows])
-                        } else {
-                            element.add()
                         }
                     }
                 }

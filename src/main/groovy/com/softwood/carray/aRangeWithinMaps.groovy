@@ -45,7 +45,7 @@ def sizeOfCa5  = ca5.size()
 ListRange lr = new ListRange (new ComparableArrayList([0,0]), new ComparableArrayList([1,1]) )
 Iterator lri = lr.iterator()
 
-print "\t>> try loop through range [0,0]..[1,1] \n\t\t"
+print "\t>> try loop through range [0,0]..[1,1], should see 4 entries \n\t\t"
 while (lri.hasNext()){
     def entry = lri.next()
     print "$entry"
