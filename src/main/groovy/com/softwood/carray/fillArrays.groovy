@@ -19,26 +19,28 @@ ListFill approach = ListFill.byRowFirst
 List fill = []
 //try by row first
 
-fill << start
-
 def value = start
 def numColumns = end[0] - start[0]
 
 //put least significant entry first [2,1]
 def leastSigEntriesFirst = end.reverse()
 for (i in 0..<dimensions) {
-    def peekValue, intermediate
+    ArrayList peekValue, intermediate
     int upper = end[i-1]//leastSigEntriesFirst[i]
     int lower = start[i-1]
 
+    fill << value
+
     for (j in lower..<upper) {
-        intermediate = [value[j]+1, value[i]]
+        intermediate = [value[j]+1]
+        for (others in (i+1)..<dimensions){
+            intermediate.add (value.reverse()[others])
+        }
         peekValue = intermediate.reverse()
         fill << peekValue
         value = peekValue
     }
     value = [i+1, lower]
-    fill << value
 }
 
 for (i in 0..<numColumns) {
