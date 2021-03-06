@@ -9,6 +9,7 @@ class ComparableArrayList<E> extends ArrayList implements Comparable {
 
     String name
 
+
     ComparableArrayList (List args) {
         super.addAll(args)
         this

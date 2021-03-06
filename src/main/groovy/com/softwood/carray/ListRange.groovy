@@ -18,6 +18,11 @@ enum Direction {
     backward
 }
 
+enum ListRangeFillEntry {
+    byRowFirst,
+    byColumnFirst
+}
+
 //@InheritConstructors
 @EqualsAndHashCode (includeFields = true)
 //ObjectRange
@@ -29,6 +34,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     protected ComparableArrayList to
     protected ComparableArrayList from
     protected Gradient gradient
+    protected ListRangeFillEntry processEntries = ListRangeFillEntry.byRowFirst
 
 
     ListRange (ArrayList fromAL, ArrayList toAL) {
