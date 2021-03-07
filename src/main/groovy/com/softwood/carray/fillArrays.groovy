@@ -3,7 +3,7 @@ package com.softwood.carray
 def start = [0,0]
 def end = [1,2]
 
-def byColumnFirst = [[0,0],[1,0],[0,1][1,1]]
+def byColumnFirst = [[0,0],[1,0],[0,1][1,1],[0,2],[1,2]]
 def byRowFirst = [[0,0],[0,1],[0,2],[1,0][1,1],[1,2]]
 
 def dimensions = end.size()
@@ -55,7 +55,7 @@ Closure increment (barrelNumber, value, step) {
 
     def intermediate = []
     for (i in lower..upper) {
-        intermediate = [value[i]+1, value[1]]
+        intermediate = [value[i]+step, value[1]]
         value = intermediate
 
     }
