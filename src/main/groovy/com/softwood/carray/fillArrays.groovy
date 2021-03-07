@@ -22,12 +22,51 @@ List fill = []
 def value = start
 def numColumns = end[0] - start[0]
 
+HashMap barrelIndex =  [:]
+for (i in 0..<dimensions){
+    //start with x, y, z
+    def upper = end[i]
+    def lower = start[i]
+    def range = [:]  //java.util.LinkedHashMap
+    range << [upper: upper]
+    range << [lower: lower]
+    barrelIndex << [(i): range]
+}
+
+println barrelIndex  //this is map of dimension position and lower and upper bound for each position
+
+//for each entry in each dimension from the start
+fill << start
+
+for (i in 0..<dimensions) {
+    def highLow = barrelIndex[i]
+    int upper = highLow['upper']
+    int lower = highLow['lower']
+
+    increment (i, value, 1)
+    //reached end of this
+    value
+}
+
+Closure increment (barrelNumber, value, step) {
+    def highLow = barrelIndex[barrelNumber]
+    int upper = highLow['upper']
+    int lower = highLow['lower']
+
+    def intermediate = []
+    for (i in lower..upper) {
+        intermediate = [value[i]+1, value[1]]
+        value = intermediate
+
+    }
+}
+
 //put least significant entry first [2,1]
 def leastSigEntriesFirst = end.reverse()
 for (i in 0..<dimensions) {
     ArrayList peekValue, intermediate
-    int upper = end[i-1]//leastSigEntriesFirst[i]
-    int lower = start[i-1]
+    int upper = end[-1 -i]//leastSigEntriesFirst[i]
+    int lower = start[-1 -i]
 
     fill << value
 
