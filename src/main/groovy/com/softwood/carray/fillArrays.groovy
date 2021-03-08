@@ -1,7 +1,7 @@
 package com.softwood.carray
 
-def start = [0,0]
-def end = [1,2]
+def start = [0,0,0]
+def end = [1,2,1]
 
 def byColumnFirst = [[0,0],[1,0],[0,1][1,1],[0,2],[1,2]]
 def byRowFirst = [[0,0],[0,1],[0,2],[1,0][1,1],[1,2]]
@@ -16,83 +16,135 @@ enum ListFill {
 
 ListFill approach = ListFill.byRowFirst
 
-List fill = []
 //try by row first
 
 def value = start
 def numColumns = end[0] - start[0]
 
-HashMap barrelIndex =  [:]
+HashMap arrayIndexLimits =  [:]
 for (i in 0..<dimensions){
     //start with x, y, z
+
     def upper = end[i]
     def lower = start[i]
     def range = [:]  //java.util.LinkedHashMap
     range << [upper: upper]
     range << [lower: lower]
-    barrelIndex << [(i): range]
+    arrayIndexLimits << [(i): range]
 }
 
-println barrelIndex  //this is map of dimension position and lower and upper bound for each position
+println arrayIndexLimits  //this is map of dimension position and lower and upper bound for each position
 
-//for each entry in each dimension from the start
+def increment = {fillBy, limits, arrayValue, step ->
+    ArrayList next = ArrayList.copyOf(arrayValue)
+    int startingColumn
+    int currentColumn
+
+    switch (fillBy) {
+        case ListFill.byColumnFirst:
+
+            startingColumn = 0
+            currentColumn = 0
+
+            def highLow = limits[startingColumn]
+            int upper = highLow['upper']
+            int lower = highLow['lower']
+
+            //start with currentValue as value in the column 0
+            def columnValue = arrayValue[currentColumn]
+
+            for (i in 0..<arrayValue.size()) {
+                if (columnValue < upper) {
+                    next[currentColumn] = columnValue + step
+                    break
+                }
+                else {
+                    next[currentColumn++] = lower
+                    columnValue =next[currentColumn] //get the start value point for next column
+                    highLow = limits[currentColumn]
+                    upper = highLow['upper']
+                    lower = highLow['lower']
+                }
+            }
+            break
+
+        case ListFill.byRowFirst:
+            startingColumn = 1
+            currentColumn = 1
+
+            def highLow = limits[startingColumn]
+            int upper = highLow['upper']
+            int lower = highLow['lower']
+
+            //start with currentValue as value in the column 0
+            def columnValue = arrayValue[currentColumn]
+
+            for (i in 0..<arrayValue.size()) {
+                if (columnValue < upper) {
+                    next[currentColumn] = columnValue + step
+                    break
+                }
+                else {
+                    next[currentColumn--] = lower
+                    columnValue =next[currentColumn] //get the start value point for next column
+                    highLow = limits[currentColumn]
+                    upper = highLow['upper']
+                    lower = highLow['lower']
+                }
+            }
+            break
+
+        default:
+            next = null
+    }
+
+    next
+}
+
+
+List fill = []
+//for each entry in each dimension from the start, put start in to begin with
 fill << start
+def ans = start
 
-for (i in 0..<dimensions) {
-    def highLow = barrelIndex[i]
-    int upper = highLow['upper']
-    int lower = highLow['lower']
-
-    increment (i, value, 1)
+// should be 6 entries between start and end - incrementing by columnFirst
+for (i in 0..<14) {
+    ans = increment (ListFill.byColumnFirst, arrayIndexLimits, ans, 1)
     //reached end of this
-    value
-}
 
-Closure increment (barrelNumber, value, step) {
-    def highLow = barrelIndex[barrelNumber]
-    int upper = highLow['upper']
-    int lower = highLow['lower']
 
-    def intermediate = []
-    for (i in lower..upper) {
-        intermediate = [value[i]+step, value[1]]
-        value = intermediate
+    fill << ans
 
+    if (ans == end) {
+        println "reached end value column fill first $ans"
+        break
     }
-}
 
-//put least significant entry first [2,1]
-def leastSigEntriesFirst = end.reverse()
-for (i in 0..<dimensions) {
-    ArrayList peekValue, intermediate
-    int upper = end[-1 -i]//leastSigEntriesFirst[i]
-    int lower = start[-1 -i]
-
-    fill << value
-
-    for (j in lower..<upper) {
-        intermediate = [value[j]+1]
-        for (others in (i+1)..<dimensions){
-            intermediate.add (value.reverse()[others])
-        }
-        peekValue = intermediate.reverse()
-        fill << peekValue
-        value = peekValue
-    }
-    value = [i+1, lower]
-}
-
-for (i in 0..<numColumns) {
-    int j = end.size()-1
-    int upperRange = end[j]
-    int lowerRange = start[j]
-
-    for (e in 0..<upperRange) {
-        if (value[j] + 1 <= end[j])
-            fill << (value = [start[i], value[j] + 1])
-        else if (value[i] + 1 <= end[i])
-            fill << (value = [value[i] + 1, start[j]])
-    }
+    ans
 }
 
 println fill
+
+fill = []
+fill << start
+
+ans = start
+// should be 6 entries between start and end - incrementing by rowFirst
+for (i in 0..<10) {
+    ans = increment (ListFill.byRowFirst, arrayIndexLimits, ans, 1)
+    //reached end of this
+
+
+    fill << ans
+
+    if (ans == end) {
+        println "reached end value row fill first  $ans"
+        break
+    }
+
+    ans
+}
+
+println fill
+
+
