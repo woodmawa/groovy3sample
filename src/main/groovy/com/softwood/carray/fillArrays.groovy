@@ -1,7 +1,7 @@
 package com.softwood.carray
 
-def start = [0,0,0]
-def end = [1,2,1]
+def start = [0,0,0,0]
+def end = [1,1,1,1]
 
 def byColumnFirst = [[0,0],[1,0],[0,1][1,1],[0,2],[1,2]]
 def byRowFirst = [[0,0],[0,1],[0,2],[1,0][1,1],[1,2]]
@@ -53,7 +53,7 @@ def increment = {fillBy, limits, arrayValue, step ->
             //start with currentValue as value in the column 0
             def columnValue = arrayValue[currentColumn]
 
-            for (i in 0..<arrayValue.size()) {
+            for (col in 0..<arrayValue.size()) {
                 if (columnValue < upper) {
                     next[currentColumn] = columnValue + step
                     break
@@ -79,13 +79,20 @@ def increment = {fillBy, limits, arrayValue, step ->
             //start with currentValue as value in the column 0
             def columnValue = arrayValue[currentColumn]
 
-            for (i in 0..<arrayValue.size()) {
+            for (col in 1..<arrayValue.size()) {
                 if (columnValue < upper) {
                     next[currentColumn] = columnValue + step
                     break
                 }
                 else {
-                    next[currentColumn--] = lower
+                    next[currentColumn++] = lower  //, reset this column, and post increment to the start value point for next column
+                    //if we are processing the rows - handle the row column precedence first before handling columns 2...n
+                    if (col == 1 && next[0] < limits[0]['upper']) {
+                        next[0] = next[0] + 1
+                        break
+                    } else {
+                        next[0] = limits[0]['lower']
+                    }
                     columnValue =next[currentColumn] //get the start value point for next column
                     highLow = limits[currentColumn]
                     upper = highLow['upper']
@@ -108,7 +115,7 @@ fill << start
 def ans = start
 
 // should be 6 entries between start and end - incrementing by columnFirst
-for (i in 0..<14) {
+for (i in 0..<40) {
     ans = increment (ListFill.byColumnFirst, arrayIndexLimits, ans, 1)
     //reached end of this
 
@@ -130,7 +137,7 @@ fill << start
 
 ans = start
 // should be 6 entries between start and end - incrementing by rowFirst
-for (i in 0..<10) {
+for (i in 0..<40) {
     ans = increment (ListFill.byRowFirst, arrayIndexLimits, ans, 1)
     //reached end of this
 
