@@ -210,7 +210,7 @@ def decrement = {fillBy, limits, arrayValue, step ->
                         next[0] = next[0] - step
                         break
                     } else {
-                        next[0] = limits[0]['lower']
+                        next[0] = limits[0]['upper']
                     }
                     columnValue =next[currentColumn] //get the start value point for next column
                     highLow = limits[currentColumn]
