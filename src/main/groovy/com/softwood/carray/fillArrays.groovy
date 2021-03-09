@@ -21,17 +21,26 @@ ListFill approach = ListFill.byRowFirst
 def value = start
 def numColumns = end[0] - start[0]
 
-HashMap arrayIndexLimits =  [:]
-for (i in 0..<dimensions){
-    //start with x, y, z
+def calcArrayIndex (low, hi) {
+    assert hi.size() == low.size()
 
-    def upper = end[i]
-    def lower = start[i]
-    def range = [:]  //java.util.LinkedHashMap
-    range << [upper: upper]
-    range << [lower: lower]
-    arrayIndexLimits << [(i): range]
+    HashMap arrayIndexLimits =  [:]
+    for (i in 0..<hi.size()){
+        //start with x, y, z
+
+        def upper = hi[i]
+        def lower = low[i]
+        def range = [:]  //java.util.LinkedHashMap
+        range << [upper: upper]
+        range << [lower: lower]
+        arrayIndexLimits << [(i): range]
+    }
+
+    arrayIndexLimits
 }
+
+HashMap arrayIndexLimits =  calcArrayIndex(start, end)
+
 
 println arrayIndexLimits  //this is map of dimension position and lower and upper bound for each position
 
@@ -180,6 +189,7 @@ def decrement = {fillBy, limits, arrayValue, step ->
                 else {
                     next[currentColumn++] = upper
                     columnValue =next[currentColumn] //get the start value point for next column
+
                     highLow = limits[currentColumn]
                     upper = highLow['upper']
                     lower = highLow['lower']
@@ -228,8 +238,11 @@ def decrement = {fillBy, limits, arrayValue, step ->
 }
 
 fill = []
-fill << [1,1,1]
-ans = [1,1,1]
+fill << [1,2,1,1]
+ans = [1,2,1,1]
+
+arrayIndexLimits =  calcArrayIndex([0,0,0,0], ans)
+
 
 for (i in 0..<40) {
     ans = decrement (ListFill.byColumnFirst, arrayIndexLimits, ans, 1)
@@ -238,7 +251,7 @@ for (i in 0..<40) {
 
     fill << ans
 
-    if (ans == [0,0,0]) {
+    if (ans == [0,0,0,0]) {
         println "decrement reached bottom value column fill first  $ans"
         break
     }
@@ -249,8 +262,8 @@ for (i in 0..<40) {
 println fill
 
 fill = []
-fill << [1,1,1]
-ans = [1,1,1]
+fill << [1,2,1,1]
+ans = [1,2,1,1]
 
 for (i in 0..<40) {
     ans = decrement (ListFill.byRowFirst, arrayIndexLimits, ans, 1)
@@ -259,7 +272,7 @@ for (i in 0..<40) {
 
     fill << ans
 
-    if (ans == [0,0,0]) {
+    if (ans == [0,0,0,0]) {
         println "decrement reached bottom value row fill first  $ans"
         break
     }
