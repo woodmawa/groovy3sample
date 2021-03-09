@@ -90,29 +90,10 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     }
 
     /**
-     * calculates the upper and lower bound ranges when calcualting how to increment/decrement to next entry in range
-     * @param low - lower bound ComparableArrayList
-     * @param hi- - upper bound ComparableArrayList
-     * @return hash of upper and lower bounds for each column radix in the list, indexed by radix column number
+     * determines whether the range is going upwards or downwards
+     *
+     * @return gradient from 'from' to 'to'
      */
-    private LinkedHashMap calcArrayIndexRange (low, hi) {
-        assert hi.size() == low.size()
-
-        HashMap arrayIndexLimits =  [:]
-        for (i in 0..<hi.size()){
-            //start with x, y, z
-
-            def upper = hi[i]
-            def lower = low[i]
-            def range = [:]  //java.util.LinkedHashMap
-            range << [upper: upper]
-            range << [lower: lower]
-            arrayIndexLimits << [(i): range]
-        }
-
-        arrayIndexLimits
-    }
-
     private calculateGradient () {
         def result = from.compareTo (to)
         if (result < 0)
@@ -156,6 +137,32 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         private int index = -1
         private ComparableArrayList value
         private boolean nextFetched = true
+        private LinkedHashMap arrayIndexLimits
+
+        /**
+         * calculates the upper and lower bound ranges when calcualting how to increment/decrement to next entry in range
+         * @param low - lower bound ComparableArrayList
+         * @param hi- - upper bound ComparableArrayList
+         * @return hash of upper and lower bounds for each column radix in the list, indexed by radix column number
+         */
+        private LinkedHashMap calcArrayIndexRange (low, hi) {
+            assert hi.size() == low.size()
+
+            HashMap arrayIndexLimits =  [:]
+            for (i in 0..<hi.size()){
+                //start with x, y, z
+
+                def upper = hi[i]
+                def lower = low[i]
+                def range = [:]  //java.util.LinkedHashMap
+                range << [upper: upper]
+                range << [lower: lower]
+                arrayIndexLimits << [(i): range]
+            }
+
+            arrayIndexLimits
+        }
+
 
         private StepIterator(ListRange range, final int desiredStep) {
             if (desiredStep == 0 && range.from.compareTo (range.to) != 0) {
@@ -167,13 +174,17 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             } else {
                 step = desiredStep
             }
+
             //if reverse range then from will be larger value than the to
             //value = range.getFrom()
             if (step > 0) {
                 value = range.getFrom()
+                arrayIndexLimits = calcArrayIndexRange(range.from, range.to)
             } else {
                 value = range.getTo()
+                arrayIndexLimits = calcArrayIndexRange(range.to, range.from)
             }
+
         }
 
         @Override
@@ -209,7 +220,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 ComparableArrayList peekValue = value
                 int compared
                 for (int i = 0; i < step; i++) {
-                    peekValue = (ComparableArrayList) range.increment(peekValue)
+                    peekValue = (ComparableArrayList) range.increment(arrayIndexLimits, peekValue)
                     // handle back to beginning due to modulo incrementing
                     if (peekValue.isEmpty() )
                         return null
@@ -229,7 +240,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 final int positiveStep = -step
                 ComparableArrayList peekValue = value
                 for (int i = 0; i < positiveStep; i++) {
-                    peekValue = (ComparableArrayList) range.decrement(peekValue)
+                    peekValue = (ComparableArrayList) range.decrement(arrayIndexLimits, peekValue)
                     // handle back to beginning due to modulo decrementing
                     if (peekValue.compareTo(range.from) < 0) return null
                 }
@@ -474,7 +485,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
      * @param value the value to increment
      * @return the incremented value
      */
-    protected Object increment(Object value) {
+    protected Object increment(LinkedHashMap arrayIndexLimits, Object value) {
         /*  value might be a [[x,y]] or just [x,y] */
         boolean nested = false
         def upper, lower
@@ -577,7 +588,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
      * @param value the value to decrement
      * @return the decremented value
      */
-    protected Object decrement(Object value) {
+    protected Object decrement(LinkedHashMap arrayIndexLimits, Object value) {
         /*  value might be a [[x,y]] or just [x,y] */
         boolean nested = false
         def upper, lower
