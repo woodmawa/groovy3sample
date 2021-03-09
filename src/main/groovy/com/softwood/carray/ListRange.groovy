@@ -18,7 +18,7 @@ enum Direction {
     backward
 }
 
-enum ListRangeFillEntry {
+enum ListRangeFill {
     byRowFirst,
     byColumnFirst
 }
@@ -34,7 +34,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     protected ComparableArrayList to
     protected ComparableArrayList from
     protected Gradient gradient
-    protected ListRangeFillEntry processEntries = ListRangeFillEntry.byRowFirst
+    protected ListRangeFill processEntries = ListRangeFill.byRowFirst  //default
 
 
     ListRange (ArrayList fromAL, ArrayList toAL) {
@@ -87,6 +87,30 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         calculateGradient()
         size()
         this
+    }
+
+    /**
+     * calculates the upper and lower bound ranges when calcualting how to increment/decrement to next entry in range
+     * @param low - lower bound ComparableArrayList
+     * @param hi- - upper bound ComparableArrayList
+     * @return hash of upper and lower bounds for each column radix in the list, indexed by radix column number
+     */
+    private LinkedHashMap calcArrayIndexRange (low, hi) {
+        assert hi.size() == low.size()
+
+        HashMap arrayIndexLimits =  [:]
+        for (i in 0..<hi.size()){
+            //start with x, y, z
+
+            def upper = hi[i]
+            def lower = low[i]
+            def range = [:]  //java.util.LinkedHashMap
+            range << [upper: upper]
+            range << [lower: lower]
+            arrayIndexLimits << [(i): range]
+        }
+
+        arrayIndexLimits
     }
 
     private calculateGradient () {
