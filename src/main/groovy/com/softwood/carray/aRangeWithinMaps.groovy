@@ -74,6 +74,8 @@ def first = range.get(0)
 assert first == [0,0,0]
 def second = range.get(1)  //row first by default
 assert second == [0,1,0]
+def revFirst = range[-2]
+assert revFirst == [1,0,1]
 
  iter = range.iterator()
 

@@ -138,6 +138,15 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         return reverse
     }
 
+    void setListRangeFillStyle (ListRangeFill style) {
+        assert style
+        processFillEntries = style
+    }
+
+    ListRangeFill getListRangeFillStyle () {
+        processFillEntries
+    }
+
     //use protected checkBoundaryCompatibility () from ObjectRange parent
     //https://github.com/apache/groovy/blob/master/src/main/java/groovy/lang/ObjectRange.java
 
@@ -147,7 +156,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     }
 
     @Override
-    boolean add(Object o) {
+    boolean add (Object o) {
         //can't add into a range
         return false
     }
