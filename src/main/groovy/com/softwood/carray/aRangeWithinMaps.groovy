@@ -71,7 +71,9 @@ println "\t>> inspect() : "+ range.inspect()
 def size = range.size()
 
 def first = range.get(0)
-def second = range.get(1)
+assert first == [0,0,0]
+def second = range.get(1)  //row first by default
+assert second == [0,1,0]
 
  iter = range.iterator()
 
