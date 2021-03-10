@@ -94,7 +94,7 @@ class CellCoOrdinate implements Comparable {
 
     def asType (Class clazz) {
         assert clazz
-        if (clazz == List) {
+        if (clazz == List || clazz == ArrayList) {
             //new CellCoOrdinate(x,y,z)
             getThreeDimensionalCoOrdinateAsList ()
         } else if (clazz == Tuple2) {

@@ -1,5 +1,6 @@
 package com.softwood.carray
 
+import com.softwood.worksheet.CellCoOrdinate
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
 import org.codehaus.groovy.runtime.InvokerHelper
@@ -61,13 +62,42 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         arrayIndexLimits
     }
 
+    ListRange (CellCoOrdinate startCoOrd, CellCoOrdinate endCoOrd, reverseDirection = false) {
+        assert startCoOrd
+        assert endCoOrd
+        List start, end
+        start = startCoOrd.getThreeDimensionalCoOrdinateAsList()
+        end = endCoOrd.getThreeDimensionalCoOrdinateAsList()
 
-    ListRange (ArrayList fromAL, ArrayList toAL) {
+        if (start.size() != end.size()) {
+            throw new ExceptionInInitializerError ("to and from array list sizes must have the same number of elements")
+        }
+        reverse = reverseDirection
+        from = new ComparableArrayList(start)
+        to = new ComparableArrayList(end)
+        calculateGradient()
+        size()
+        this
+    }
+
+    ListRange (def fromObj, def toObj, boolean reverseDirection = false) {
+        assert fromObj
+        assert toObj
+
+        ArrayList start, end
+        start = ArrayList.of (fromObj)
+        end = ArrayList.of (toObj)
+
+        ListRange(start, end, reverseDirection)
+    }
+
+    ListRange (List fromAL, List toAL, boolean reverseDirection = false) {
         assert fromAL
         assert toAL
         if (fromAL.size() != toAL.size()) {
             throw new ExceptionInInitializerError ("to and from array list sizes must have the same number of elements")
         }
+        reverse = reverseDirection
         from = new ComparableArrayList(fromAL)
         to = new ComparableArrayList(toAL)
         calculateGradient()
@@ -75,21 +105,8 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         this
     }
 
-    ListRange (ComparableArrayList fromCAL, ComparableArrayList toCAL){
-        assert fromCAL
-        assert toCAL
-        if (fromCAL.size() != toCAL.size()) {
-            throw new ExceptionInInitializerError ("to and from array list sizes must have the same number of elements")
-        }
 
-        from = fromCAL
-        to = toCAL
-        calculateGradient()
-        size()
-        this
-    }
-
-    ListRange (ComparableArrayList fromCAL, ComparableArrayList toCAL, boolean reverseDirection){
+    ListRange (ComparableArrayList fromCAL, ComparableArrayList toCAL, boolean reverseDirection = false){
         assert fromCAL
         assert toCAL
         if (fromCAL.size() != toCAL.size()) {
@@ -100,15 +117,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         reverse = reverseDirection
         from = fromCAL
         to = toCAL
-        //may not need to switch
-        /*if (reverseDirection) {
-            reverse = true
-            from = toCAL as Comparable
-            to = fromCAL as Comparable
-        } else {
-            from = fromCAL
-            to = toCAL
-        }*/
         calculateGradient()
         size()
         this

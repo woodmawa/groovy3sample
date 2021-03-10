@@ -1,6 +1,12 @@
 package com.softwood.carray
 
 import com.softwood.carray.ComparableArrayList
+import com.softwood.worksheet.CellCoOrdinate
+
+CellCoOrdinate cStart = new CellCoOrdinate(0,0,0)
+CellCoOrdinate cEnd = new CellCoOrdinate(1,1,1)
+
+ListRange coord_list_range = new ListRange (cStart, cEnd)
 
 List l = [1,1,1] - [2,2,2]
 
