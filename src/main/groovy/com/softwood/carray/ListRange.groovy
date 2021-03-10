@@ -184,14 +184,18 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 step = desiredStep
             }
 
+            if(range.gradient = Gradient.upward)
+                arrayIndexLimits = range.calcArrayIndexRange(range.from, range.to)
+            else
+                //todo - do i need to do this reorder?
+                arrayIndexLimits = range.calcArrayIndexRange(range.to, range.from)
+
             //if reverse range then from will be larger value than the to
             //value = range.getFrom()
             if (step > 0) {
                 value = range.getFrom()
-                arrayIndexLimits = range.calcArrayIndexRange(range.from, range.to)
             } else {
                 value = range.getTo()
-                arrayIndexLimits = range.calcArrayIndexRange(range.to, range.from)
             }
 
         }
@@ -549,7 +553,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     }
                     else {
                         //if we have stepped past the last column
-                        if (currentColumn >= next.size())
+                        if (currentColumn + 1 >= next.size())
                             return null
 
                         next[currentColumn++] = lower
@@ -579,7 +583,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     }
                     else {
                         //if we have stepped past the last column
-                        if (currentColumn >= next.size())
+                        if (currentColumn + 1 >= next.size())
                             return null
 
                         next[currentColumn++] = lower  //, reset this column, and post increment to the start value point for next column
@@ -687,27 +691,107 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
      * @param value the value to decrement
      * @return the decremented value
      */
-    protected Object decrement(fillBy, LinkedHashMap arrayIndexLimits, Object value) {
+    protected Object decrement(fillBy, LinkedHashMap arrayIndexLimits, Object arrayValue) {
         /*  value might be a [[x,y]] or just [x,y] */
         boolean nested = false
-        def upper, lower
-        if (value?[0] instanceof ArrayList){
-            upper = ((ArrayList) to) [-1]
-            lower = ((ArrayList) from) [0]
+        def upperAV, lowerAV
+        if (arrayValue?[0] instanceof ArrayList){
+            upperAV = ((ArrayList) to) [-1]
+            lowerAV = ((ArrayList) from) [0]
             nested = true
         } else {
-            upper =  to as ArrayList
-            lower =  from as ArrayList
+            upperAV =  to as ArrayList
+            lowerAV =  from as ArrayList
         }
 
         if (gradient == Gradient.downward) {
             //switch order so lower < upper for the calculation
-            def temp = upper
-            upper = lower
-            lower = temp
+            def temp = upperAV
+            upperAV = lowerAV
+            lowerAV = temp
         }
 
-        long currentRow, currentColumn, currentZindex
+        ArrayList next = ArrayList.copyOf(arrayValue)
+        int startingColumn
+        int currentColumn
+
+        switch (fillBy) {
+            case ListRangeFill.byColumnFirst:
+
+                startingColumn = 0
+                currentColumn = 0
+
+                def highLow = arrayIndexLimits[startingColumn]
+                int upper = highLow['upper']
+                int lower = highLow['lower']
+
+                //start with currentValue as value in the column 0
+                def columnValue = arrayValue[currentColumn]
+
+                for (col in 0..<next.size()) {
+                    if (columnValue > lower) {
+                        next[currentColumn] = columnValue - 1
+                        break
+                    }
+                    else {
+                        //if we have stepped past the last column
+                        if (currentColumn + 1 >= next.size())
+                            return null
+
+                        next[currentColumn++] = upper
+                        columnValue =next[currentColumn] //get the start value point for next column
+
+                        highLow = arrayIndexLimits[currentColumn]
+                        upper = highLow['upper']
+                        lower = highLow['lower']
+                    }
+                }
+                break
+
+            case ListRangeFill.byRowFirst:
+                startingColumn = 1
+                currentColumn = 1
+
+                def highLow = arrayIndexLimits[startingColumn]
+                int upper = highLow['upper']
+                int lower = highLow['lower']
+
+                //start with currentValue as value in the column 0
+                def columnValue = arrayValue[currentColumn]
+
+                for (col in 1..<next.size()) {
+                    if (columnValue > lower) {
+                        next[currentColumn] = columnValue - 1
+                        break
+                    }
+                    else {
+                        //if we have stepped past the last column
+                        if (currentColumn + 1 >= next.size())
+                            return null
+
+                        next[currentColumn++] = upper  //, reset this column, and post increment to the start value point for next column
+                        //if we are processing the rows - handle the row column precedence first before handling columns 2...n
+                        if (col == 1 && next[0] > arrayIndexLimits[0]['lower']) {
+                            next[0] = next[0] - 1
+                            break
+                        } else {
+                            next[0] = arrayIndexLimits[0]['upper']
+                        }
+                        columnValue =next[currentColumn] //get the start value point for next column
+                        highLow = arrayIndexLimits[currentColumn]
+                        upper = highLow['upper']
+                        lower = highLow['lower']
+                    }
+                }
+                break
+
+            default:
+                next = null
+        }
+
+        next
+
+/*        long currentRow, currentColumn, currentZindex
         long upperBoundOfRows, lowerBoundOfRows, upperBoundOfColumns, lowerBoundOfColumns, upperBoundOfZindex, lowerBoundOfZindex
         upperBoundOfZindex = upper?[2] ? upper[2] as long : 0
         lowerBoundOfZindex = lower?[2] ? lower[2] as long : 0
@@ -779,7 +863,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             return InvokerHelper.invokeMethod(value, "previous", null)
         }
         return element
-
+*/
     }
 
     @Override
