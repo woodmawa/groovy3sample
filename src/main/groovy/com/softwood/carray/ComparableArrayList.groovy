@@ -5,7 +5,7 @@ import groovy.transform.InheritConstructors
 
 @InheritConstructors
 @EqualsAndHashCode(includeFields = true)
-class ComparableArrayList<E> extends ArrayList implements Comparable {
+class ComparableArrayList<E> extends ArrayList implements List, Comparable {
 
     String name
 

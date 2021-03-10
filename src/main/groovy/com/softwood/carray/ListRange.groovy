@@ -26,7 +26,6 @@ enum ListRangeFill {
 
 //@InheritConstructors
 @EqualsAndHashCode (includeFields = true)
-//ObjectRange
 class ListRange<E> extends AbstractList  implements Range<Comparable>{
     private long size = -1 //will be -1 if not computed
 
@@ -78,17 +77,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         calculateGradient()
         size()
         this
-    }
-
-    ListRange (def fromObj, def toObj, boolean reverseDirection = false) {
-        assert fromObj
-        assert toObj
-
-        ArrayList start, end
-        start = ArrayList.of (fromObj)
-        end = ArrayList.of (toObj)
-
-        ListRange(start, end, reverseDirection)
     }
 
     ListRange (List fromAL, List toAL, boolean reverseDirection = false) {
