@@ -2,7 +2,6 @@ package com.softwood.carray
 
 import com.softwood.worksheet.CellCoOrdinate
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.InheritConstructors
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.IteratorClosureAdapter
 import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
@@ -24,7 +23,6 @@ enum ListRangeFill {
     byColumnFirst
 }
 
-//@InheritConstructors
 @EqualsAndHashCode (includeFields = true)
 class ListRange<E> extends AbstractList  implements Range<Comparable>{
     private long size = -1 //will be -1 if not computed
@@ -35,7 +33,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     protected ComparableArrayList from
     protected Gradient gradient
     protected ListRangeFill processFillEntries = ListRangeFill.byRowFirst  //default
-    private LinkedHashMap arrayIndexLimits
 
     /**
      * calculates the upper and lower bound ranges when calcualting how to increment/decrement to next entry in range
@@ -494,7 +491,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
      */
     @Override
     boolean contains(Object value) {
-        final Iterator<Comparable> iter = new StepIterator(this, 1);
+        final Iterator<Comparable> iter = new StepIterator(this, 1)
         if (value == null) {
             return false
         }
@@ -530,7 +527,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             lowerAV = temp
         }
 
-        ArrayList next = ArrayList.copyOf(arrayValue)  //create a copy of the received arrayValue
+        ArrayList next = ArrayList.copyOf (arrayValue)  //create a copy of the received arrayValue
         int startingColumn
         int currentColumn
 
