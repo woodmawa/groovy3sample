@@ -151,6 +151,10 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         new com.softwood.carray.ListRange.StepIterator(this, 1)
     }
 
+    ListIterator<E> listIterator() {
+        new com.softwood.carray.ListRange.StepIterator(this, 1)
+    }
+
     @Override
     boolean add (Object o) {
         //can't add into a range
