@@ -1,6 +1,7 @@
-package com.softwood.carray
+package com.softwood.util.scripts
 
-import com.softwood.carray.ComparableArrayList
+import com.softwood.util.ComparableArrayList
+import com.softwood.util.ListRange
 import com.softwood.worksheet.CellCoOrdinate
 
 CellCoOrdinate cStart = new CellCoOrdinate(0,0,0)
@@ -10,7 +11,7 @@ ListRange coord_list_range = new ListRange (cStart, cEnd)
 
 List l = [1,1,1] - [2,2,2]
 
-ComparableArrayList ca1 = [1,2]
+ComparableArrayList ca1 = [1, 2]
 ComparableArrayList ca2 = [1,2,3]
 ComparableArrayList ca3 = [1,2,4]
 

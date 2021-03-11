@@ -1,4 +1,4 @@
-package com.softwood.carray
+package com.softwood.util
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors

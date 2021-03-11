@@ -1,12 +1,10 @@
-package com.softwood.carray
+package com.softwood.util
 
 import com.softwood.worksheet.CellCoOrdinate
 import groovy.transform.EqualsAndHashCode
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.IteratorClosureAdapter
 import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
-
-import java.util.stream.Collectors
 
 enum Gradient {
     upward,
@@ -145,11 +143,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
     //returns new anonymous inner class morphed to Iterator
     Iterator<E> iterator() {
-        new com.softwood.carray.ListRange.StepIterator(this, 1)
+        new com.softwood.util.ListRange.StepIterator(this, 1)
     }
 
     ListIterator<E> listIterator() {
-        new com.softwood.carray.ListRange.StepIterator(this, 1)
+        new com.softwood.util.ListRange.StepIterator(this, 1)
     }
 
     @Override

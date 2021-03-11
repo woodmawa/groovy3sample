@@ -1,5 +1,6 @@
-package com.softwood.carray
+package com.softwood.util.scripts
 
+import com.softwood.util.ListRange
 import org.codehaus.groovy.runtime.IteratorClosureAdapter
 
 /*

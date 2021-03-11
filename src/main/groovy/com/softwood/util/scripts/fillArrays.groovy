@@ -1,4 +1,4 @@
-package com.softwood.carray
+package com.softwood.util.scripts
 
 def start = [0,0,0,0]
 def end = [1,1,1,1]
