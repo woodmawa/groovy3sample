@@ -6,7 +6,7 @@ import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.IteratorClosureAdapter
 import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation
 
-enum Gradient {
+enum RangeGradient {
     upward,
     downward
 }
@@ -29,7 +29,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     protected boolean reverse = false
     protected ComparableArrayList to
     protected ComparableArrayList from
-    protected Gradient gradient
+    protected RangeGradient gradient
     protected ListRangeFill processFillEntries = ListRangeFill.byRowFirst  //default
 
     /**
@@ -113,9 +113,9 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
     private calculateGradient () {
         def result = from.compareTo (to)
         if (result < 0)
-            gradient = Gradient.upward
+            gradient = RangeGradient.upward
         else
-            gradient = Gradient.downward
+            gradient = RangeGradient.downward
     }
 
     @ Override
@@ -180,7 +180,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 step = desiredStep
             }
 
-            if(range.gradient = Gradient.upward)
+            if(range.gradient = RangeGradient.upward)
                 arrayIndexLimits = range.calcArrayIndexRange(range.from, range.to)
             else
                 //todo - do i need to do this reorder?
@@ -239,7 +239,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     if (peekValue.compareTo(range.to) > 0)
                         return null
                 }
-                if (range.gradient == Gradient.upward) {
+                if (range.gradient == RangeGradient.upward) {
                     if (peekValue.compareTo(range.to) <= 0) {
                         return peekValue
                     }
@@ -262,7 +262,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     if (peekValue.compareTo(range.from) < 0)
                         return null
                 }
-                if (range.gradient == Gradient.upward) {
+                if (range.gradient == RangeGradient.upward) {
                     //stepping backwards on upward gradient so check against 'from' limit
                     if (peekValue.compareTo(range.from) >= 0) {
                         return peekValue
@@ -549,7 +549,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     }
                     else {
                         //if we have stepped past the last column
-                        if (currentColumn + 1 >= next.size())
+                        if (currentColumn + 1 > next.size())
                             return null
 
                         next[currentColumn++] = lower
@@ -579,7 +579,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     }
                     else {
                         //if we have stepped past the last column
-                        if (currentColumn + 1 >= next.size())
+                        if (currentColumn + 1 > next.size())
                             return null
 
                         next[currentColumn++] = lower  //, reset this column, and post increment to the start value point for next column
@@ -700,7 +700,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             lowerAV =  from as ArrayList
         }
 
-        if (gradient == Gradient.downward) {
+        if (gradient == RangeGradient.downward) {
             //switch order so lower < upper for the calculation
             def temp = upperAV
             upperAV = lowerAV
@@ -762,7 +762,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     }
                     else {
                         //if we have stepped past the last column
-                        if (currentColumn + 1 >= next.size())
+                        if (currentColumn + 1 > next.size())
                             return null
 
                         next[currentColumn++] = upper  //, reset this column, and post increment to the start value point for next column

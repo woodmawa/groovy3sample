@@ -3,7 +3,7 @@ package com.softwood.util
 import spock.lang.Specification
 
 class TestComparableArrayList extends Specification {
-    
+
     def "test comparing two lists " () {
         given:
         ComparableArrayList l1 = new ComparableArrayList([0,1])

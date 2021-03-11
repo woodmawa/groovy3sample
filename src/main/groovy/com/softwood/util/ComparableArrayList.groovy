@@ -16,7 +16,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     }
 
     Object[] getElements () {
-        super.toArray().sort()
+        super.toArray()
     }
 
     int size() {
