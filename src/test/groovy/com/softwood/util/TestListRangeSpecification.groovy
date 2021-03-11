@@ -61,4 +61,18 @@ class TestListRangeSpecification extends Specification {
         expect:
         results.toString() == [[0,0],[1,0],[0,1],[1,1]].toString()
     }
+
+    def "test reverse range  "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,1], true)
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.reverse()
+        results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
+    }
 }
