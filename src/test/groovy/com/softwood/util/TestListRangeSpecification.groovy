@@ -10,6 +10,11 @@ class TestListRangeSpecification extends Specification {
         ListRange lr0 = new ListRange ([0,0], [1,0])  //essentially row is bounded to zero so can only change column
         ListRange lr1 = new ListRange ([0,0], [1,1])  //row, and column can vary
 
+        ArrayList results = []
+        for (i in lr1){
+            results << i
+        }
+
         expect:
         lr0.from == [0,0]
         lr0.to == [1,0]
@@ -23,5 +28,7 @@ class TestListRangeSpecification extends Specification {
         lr1.listRangeFillStyle == ListRangeFill.byRowFirst
         lr1.get(2) == [1,0]
         lr1[-2] == [1,0]
+        results.size() == 4
+        results.toString() == [[0,0],[0,1],[1,0],[1,1]].toString()
     }
 }
