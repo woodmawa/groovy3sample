@@ -159,8 +159,9 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
     /**
      * Non-thread-safe iterator which lazily produces the next element only on calls of hasNext() or next()
+     * was static - removed this for now
      */
-    private static final class StepIterator implements Iterator<Comparable> {
+    private final class StepIterator implements Iterator<Comparable> {
         // actual step, can be +1 when desired step is -1 and direction is from high to low
         private final int step
         private final ListRange range
