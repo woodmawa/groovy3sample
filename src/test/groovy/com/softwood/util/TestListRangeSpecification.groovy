@@ -30,5 +30,35 @@ class TestListRangeSpecification extends Specification {
         lr1[-2] == [1,0]
         results.size() == 4
         results.toString() == [[0,0],[0,1],[1,0],[1,1]].toString()
+
+    }
+
+    def "negative range test " () {
+        given:
+        ListRange lr = new ListRange([-1,-1],[0,0])
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.toString() == [[-1,-1],[-1,0],[0,-1],[0,0]].toString()
+
+
+    }
+
+    def "test column fill first "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,1])
+        lr.setListRangeFillStyle(ListRangeFill.byColumnFirst)
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.toString() == [[0,0],[1,0],[0,1],[1,1]].toString()
     }
 }
