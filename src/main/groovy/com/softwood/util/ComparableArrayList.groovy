@@ -63,6 +63,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     private int compareTwoEqualSizedLists (List a, List b) {
         if (a.equals(b))
             return 0
+        def result
         for (int i=0; i< a.size(); i++ ) {
             def m = a[i]
             def n = b[i]
@@ -70,13 +71,16 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
                 return compareTwoEqualSizedLists (m, n)
             } else {
                 if (m.equals(n))
-                    return 0
+                    result = 0
                 else if (m < n)
-                    return -1
+                    result = -1
                 else
-                    return 1
+                    result = 1
             }
+            if (result != 0)
+                break
         }
+        result
     }
 
     @Override
