@@ -52,7 +52,7 @@ class Cell {
     }
 
     List<Long> getCoOrdinateAsList () {
-        cellReference?.threeDimensionalCoOrdinateAsList
+        cellReference?.coOrdinateAs3DList
     }
 
     /**

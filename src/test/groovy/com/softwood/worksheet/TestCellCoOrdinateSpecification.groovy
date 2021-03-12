@@ -15,7 +15,7 @@ class TestCellCoOrdinateSpecification extends Specification {
 
         then:
         c1.equals(c2)
-        [1,1] == c3.twoDimensionalCoOrdinateAsList
+        [1,1] == c3.coOrdinateAs2DList
 
     }
 
@@ -33,18 +33,18 @@ class TestCellCoOrdinateSpecification extends Specification {
         cell1.cellReference == new CellCoOrdinate (0,0)
         cell1.name == "first cell"
         cell1.valueAsText == "cell 0:0"
-        [2,2]  == cOrd.twoDimensionalCoOrdinateAsList
+        [2,2]  == cOrd.coOrdinateAs2DList
         new Tuple2 (2,2).equals( cOrd.twoDimensionalTuple)
 
     }
 
-    def "as type convertion test" (){
+    def "as type conversion test" (){
         given:
         CellCoOrdinate cOrd = [2, 2] as CellCoOrdinate
 
         when:
         List arr = cOrd as List
-        Tuple tup = cOrd as Tuple
+        Tuple tup = cOrd as Tuple<Long>
 
         then:
         arr == [2,2,0]
@@ -63,9 +63,9 @@ class TestCellCoOrdinateSpecification extends Specification {
         CellCoOrdinate translated = cOrd1.translate(5,5)
 
         then:
-        add.getTwoDimensionalCoOrdinateAsList() == [3,3]
-        minus.getTwoDimensionalCoOrdinateAsList() == [1,1]
-        translated.getTwoDimensionalCoOrdinateAsList() == [6,6]
+        add.getCoOrdinateAs2DList() == [3, 3]
+        minus.getCoOrdinateAs2DList() == [1, 1]
+        translated.getCoOrdinateAs2DList() == [6, 6]
 
         and:
         CellCoOrdinate relocated = cOrd1.relocate(5,5)  //relocates moves this instance to new place

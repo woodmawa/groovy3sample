@@ -1,5 +1,6 @@
 package com.softwood.util
 
+import com.softwood.worksheet.CellCoOrdinate
 import spock.lang.Specification
 
 class TestComparableArrayList extends Specification {
@@ -81,5 +82,16 @@ class TestComparableArrayList extends Specification {
         elements.getClass() == Object[]
         elements.size() == 3
         q.size() == 3
+    }
+
+    def "test creation of ComparableArrayList using  CellCoOrdinates " () {
+        given:
+        ComparableArrayList cal = ComparableArrayList.of (new CellCoOrdinate (1,1,1) )
+
+        ArrayList<CellCoOrdinate> converted = cal.asType(ArrayList)
+        CellCoOrdinate first = converted[0]
+
+        expect:
+        first.getCoOrdinateAs3DList() == [1,1,1]
     }
 }

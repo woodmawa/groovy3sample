@@ -72,7 +72,7 @@ class CellCoOrdinate implements Comparable {
         new CellCoOrdinate(x - another.x, y - another.y, z - another.z)
     }
 
-    List<Long> getTwoDimensionalCoOrdinateAsList () {
+    List<Long> getCoOrdinateAs2DList() {
         [x,y] as Immutable
     }
 
@@ -80,7 +80,7 @@ class CellCoOrdinate implements Comparable {
         new Tuple2 (x,y)
     }
 
-    List<Long> getThreeDimensionalCoOrdinateAsList () {
+    List<Long> getCoOrdinateAs3DList() {
         [x, y, z] as Immutable
     }
 
@@ -96,15 +96,17 @@ class CellCoOrdinate implements Comparable {
         assert clazz
         if (clazz == List || clazz == ArrayList) {
             //new CellCoOrdinate(x,y,z)
-            getThreeDimensionalCoOrdinateAsList ()
+            return getCoOrdinateAs3DList ()
         } else if (clazz == Tuple2) {
-            getTwoDimensionalTuple()
+            return getTwoDimensionalTuple()
         } else if (clazz == Tuple3) {
-            getThreeDimensionalTuple()
+            return getThreeDimensionalTuple()
         } else if (clazz == Tuple) {
-            new Tuple (x,y,z)
-        }else
-            null
+            return new Tuple (x,y,z)
+        }
+
+        throw new ClassCastException("CellCoOrdinate cannot be coerced into $clazz")
+
     }
 
     @Override
