@@ -11,7 +11,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
 
 
     ComparableArrayList (List args) {
-        super.addAll(args)
+        if (args) super.addAll(args)
         this
     }
 
