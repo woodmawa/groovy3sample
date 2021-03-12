@@ -15,7 +15,7 @@ class TestCellCoOrdinateSpecification extends Specification {
 
         then:
         c1.equals(c2)
-        [1,1] == c3.coOrdinateAs2DList
+        [1,1] == c3.as2DList
 
     }
 
@@ -33,8 +33,8 @@ class TestCellCoOrdinateSpecification extends Specification {
         cell1.cellReference == new CellCoOrdinate (0,0)
         cell1.name == "first cell"
         cell1.valueAsText == "cell 0:0"
-        [2,2]  == cOrd.coOrdinateAs2DList
-        new Tuple2 (2,2).equals( cOrd.twoDimensionalTuple)
+        [2,2]  == cOrd.as2DList
+        new Tuple2 (2,2).equals( cOrd.as2DTuple)
 
     }
 
@@ -63,9 +63,9 @@ class TestCellCoOrdinateSpecification extends Specification {
         CellCoOrdinate translated = cOrd1.translate(5,5)
 
         then:
-        add.getCoOrdinateAs2DList() == [3, 3]
-        minus.getCoOrdinateAs2DList() == [1, 1]
-        translated.getCoOrdinateAs2DList() == [6, 6]
+        add.getAs2DList() == [3, 3]
+        minus.getAs2DList() == [1, 1]
+        translated.getAs2DList() == [6, 6]
 
         and:
         CellCoOrdinate relocated = cOrd1.relocate(5,5)  //relocates moves this instance to new place

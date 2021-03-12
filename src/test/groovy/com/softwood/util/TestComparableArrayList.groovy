@@ -92,6 +92,6 @@ class TestComparableArrayList extends Specification {
         CellCoOrdinate first = converted[0]
 
         expect:
-        first.getCoOrdinateAs3DList() == [1,1,1]
+        first.getAs3DList() == [1, 1, 1]
     }
 }

@@ -55,8 +55,8 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         assert startCoOrd
         assert endCoOrd
         List start, end
-        start = startCoOrd.getCoOrdinateAs3DList()
-        end = endCoOrd.getCoOrdinateAs3DList()
+        start = startCoOrd.getAs3DList()
+        end = endCoOrd.getAs3DList()
 
         if (start.size() != end.size()) {
             throw new ExceptionInInitializerError ("to and from array list sizes must have the same number of elements")

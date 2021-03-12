@@ -72,19 +72,19 @@ class CellCoOrdinate implements Comparable {
         new CellCoOrdinate(x - another.x, y - another.y, z - another.z)
     }
 
-    List<Long> getCoOrdinateAs2DList() {
+    List<Long> getAs2DList() {
         [x,y] as Immutable
     }
 
-    Tuple getTwoDimensionalTuple () {
+    Tuple getAs2DTuple() {
         new Tuple2 (x,y)
     }
 
-    List<Long> getCoOrdinateAs3DList() {
+    List<Long> getAs3DList() {
         [x, y, z] as Immutable
     }
 
-    Tuple getThreeDimensionalTuple () {
+    Tuple getAs3DTuple() {
         new Tuple3 (x,y,z)
     }
 
@@ -96,11 +96,11 @@ class CellCoOrdinate implements Comparable {
         assert clazz
         if (clazz == List || clazz == ArrayList) {
             //new CellCoOrdinate(x,y,z)
-            return getCoOrdinateAs3DList ()
+            return getAs3DList ()
         } else if (clazz == Tuple2) {
-            return getTwoDimensionalTuple()
+            return getAs2DTuple()
         } else if (clazz == Tuple3) {
-            return getThreeDimensionalTuple()
+            return getAs3DTuple()
         } else if (clazz == Tuple) {
             return new Tuple (x,y,z)
         }
