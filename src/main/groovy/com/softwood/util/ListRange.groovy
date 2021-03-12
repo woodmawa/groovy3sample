@@ -11,11 +11,6 @@ enum RangeGradient {
     downward
 }
 
-enum Direction {
-    forward,
-    backward
-}
-
 enum ListRangeFill {
     byRowFirst,
     byColumnFirst
@@ -627,7 +622,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
         next
 
- 
+
     }
 
     /**
