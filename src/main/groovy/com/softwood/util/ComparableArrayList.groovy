@@ -3,6 +3,9 @@ package com.softwood.util
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
 
+import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.ConcurrentLinkedQueue
+
 @InheritConstructors
 @EqualsAndHashCode(includeFields = true)
 class ComparableArrayList<E> extends ArrayList implements List, Comparable {
@@ -125,12 +128,19 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     }
 
     def asType (Class clazz) {
-        if (clazz == ArrayList || clazz == Collection) {
-            return ArrayList.of (this)
+        if (clazz == ArrayList || clazz == Collection || clazz == List) {
+            return ArrayList<E>.of (this)
         }
         if (clazz == Object[]) {
             return toArray()
         }
+        if (clazz == ConcurrentLinkedQueue || clazz == Queue) {
+            new ConcurrentLinkedQueue<E> (getElements())
+        }
+        if (clazz == ConcurrentLinkedDeque || clazz == Deque) {
+            new ConcurrentLinkedDeque<E> (getElements())
+        }
+
         throw new ClassCastException("User cannot be coerced into $clazz")
     }
 
