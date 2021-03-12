@@ -88,7 +88,7 @@ class TestComparableArrayList extends Specification {
         given:
         ComparableArrayList cal = ComparableArrayList.of (new CellCoOrdinate (1,1,1) )
 
-        ArrayList<CellCoOrdinate> converted = cal.asType(ArrayList)
+        ArrayList<CellCoOrdinate> converted = cal as ArrayList
         CellCoOrdinate first = converted[0]
 
         expect:
