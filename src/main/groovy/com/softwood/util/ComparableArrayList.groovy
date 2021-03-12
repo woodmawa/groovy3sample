@@ -10,7 +10,16 @@ import java.util.concurrent.ConcurrentLinkedQueue
 @EqualsAndHashCode(includeFields = true)
 class ComparableArrayList<E> extends ArrayList implements List, Comparable {
 
-    String name
+
+    Optional<String> name = Optional.empty()
+
+    void setName (String givenName) {
+        name = Optional.of (givenName)
+    }
+
+    String getName () {
+        name.orElse ("--Unnamed--")
+    }
 
     ComparableArrayList (Collection args) {
         if (args) super.addAll(args)
@@ -147,6 +156,6 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     @Override
     String toString() {
         def firstElement = elements[0]
-        "ComparableArrayList ${name ? "(name: $name)" : "(--unnamed--)"} size:${size()} (starts at $firstElement)"
+        "ComparableArrayList (name: ${getName()}) size:${size()} (starts at $firstElement)"
     }
 }
