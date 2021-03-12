@@ -457,15 +457,16 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")")
         }
         if (fromIndex == toIndex) {
-            return new EmptyRange<Comparable>(from)
+            return []
         }
 
         // Performance detail:
         // not using get(fromIndex), get(toIndex) in the following to avoid stepping over elements twice
         final Iterator<Comparable> iter = new StepIterator(this, 1)
 
-        Comparable endValue, startValue
+        Comparable peekValue, startValue
         startValue = iter.next()  //start with pre cached start value
+        List<Comparable> subList = []
         int i = 0
         for (; i < fromIndex; i++) {
             if (!iter.hasNext()) {
@@ -474,18 +475,18 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             startValue = iter.next()
         }
 
+        subList << startValue
+
         for (; i < toIndex; i++) {
             boolean hasMore = iter.hasNext()
             if (!hasMore) {
                 throw new IndexOutOfBoundsException("Index: " + i + " is too big for range: " + this)
             }
-            endValue = iter.next()
+            peekValue = iter.next()
+            subList << peekValue
         }
 
-        if (reverse)
-            return new ListRange(endValue, startValue, reverse)
-        else
-            return new ListRange (startValue, endValue)
+        subList
     }
 
 

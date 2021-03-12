@@ -128,4 +128,34 @@ class TestListRangeSpecification extends Specification {
         expect:
         results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
     }
+
+    def "test contains within range    "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,1])
+
+
+        expect:
+        lr.contains([1,1])
+        lr.contains([1,0])
+        lr.contains([0,1])
+        !lr.contains([0,2])
+    }
+
+    def "test sublist within range    "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,2])
+        ListRange revlr = new ListRange([0,0],[1,2], true)
+
+        List sl1 = lr.subList(1,2)
+        List sl2 = revlr.subList(1,2)
+
+
+        expect:
+        sl1.toString () == [[0,1],[0,2]].toString()
+        lr.reverse == false
+        lr.gradient == RangeGradient.upward
+
+        sl2.toString () == [[1,1],[1,0]].toString()
+
+    }
 }
