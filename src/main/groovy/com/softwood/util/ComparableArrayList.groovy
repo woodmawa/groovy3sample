@@ -125,7 +125,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     }
 
     def asType (Class clazz) {
-        if (clazz == ArrayList) {
+        if (clazz == ArrayList || clazz == Collection) {
             return ArrayList.of (this)
         }
         if (clazz == Object[]) {
