@@ -244,7 +244,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                             return peekValue
                         }
                     } else if (gradient == RangeGradient.downward) {
-                        if (peekValue <= range.to)  //if cached value has reached the upper limit, nothing more to peek
+                        if (peekValue <= range.to)  //if cached value has reached the lower limit, nothing more to peek
                             return null
 
                         peekValue = (ComparableArrayList) range.decrement(range.processFillEntries, arrayIndexLimits, peekValue)
@@ -261,29 +261,41 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
             } else {
                 final int positiveStep = -step
                 ComparableArrayList peekValue = value
-                if (peekValue <= range.from)  //if cached value has reached the upper limit, nothing more to peek
-                    return null
-
                 for (int i = 0; i < positiveStep; i++) {
-                    peekValue = (ComparableArrayList) range.decrement(range.processFillEntries, arrayIndexLimits, peekValue)
-                    // handle back to beginning due to modulo decrementing
-                    if (peekValue == null || peekValue.isEmpty() )
-                        return null
-                    if (peekValue.compareTo(range.from) < 0)
-                        return null
-                }
-                if (range.gradient == RangeGradient.upward) {
-                    //stepping backwards on upward gradient so check against 'from' limit
-                    if (peekValue.compareTo(range.from) >= 0) {
-                        return peekValue
+                    if (gradient == RangeGradient.upward) {
+                        if (peekValue <= range.from)  //if cached value has reached the upper limit, nothing more to peek
+                            return null
+
+                        peekValue = (ComparableArrayList) range.decrement(range.processFillEntries, arrayIndexLimits, peekValue)
+                        // handle back to beginning due to modulo decrementing
+                        if (peekValue == null || peekValue.isEmpty() )
+                            return null
+                        //stepping backwards on upward gradient so check against 'from' limit
+                        if (peekValue.compareTo(range.from) < 0)
+                            return null
+                        if (peekValue.compareTo(range.from) >= 0) {
+                            return peekValue
+                        }
+
+
+                    } else if (gradient == RangeGradient.downward) {
+                        if (peekValue >= range.from)  //if cached value has reached the lower limit, nothing more to peek
+                            return null
+
+                        peekValue = (ComparableArrayList) range.increment(range.processFillEntries, arrayIndexLimits, peekValue)
+                        // handle back to beginning due to modulo incrementing
+                        if (peekValue == null || peekValue.isEmpty())
+                            return null
+                        //stepping forward on upward gradient so check against 'to' limit
+                        if (peekValue.compareTo(range.from) > 0)
+                            return null
+                        if (peekValue.compareTo(range.from) <= 0) {
+                            return peekValue
+                        }
                     }
-                } else {
-                    //stepping backwards on downward gradient so check against 'to' limit
-                    if (peekValue.compareTo(range.to) >= 0) {
-                        return peekValue
-                    }
+
                 }
-            }
+          }
             return null
         }
     }

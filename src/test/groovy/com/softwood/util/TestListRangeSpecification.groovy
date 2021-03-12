@@ -77,9 +77,48 @@ class TestListRangeSpecification extends Specification {
     }
 */
 
-    def "test range with upper range is lower than the lower range   "() {
+    def "test range with downward gradient range   "() {
         given:
         ListRange lr = new ListRange([1,1],[0,0])
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
+    }
+
+    def "test range with upward gradient range   "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,1])
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.toString() == [[0,0],[0,1],[1,0],[1,1]].toString()
+    }
+
+    def "test reverse range with downward gradient range    "() {
+        given:
+        ListRange lr = new ListRange([1,1],[0,0], true)
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
+        results.toString() == [[0,0],[0,1],[1,0],[1,1]].toString()
+    }
+
+    def "test reverse range with upward gradient range    "() {
+        given:
+        ListRange lr = new ListRange([0,0],[1,1], true)
 
         ArrayList results = []
         for (i in lr){
