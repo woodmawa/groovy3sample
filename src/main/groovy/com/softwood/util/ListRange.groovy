@@ -180,7 +180,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 step = desiredStep
             }
 
-            if(range.gradient = RangeGradient.upward)
+            if(range.gradient == RangeGradient.upward)
                 arrayIndexLimits = range.calcArrayIndexRange(range.from, range.to)
             else
                 //todo - do i need to do this reorder?
@@ -227,25 +227,35 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         private Comparable peek() {
             if (step > 0) {
                 ComparableArrayList peekValue = value
-                if (peekValue >= range.to)  //if cached value has reached the upper limit, nothing more to peek
-                    return null
 
                 int compared
                 for (int i = 0; i < step; i++) {
-                    peekValue = (ComparableArrayList) range.increment(range.processFillEntries, arrayIndexLimits, peekValue)
-                    // handle back to beginning due to modulo incrementing
-                    if (peekValue == null || peekValue.isEmpty() )
-                        return null
-                    if (peekValue.compareTo(range.to) > 0)
-                        return null
-                }
-                if (range.gradient == RangeGradient.upward) {
-                    if (peekValue.compareTo(range.to) <= 0) {
-                        return peekValue
-                    }
-                } else {
-                    if (peekValue.compareTo(range.from) >= 0) {
-                        return peekValue
+                    if (gradient == RangeGradient.upward) {
+                        if (peekValue >= range.to)  //if cached value has reached the upper limit, nothing more to peek
+                            return null
+
+                        peekValue = (ComparableArrayList) range.increment(range.processFillEntries, arrayIndexLimits, peekValue)
+                        // handle back to beginning due to modulo incrementing
+                        if (peekValue == null || peekValue.isEmpty())
+                            return null
+                        if (peekValue.compareTo(range.to) > 0)
+                            return null
+                        if (peekValue.compareTo(range.to) <= 0) {
+                            return peekValue
+                        }
+                    } else if (gradient == RangeGradient.downward) {
+                        if (peekValue <= range.to)  //if cached value has reached the upper limit, nothing more to peek
+                            return null
+
+                        peekValue = (ComparableArrayList) range.decrement(range.processFillEntries, arrayIndexLimits, peekValue)
+                        // handle back to beginning due to modulo incrementing
+                        if (peekValue == null || peekValue.isEmpty())
+                            return null
+                        if (peekValue.compareTo(range.to) < 0)
+                            return null
+                        if (peekValue.compareTo(range.to) >= 0) {
+                            return peekValue
+                        }
                     }
                 }
             } else {
@@ -548,11 +558,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         break
                     }
                     else {
+                        next[currentColumn++] = lower
                         //if we have stepped past the last column
-                        if (currentColumn + 1 > next.size())
+                        if (currentColumn >= next.size())
                             return null
 
-                        next[currentColumn++] = lower
                         columnValue =next[currentColumn] //get the start value point for next column
                         highLow = arrayIndexLimits[currentColumn]
                         upper = highLow['upper']
@@ -578,10 +588,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         break
                     }
                     else {
-                        //if we have stepped past the last column
-                        if (currentColumn + 1 > next.size())
-                            return null
-
                         next[currentColumn++] = lower  //, reset this column, and post increment to the start value point for next column
                         //if we are processing the rows - handle the row column precedence first before handling columns 2...n
                         if (col == 1 && next[0] < arrayIndexLimits[0]['upper']) {
@@ -590,6 +596,10 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         } else {
                             next[0] = arrayIndexLimits[0]['lower']
                         }
+                        //if we have stepped past the last column
+                        if (currentColumn >= next.size())
+                            return null
+
                         columnValue =next[currentColumn] //get the start value point for next column
                         highLow = arrayIndexLimits[currentColumn]
                         upper = highLow['upper']
@@ -730,11 +740,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         break
                     }
                     else {
+                        next[currentColumn++] = upper
                         //if we have stepped past the last column
-                        if (currentColumn + 1 >= next.size())
+                        if (currentColumn >= next.size())
                             return null
 
-                        next[currentColumn++] = upper
                         columnValue =next[currentColumn] //get the start value point for next column
 
                         highLow = arrayIndexLimits[currentColumn]
@@ -761,10 +771,6 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         break
                     }
                     else {
-                        //if we have stepped past the last column
-                        if (currentColumn + 1 > next.size())
-                            return null
-
                         next[currentColumn++] = upper  //, reset this column, and post increment to the start value point for next column
                         //if we are processing the rows - handle the row column precedence first before handling columns 2...n
                         if (col == 1 && next[0] > arrayIndexLimits[0]['lower']) {
@@ -773,6 +779,10 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         } else {
                             next[0] = arrayIndexLimits[0]['upper']
                         }
+                        //if we have stepped past the last column
+                        if (currentColumn >= next.size())
+                            return null
+
                         columnValue =next[currentColumn] //get the start value point for next column
                         highLow = arrayIndexLimits[currentColumn]
                         upper = highLow['upper']

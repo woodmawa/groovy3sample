@@ -3,7 +3,7 @@ package com.softwood.util
 import spock.lang.Specification
 
 class TestListRangeSpecification extends Specification {
-
+/*
     def "basic list range " () {
         given :
 
@@ -73,6 +73,20 @@ class TestListRangeSpecification extends Specification {
 
         expect:
         results.reverse()
+        results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
+    }
+*/
+
+    def "test range with upper range is lower than the lower range   "() {
+        given:
+        ListRange lr = new ListRange([1,1],[0,0])
+
+        ArrayList results = []
+        for (i in lr){
+            results << i
+        }
+
+        expect:
         results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
     }
 }
