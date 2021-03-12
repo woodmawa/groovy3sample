@@ -127,7 +127,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
         }
     }
 
-    def asType (Class clazz) {
+    def asType (clazz) {
         if (clazz == ArrayList || clazz == Collection || clazz == List) {
             return ArrayList<E>.of (this)
         }
@@ -135,13 +135,13 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
             return toArray()
         }
         if (clazz == ConcurrentLinkedQueue || clazz == Queue) {
-            new ConcurrentLinkedQueue<E> (getElements())
+            new ConcurrentLinkedQueue<E> (getElements() as Collection)
         }
         if (clazz == ConcurrentLinkedDeque || clazz == Deque) {
-            new ConcurrentLinkedDeque<E> (getElements())
+            new ConcurrentLinkedDeque<E> (getElements() as Collection)
         }
 
-        throw new ClassCastException("User cannot be coerced into $clazz")
+        throw new ClassCastException("ComparableArrayClass cannot be coerced into $clazz")
     }
 
     @Override

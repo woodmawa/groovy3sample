@@ -73,11 +73,13 @@ class TestComparableArrayList extends Specification {
 
         ArrayList converted = l0.asType(ArrayList)
         Object[] elements = l0.asType(Object[])
+        Queue q = l0 as Queue
 
         expect:
         converted == [[0, 1], [0, 1], [0, 2]]
         converted.getClass() == ArrayList
         elements.getClass() == Object[]
         elements.size() == 3
+        q.size() == 3
     }
 }
