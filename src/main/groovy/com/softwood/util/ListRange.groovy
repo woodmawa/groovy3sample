@@ -236,7 +236,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         if (peekValue.compareTo(range.to) > 0)
                             return null
                         if (peekValue.compareTo(range.to) <= 0) {
-                            return peekValue
+                            //go on to next iteration if Step >1
                         }
                     } else if (gradient == RangeGradient.downward) {
                         if (peekValue <= range.to)  //if cached value has reached the lower limit, nothing more to peek
@@ -249,10 +249,11 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         if (peekValue.compareTo(range.to) < 0)
                             return null
                         if (peekValue.compareTo(range.to) >= 0) {
-                            return peekValue
+                            //go on to next iteration if Step >1
                         }
                     }
                 }
+                return peekValue
             } else {
                 final int positiveStep = -step
                 ComparableArrayList peekValue = value
@@ -269,7 +270,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         if (peekValue.compareTo(range.from) < 0)
                             return null
                         if (peekValue.compareTo(range.from) >= 0) {
-                            return peekValue
+                            //go on to next iteration if Step >1
                         }
 
 
@@ -285,12 +286,14 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                         if (peekValue.compareTo(range.from) > 0)
                             return null
                         if (peekValue.compareTo(range.from) <= 0) {
-                            return peekValue
+                            //go on to next iteration if Step >1
+
                         }
                     }
 
                 }
-          }
+                return peekValue
+            }
             return null
         }
     }
@@ -427,7 +430,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
         //A closure which stores calls in a List so that method calls
         //can be iterated over in a 'yield' style way - err what ?
         final IteratorClosureAdapter<Comparable> adapter = new IteratorClosureAdapter<Comparable>(this)
-        step(step, adapter)
+        this.step(step, adapter)
         return adapter.asList()
     }
 
@@ -662,7 +665,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 currentColumn = 0
 
                 def highLow = arrayIndexLimits[startingColumn]
-                int upper = highLow['upper'] 
+                int upper = highLow['upper']
                 int lower = highLow['lower']
 
                 //start with currentValue as value in the column 0

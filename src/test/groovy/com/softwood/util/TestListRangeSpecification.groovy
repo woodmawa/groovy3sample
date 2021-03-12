@@ -3,7 +3,7 @@ package com.softwood.util
 import spock.lang.Specification
 
 class TestListRangeSpecification extends Specification {
-/*
+
     def "basic list range " () {
         given :
 
@@ -75,7 +75,8 @@ class TestListRangeSpecification extends Specification {
         results.reverse()
         results.toString() == [[1,1],[1,0],[0,1],[0,0]].toString()
     }
-*/
+
+
 
     def "test range with downward gradient range   "() {
         given:
@@ -157,5 +158,16 @@ class TestListRangeSpecification extends Specification {
 
         sl2.toString () == [[1,1],[1,0]].toString()
 
+    }
+
+
+    def "test step by increment through a range " () {
+        given:
+        ListRange lr = new ListRange([0,0],[1,2])
+
+        List steps = lr.step (2)
+
+        expect:
+        steps.toString() == [[0,0],[0,2],[1,1]].toString()
     }
 }
