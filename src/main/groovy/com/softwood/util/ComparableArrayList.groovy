@@ -125,6 +125,15 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
         }
     }
 
+    def asType (Class clazz) {
+        if (clazz == ArrayList) {
+            return ArrayList.of (this)
+        }
+        if (clazz == Object[]) {
+            return toArray()
+        }
+        throw new ClassCastException("User cannot be coerced into $clazz")
+    }
 
     @Override
     String toString() {

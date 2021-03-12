@@ -51,4 +51,19 @@ class TestComparableArrayList extends Specification {
         l0[0].size() == 2
 
     }
+
+    def "test as Type conversion " () {
+        given:
+        ComparableArrayList l0 = new ComparableArrayList([[0,1], [0,1], [0,2]])
+
+        ArrayList converted = l0.asType( ArrayList)
+        Object[]  elements = l0.asType (Object[])
+
+        expect:
+        converted == [[0,1], [0,1], [0,2]]
+        converted.getClass () == ArrayList
+        elements.getClass() == Object[]
+        elements.size() == 3
+
+    }
 }
