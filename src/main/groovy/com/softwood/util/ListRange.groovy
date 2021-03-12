@@ -662,7 +662,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                 currentColumn = 0
 
                 def highLow = arrayIndexLimits[startingColumn]
-                int upper = highLow['upper']
+                int upper = highLow['upper'] 
                 int lower = highLow['lower']
 
                 //start with currentValue as value in the column 0
