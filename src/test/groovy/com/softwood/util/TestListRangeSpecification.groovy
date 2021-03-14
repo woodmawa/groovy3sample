@@ -15,6 +15,7 @@ class TestListRangeSpecification extends Specification {
         lr.get(1) == [a,'b']
         lr.get(2) == [a,'c']
         lr.get(3) == [b,'a']
+        lr[-3] == [b,'a']
 
     }
 
