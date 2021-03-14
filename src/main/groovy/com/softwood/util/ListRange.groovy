@@ -390,6 +390,7 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                                     }
                                     else {
                                         printf "$it was class ${it.class()}"
+                                        -1
                                     }
                             }
                             .inject(1){carryOver, value -> carryOver * value}
