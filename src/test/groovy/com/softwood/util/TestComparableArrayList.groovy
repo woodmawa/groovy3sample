@@ -94,4 +94,16 @@ class TestComparableArrayList extends Specification {
         expect:
         first.getAs3DList() == [1, 1, 1]
     }
+
+    def "test strings not int " () {
+        given:
+        ComparableArrayList cal1 = ComparableArrayList.of (["abc", "def"])
+        ComparableArrayList caldup1 = ComparableArrayList.of (["abc", "def"])
+
+        ComparableArrayList cal2 = ComparableArrayList.of (["abc", "ghi"])
+
+        expect:
+        cal1 < cal2
+        cal1.compareTo(caldup1) == 0
+    }
 }

@@ -4,6 +4,21 @@ import spock.lang.Specification
 
 class TestListRangeSpecification extends Specification {
 
+    def "test char arrays " () {
+        given:
+        char a = 'a' as char
+        char b = 'b' as char
+        ListRange lr = new ListRange([Character.valueOf(a),'a'],[Character.valueOf(b),'c'])
+
+        expect:
+        lr.get(0) == [a,'a']
+        lr.get(1) == [a,'b']
+        lr.get(2) == [a,'c']
+        lr.get(3) == [b,'a']
+
+    }
+
+
     def "basic list range " () {
         given :
 
@@ -170,4 +185,5 @@ class TestListRangeSpecification extends Specification {
         expect:
         steps.toString() == [[0,0],[0,2],[1,1]].toString()
     }
+
 }

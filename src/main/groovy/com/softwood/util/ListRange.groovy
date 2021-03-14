@@ -373,7 +373,18 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 if (upper instanceof ArrayList && lower instanceof ArrayList ) {
                     size = difference
-                            .collect{Math.abs(it)+1}
+                            .collect{if (it instanceof Number)
+                                        Math.abs(it) + 1
+                                    else if (it instanceof String && it.size() == 1 ) {
+                                        def lower_a = Character.getNumericValue('a' as Character)
+                                        def it_as_num = Character.getNumericValue(it as Character)
+                                        def num = it_as_num - lower_a
+                                        (num).toInteger() + 1
+                                    }
+                                    else {
+                                        printf "$it was class ${it.class()}"
+                                    }
+                            }
                             .inject(1){carryOver, value -> carryOver * value}
 
 
@@ -565,20 +576,33 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 for (col in 0..<next.size()) {
                     if (columnValue < upper) {
-                        next[currentColumn] = columnValue + 1
+                        if (columnValue instanceof Number) {
+                            next[col] = columnValue + 1
+                        } else if (columnValue instanceof String ) {
+                            next[col] = String.valueOf (++columnValue as char )
+                        } else if (columnValue instanceof Character) {
+                            next[col] = Character.valueOf (++columnValue as char ) //++(Character.valueOf (columnValue as Character))
+                        }
                         break
                     }
                     else {
-                        next[currentColumn++] = lower
+                        if (columnValue instanceof Number) {
+                            next[currentColumn++] = lower
+                        } else if (columnValue instanceof String ) {
+                            next[currentColumn++] = String.valueOf (lower as char)
+                        }
+                        else if (columnValue instanceof Character ) {
+                            next[currentColumn++] = String.valueOf (lower as char)
+                        }
                         //if we have stepped past the last column
                         if (currentColumn >= next.size())
                             return null
 
-                        columnValue =next[currentColumn] //get the start value point for next column
+                        columnValue = next[currentColumn] //get the start value point for next column
                         highLow = arrayIndexLimits[currentColumn]
                         upper = highLow['upper']
                         lower = highLow['lower']
-                    }
+                     }
                 }
                 break
 
@@ -595,32 +619,53 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 for (col in 1..<next.size()) {
                     if (columnValue < upper) {
-                        next[currentColumn] = columnValue + 1
-                        break
+                        if (columnValue instanceof Number) {
+                            next[col] = columnValue + 1
+                        } else if (columnValue instanceof String && columnValue.size() == 1) {
+                            next[col] = (String.valueOf (++columnValue as Character))
+                        } else if (columnValue instanceof Character) {
+                            next[col] = Character.valueOf ((next[col]+1) as char) //++(Character.valueOf (columnValue as Character))
+                        }
+                      break
                     }
                     else {
-                        next[currentColumn++] = lower  //, reset this column, and post increment to the start value point for next column
                         //if we are processing the rows - handle the row column precedence first before handling columns 2...n
                         if (col == 1 && next[0] < arrayIndexLimits[0]['upper']) {
-                            next[0] = next[0] + 1
-                            break
+                            if (next[0] instanceof Number) {
+                                next[0] = next[0] + 1
+                            } else if (next[0] instanceof String) {
+                                next[0] = String.valueOf (next[0] as Character + 1) //++next[0]
+                            } else if (next[0] instanceof Character) {
+                                next[0] = Character.valueOf ((next[0]+1) as char)
+                            }
                         } else {
+                            //don't need to get next one just use given value
                             next[0] = arrayIndexLimits[0]['lower']
                         }
-                        //if we have stepped past the last column
-                        if (currentColumn >= next.size())
-                            return null
-
-                        columnValue =next[currentColumn] //get the start value point for next column
-                        highLow = arrayIndexLimits[currentColumn]
-                        upper = highLow['upper']
-                        lower = highLow['lower']
+                        if (columnValue instanceof Number) {
+                            next[currentColumn++] = lower
+                        } else if (columnValue instanceof String && columnValue.size() == 1) {
+                            next[currentColumn++] = String.valueOf (lower as Character)
+                        }
+                        else if (columnValue instanceof Character ) {
+                            next[currentColumn++] = String.valueOf (lower as Character)
+                        }
+                        if (currentColumn >= next.size()) {
+                            break
+                        } else {
+                            //get the start value point for next column for next column in next
+                            columnValue = next[currentColumn]
+                            highLow = arrayIndexLimits[currentColumn]
+                            upper = highLow['upper']
+                            lower = highLow['lower']
+                        }
                     }
                 }
-                break
+                break // end of row fill
 
             default:
                 next = null
+                break
         }
 
         next
@@ -673,17 +718,29 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 for (col in 0..<next.size()) {
                     if (columnValue > lower) {
-                        next[currentColumn] = columnValue - 1
+                        if (columnValue instanceof Number) {
+                            next[col] = columnValue - 1
+                        } else if (columnValue instanceof String ) {
+                            next[col] = String.valueOf ((columnValue - 1) as char )
+                        } else if (columnValue instanceof Character) {
+                            next[col] = Character.valueOf ((columnValue - 1) as char )
+                        }
                         break
                     }
                     else {
-                        next[currentColumn++] = upper
+                        if (columnValue instanceof Number) {
+                            next[currentColumn++] = upper
+                        } else if (columnValue instanceof String ) {
+                            next[currentColumn++] = String.valueOf (upper as char)
+                        }
+                        else if (columnValue instanceof Character ) {
+                            next[currentColumn++] = String.valueOf (upper as char)
+                        }
                         //if we have stepped past the last column
                         if (currentColumn >= next.size())
                             return null
 
-                        columnValue =next[currentColumn] //get the start value point for next column
-
+                        columnValue = next[currentColumn] //get the start value point for next column
                         highLow = arrayIndexLimits[currentColumn]
                         upper = highLow['upper']
                         lower = highLow['lower']
@@ -704,32 +761,53 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
 
                 for (col in 1..<next.size()) {
                     if (columnValue > lower) {
-                        next[currentColumn] = columnValue - 1
+                        if (columnValue instanceof Number) {
+                            next[col] = columnValue - 1
+                        } else if (columnValue instanceof String) {
+                            next[col] = (String.valueOf((columnValue - 1) as char))
+                        } else if (columnValue instanceof Character) {
+                            next[col] = Character.valueOf((columnValue - 1) as char)
+                        }
                         break
                     }
                     else {
-                        next[currentColumn++] = upper  //, reset this column, and post increment to the start value point for next column
                         //if we are processing the rows - handle the row column precedence first before handling columns 2...n
                         if (col == 1 && next[0] > arrayIndexLimits[0]['lower']) {
-                            next[0] = next[0] - 1
-                            break
+                            if (next[0] instanceof Number) {
+                                next[0] = next[0] -1
+                            } else if (next[0] instanceof String) {
+                                next[0] = String.valueOf ((next[0] - 1) as char)
+                            } else if (next[0] instanceof Character) {
+                                next[0] = Character.valueOf ((next[0] - 1) as char)
+                            }
                         } else {
+                            //don't need to get next one just use given value
                             next[0] = arrayIndexLimits[0]['upper']
                         }
-                        //if we have stepped past the last column
-                        if (currentColumn >= next.size())
-                            return null
-
-                        columnValue =next[currentColumn] //get the start value point for next column
-                        highLow = arrayIndexLimits[currentColumn]
-                        upper = highLow['upper']
-                        lower = highLow['lower']
+                        if (columnValue instanceof Number) {
+                            next[currentColumn++] = upper
+                        } else if (columnValue instanceof String ) {
+                            next[currentColumn++] = String.valueOf (upper as char)
+                        }
+                        else if (columnValue instanceof Character ) {
+                            next[currentColumn++] = String.valueOf (upper as char)
+                        }
+                        if (currentColumn >= next.size()) {
+                            break
+                        } else {
+                            //get the start value point for next column for next column in next
+                            columnValue = next[currentColumn]
+                            highLow = arrayIndexLimits[currentColumn]
+                            upper = highLow['upper']
+                            lower = highLow['lower']
+                        }
                     }
                 }
-                break
+                break  //end of decrement by row first
 
             default:
                 next = null
+                break
         }
 
         next

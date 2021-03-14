@@ -18,7 +18,7 @@ class ComparableArrayList<E> extends ArrayList implements List, Comparable {
     }
 
     String getName () {
-        name.orElse ("--Unnamed--")
+        name.orElse ("--UnNamed--")
     }
 
     ComparableArrayList (Collection args) {
