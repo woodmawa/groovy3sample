@@ -375,11 +375,18 @@ class ListRange<E> extends AbstractList  implements Range<Comparable>{
                     size = difference
                             .collect{if (it instanceof Number)
                                         Math.abs(it) + 1
-                                    else if (it instanceof String && it.size() == 1 ) {
-                                        def lower_a = Character.getNumericValue('a' as Character)
-                                        def it_as_num = Character.getNumericValue(it as Character)
-                                        def num = it_as_num - lower_a
-                                        (num).toInteger() + 1
+                                    else if (it instanceof String || it instanceof Character) {
+                                        if ((it as Character).isLowerCase()) {
+                                            def lower_a = Character.getNumericValue('a' as char)
+                                            def it_as_num = Character.getNumericValue(it as char)
+                                            def num = it_as_num - lower_a
+                                            (num).toInteger() + 1
+                                        } else if ((it as Character).isUpperCase()) {
+                                            def upper_A = Character.getNumericValue('A' as char)
+                                            def it_as_num = Character.getNumericValue(it as char)
+                                            def num = it_as_num - upper_A
+                                            (num).toInteger() + 1
+                                        }
                                     }
                                     else {
                                         printf "$it was class ${it.class()}"
