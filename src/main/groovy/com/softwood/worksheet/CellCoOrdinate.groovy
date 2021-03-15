@@ -53,6 +53,43 @@ class CellCoOrdinate implements Comparable {
     }
 
     /**
+     * get column expressed as uppercase char string
+     *
+     * @return
+     */
+    String getAlphabeticColumnName () {
+        StringBuffer colName = new StringBuffer()
+
+        int base = x.intdiv (26)
+        int mod = x.mod (26)
+
+        int col = 0
+        int temp = x.intdiv (26)
+        while (temp > 25) {
+            col++
+            temp = temp.intdiv(26)
+        }
+
+        //wont work for all numbers, just for base <26
+        if (base > 0) {
+            int j = base
+            int colPos = 2
+            for (int i =0; i < j ; j = j.intdiv (26)) {
+                int colBase = 26.power(colPos)
+               int rem = (j - colBase).intdiv(26) - 1
+                if (rem > 0)
+                    colName << Character.valueOf((rem + 65) as char)
+                else
+                    colName << Character.valueOf((65) as char)
+            }
+        }
+        colName << Character.valueOf ((mod+65) as char)
+        def result = colName.toString()
+        result
+    }
+
+
+    /**
      * add this location to another and return a new location
      * @param another
      * @return new location

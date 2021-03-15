@@ -4,6 +4,28 @@ import spock.lang.Specification
 
 class TestCellCoOrdinateSpecification extends Specification {
 
+    def "get alphabetic column name " () {
+        given:
+        CellCoOrdinate A = new CellCoOrdinate(0,0)
+        CellCoOrdinate Z = new CellCoOrdinate(25,0)
+        CellCoOrdinate AA = new CellCoOrdinate(26,0)
+        CellCoOrdinate BA = new CellCoOrdinate(52,0)
+        CellCoOrdinate AAA = new CellCoOrdinate((26 * 26 *26 ),0)
+        CellCoOrdinate ABZ = new CellCoOrdinate((26 * 26 *26 + 2 * 26* 26),0)
+        CellCoOrdinate BBZ = new CellCoOrdinate((2*26 * 26 *26 + 2 * 26* 26 + 25),0)
+
+
+        expect:
+        //A.getAlphabeticColumnName() == "A"
+        //Z.getAlphabeticColumnName() == "Z"
+        //AA.getAlphabeticColumnName() == "AA"
+        //BA.getAlphabeticColumnName() == "BA"
+        //AAA.getAlphabeticColumnName() == "AAA"
+        ABZ.getAlphabeticColumnName() == "ABA"
+        BBZ.getAlphabeticColumnName() == "BBZ"
+
+    }
+
     def "basic Cordinate test" () {
         given:
         CellCoOrdinate c1 = new CellCoOrdinate(0,0)
