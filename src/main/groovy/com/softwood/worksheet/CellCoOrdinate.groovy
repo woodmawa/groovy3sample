@@ -60,34 +60,34 @@ class CellCoOrdinate implements Comparable {
     String getAlphabeticColumnName () {
         StringBuffer colName = new StringBuffer()
 
-        int base = x.intdiv (26)
         int mod = x.mod (26)
 
-        int col = 0
-        int temp = x.intdiv (26)
-        while (temp > 25) {
-            col++
-            temp = temp.intdiv(26)
-        }
+        int numOfColumns = numOfColumnsBase26 (x)
 
         //wont work for all numbers, just for base <26
-        if (base > 0) {
-            int j = base
-            int colPos = 2
-            for (int i =0; i < j ; j = j.intdiv (26)) {
-                int colBase = 26.power(colPos)
-               int rem = (j - colBase).intdiv(26) - 1
-                if (rem > 0)
-                    colName << Character.valueOf((rem + 65) as char)
+        if (x >= 26) {
+            //starting with highest column down
+            int reducing = x
+            for (int  i= numOfColumns; i>= 1; i-- ) {
+                 int colBase = 26.power(i)
+                 int multiplesOf = reducing / colBase
+                 reducing = reducing - (colBase * multiplesOf)
+                if (multiplesOf > 0)
+                    colName << Character.valueOf((multiplesOf-1 + 65) as char)
                 else
                     colName << Character.valueOf((65) as char)
             }
-        }
+         }
         colName << Character.valueOf ((mod+65) as char)
         def result = colName.toString()
         result
     }
 
+    private int numOfColumnsBase26 (Double logNumber) {
+        double customLog = Math.log(logNumber) / Math.log(26)
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(customLog))
+        int intValue = bigDecimal.intValue()
+    }
 
     /**
      * add this location to another and return a new location

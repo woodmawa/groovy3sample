@@ -10,19 +10,19 @@ class TestCellCoOrdinateSpecification extends Specification {
         CellCoOrdinate Z = new CellCoOrdinate(25,0)
         CellCoOrdinate AA = new CellCoOrdinate(26,0)
         CellCoOrdinate BA = new CellCoOrdinate(52,0)
-        CellCoOrdinate AAA = new CellCoOrdinate((26 * 26 *26 ),0)
-        CellCoOrdinate ABZ = new CellCoOrdinate((26 * 26 *26 + 2 * 26* 26),0)
-        CellCoOrdinate BBZ = new CellCoOrdinate((2*26 * 26 *26 + 2 * 26* 26 + 25),0)
+        CellCoOrdinate AAAA = new CellCoOrdinate((26 * 26 *26 ),0)
+        CellCoOrdinate ABAZ = new CellCoOrdinate((26 * 26 *26 + 2 * 26* 26 +25),0)
+        CellCoOrdinate BBBZ = new CellCoOrdinate((2*26 * 26 *26 + 2 * 26* 26 + 2*26 + 25),0)
 
 
         expect:
-        //A.getAlphabeticColumnName() == "A"
-        //Z.getAlphabeticColumnName() == "Z"
-        //AA.getAlphabeticColumnName() == "AA"
-        //BA.getAlphabeticColumnName() == "BA"
-        //AAA.getAlphabeticColumnName() == "AAA"
-        ABZ.getAlphabeticColumnName() == "ABA"
-        BBZ.getAlphabeticColumnName() == "BBZ"
+        A.getAlphabeticColumnName() == "A"
+        Z.getAlphabeticColumnName() == "Z"
+        AA.getAlphabeticColumnName() == "AA"
+        BA.getAlphabeticColumnName() == "BA"
+        AAA.getAlphabeticColumnName() == "AAA"
+        ABAZ.getAlphabeticColumnName() == "ABAZ"
+        BBBZ.getAlphabeticColumnName() == "BBBZ"
 
     }
 
