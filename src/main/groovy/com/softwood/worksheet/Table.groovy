@@ -25,6 +25,7 @@ interface Table {
     void unlinkWorksheet ()
     void setWorksheet (Worksheet ws)
     Optional<Worksheet> getWorksheet()
+    boolean hasHeaders()
 
     void clearError()
 

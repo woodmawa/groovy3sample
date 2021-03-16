@@ -17,6 +17,8 @@ class TableHashMapImpl implements Table {
     private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
     private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
     private Optional<Worksheet> currentWorksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
+    private Map<Long,Metadata> columnMetadata = new ConcurrentHashMap<Long, Metadata>()
+    private boolean hasColumnHeaders = false
 
     //look at jigsaw table to help here
     private ConcurrentHashMap cellsGrid = new ConcurrentHashMap<CellCoOrdinate, Cell>()
@@ -38,7 +40,7 @@ class TableHashMapImpl implements Table {
     }
 
     /**
-     * overide the default worksheet assignment
+     * override the default worksheet assignment
      */
     void setWorksheet (Worksheet ws) {
         currentWorksheet.ifPresent (wsheet -> wsheet.removeTable(this))    //unlink from loosing worksheet list of tables
@@ -47,6 +49,10 @@ class TableHashMapImpl implements Table {
 
     Optional<Worksheet> getWorksheet () {
         currentWorksheet
+    }
+
+    boolean hasHeaders () {
+        return columnMetadata.size() > 0
     }
 
     void clearError() {hasError = false}
