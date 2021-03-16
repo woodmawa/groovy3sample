@@ -64,7 +64,7 @@ class CellCoOrdinate implements Comparable {
 
         int numOfColumns = numOfColumnsBase26 (x)
 
-        //wont work for all numbers, just for base <26
+        //if x >25 then there are multiple colums to generate a alpha char for
         if (x >= 26) {
             //starting with highest column down
             int reducing = x
