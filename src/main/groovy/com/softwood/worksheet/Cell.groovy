@@ -44,7 +44,7 @@ class Cell {
     }
 
     String getName () {
-        name.orElse("--Unnamed Cell--")
+        name.orElse("--UnNamed Cell--")
     }
 
     CellCoOrdinate getCoOrdinate () {
