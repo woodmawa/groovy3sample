@@ -84,6 +84,8 @@ class CellCoOrdinate implements Comparable {
     }
 
     private int numOfColumnsBase26 (Double logNumber) {
+        if (logNumber == 0)     //log of zero is not defined 
+            return 0
         double customLog = Math.log(logNumber) / Math.log(26)
         BigDecimal bigDecimal = new BigDecimal(String.valueOf(customLog))
         int intValue = bigDecimal.intValue()

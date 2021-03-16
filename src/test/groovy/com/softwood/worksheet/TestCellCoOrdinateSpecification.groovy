@@ -20,7 +20,7 @@ class TestCellCoOrdinateSpecification extends Specification {
         Z.getAlphabeticColumnName() == "Z"
         AA.getAlphabeticColumnName() == "AA"
         BA.getAlphabeticColumnName() == "BA"
-        AAA.getAlphabeticColumnName() == "AAA"
+        AAAA.getAlphabeticColumnName() == "AAAA"
         ABAZ.getAlphabeticColumnName() == "ABAZ"
         BBBZ.getAlphabeticColumnName() == "BBBZ"
 
