@@ -1,5 +1,6 @@
 package com.softwood.worksheet
 
+import com.softwood.worksheet.io.DataFrameReader
 import groovy.transform.EqualsAndHashCode
 
 import java.util.concurrent.ConcurrentHashMap
@@ -292,6 +293,10 @@ class TableHashMapImpl implements Table {
 
     void unlinkWorksheet() {
         currentWorksheet = Optional.empty()
+    }
+
+    static DataFrameReader read () {
+        new DataFrameReader()
     }
 
     Stream<Cell> stream () {

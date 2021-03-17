@@ -36,8 +36,8 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
 
     void putCell (final Cell cell) {
         assert cell
-        long rowNumber = cell.cellReference.y
-        long colNumber = cell.cellReference.x
+        long rowNumber = cell.getCoOrdinate().y
+        long colNumber = cell.getCoOrdinate().x
 
         if (columnNumber == colNumber) {
             columnCells.put(rowNumber, cell)
