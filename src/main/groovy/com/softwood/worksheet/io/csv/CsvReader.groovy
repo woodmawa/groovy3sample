@@ -9,7 +9,7 @@ import com.softwood.worksheet.io.Source
 
 class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
 
-    //call construictor and store singleton instance
+    //call constructor and store singleton instance
     private static final CsvReader instance = new CsvReader()
 
     CsvReader() {
