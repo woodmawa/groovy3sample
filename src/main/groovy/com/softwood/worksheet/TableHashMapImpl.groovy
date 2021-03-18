@@ -1,6 +1,7 @@
 package com.softwood.worksheet
 
 import com.softwood.worksheet.io.DataFrameReader
+import com.softwood.worksheet.io.ReaderRegistry
 import groovy.transform.EqualsAndHashCode
 
 import java.util.concurrent.ConcurrentHashMap
@@ -13,6 +14,36 @@ import static java.util.stream.Collectors.*
  */
 @EqualsAndHashCode (includeFields = true)
 class TableHashMapImpl implements Table {
+
+    static final ReaderRegistry defaultReaderRegistry = new ReaderRegistry()
+    //todo
+    //public static final WriterRegistry defaultWriterRegistry = new WriterRegistry()
+
+    ReaderRegistry getDefaultReaderRegistry () {
+        defaultReaderRegistry
+    }
+
+    //automatically detect and register any pre existing readers and writers
+    static {
+        autoRegisterReadersAndWriters()
+    }
+
+   private static void autoRegisterReadersAndWriters() {
+        /*try (ScanResult scanResult =
+                new ClassGraph().enableAllInfo().whitelistPackages("com.softwood.io").scan()) {
+            List<String> classes = new ArrayList<>()
+            classes.addAll(scanResult.getClassesImplementing(DataWriter.class.getName()).getNames())
+            classes.addAll(scanResult.getClassesImplementing(DataReader.class.getName()).getNames())
+            for (String clazz : classes) {
+                try {
+                    Class.forName(clazz)
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalStateException(e)
+                }
+            }
+        }*/
+    }
+
 
     private Optional<String> name = Optional.empty()
     private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()

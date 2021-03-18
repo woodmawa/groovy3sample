@@ -1,5 +1,7 @@
 package com.softwood.worksheet
 
+import com.softwood.worksheet.io.ReaderRegistry
+
 import java.util.stream.Stream
 
 interface Table {
@@ -26,6 +28,8 @@ interface Table {
     void setWorksheet (Worksheet ws)
     Optional<Worksheet> getWorksheet()
     boolean hasHeaders()
+
+    ReaderRegistry getDefaultReaderRegistry ()
 
     void clearError()
 
