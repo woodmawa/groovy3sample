@@ -5,6 +5,19 @@ import com.softwood.worksheet.TableHashMapImpl
 
 class DataFrameReader {
 
+    Table usingOptions(ReadOptions.Builder builder) {
+        return usingOptions(builder.build())
+    }
+
+    public <T extends ReadOptions> Table usingOptions(T options) throws IOException {
+        DataReader<T> reader = null//registry.getReaderForOptions(options)
+        return reader.read(options)
+    }
+
+    static Table csv (String dataFilename) {
+
+    }
+
     static Table file (String dataFileName) {
         assert dataFileName
         InputStream inp = DataFrameReader.class.getClassLoader().getResourceAsStream(dataFileName)
@@ -26,7 +39,6 @@ class DataFrameReader {
                 String line = scanner.nextLine()
                 println ">> $line"
             }
-            //file (dataFile.get as InputStreamReader)
         }
         else
             throw new FileNotFoundException ("File $dataFile references a non existant file ")
