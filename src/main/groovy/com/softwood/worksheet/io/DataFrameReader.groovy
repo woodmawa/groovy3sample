@@ -5,12 +5,20 @@ import com.softwood.worksheet.TableHashMapImpl
 
 class DataFrameReader {
 
+    //register of possible readers
+    private final ReaderRegistry registry
+
+    //constructor
+    public DataFrameReader(ReaderRegistry registry = null) {
+        this.registry = registry ?: new ReaderRegistry()
+    }
+
     Table usingOptions(ReadOptions.Builder builder) {
         return usingOptions(builder.build())
     }
 
     public <T extends ReadOptions> Table usingOptions(T options) throws IOException {
-        DataReader<T> reader = null//registry.getReaderForOptions(options)
+        DataReader<T> reader = registry.getReaderForOptions(options)
         return reader.read(options)
     }
 
