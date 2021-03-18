@@ -15,11 +15,11 @@ import static java.util.stream.Collectors.*
 @EqualsAndHashCode (includeFields = true)
 class TableHashMapImpl implements Table {
 
-    static final ReaderRegistry defaultReaderRegistry = new ReaderRegistry()
+    static private final ReaderRegistry defaultReaderRegistry = new ReaderRegistry()
     //todo
     //public static final WriterRegistry defaultWriterRegistry = new WriterRegistry()
 
-    ReaderRegistry getDefaultReaderRegistry () {
+    static ReaderRegistry getDefaultReaderRegistry () {
         defaultReaderRegistry
     }
 

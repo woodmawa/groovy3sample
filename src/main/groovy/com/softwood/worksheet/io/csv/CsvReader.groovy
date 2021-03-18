@@ -1,6 +1,7 @@
 package com.softwood.worksheet.io.csv
 
 import com.softwood.worksheet.Table
+import com.softwood.worksheet.TableHashMapImpl
 import com.softwood.worksheet.io.DataReader
 import com.softwood.worksheet.io.FileReaderBase
 import com.softwood.worksheet.io.ReaderRegistry
@@ -8,16 +9,15 @@ import com.softwood.worksheet.io.Source
 
 class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
 
-    //call private construictor and store singleton instance
+    //call construictor and store singleton instance
     private static final CsvReader instance = new CsvReader()
 
     CsvReader() {
         super()
-        instance
     }
 
     static {
-        def registry = Table.getDefaultReaderRegistry()
+        def registry = TableHashMapImpl.getDefaultReaderRegistry()
         register(registry)
     }
 

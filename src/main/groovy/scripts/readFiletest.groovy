@@ -2,15 +2,20 @@ package scripts
 
 import com.softwood.worksheet.io.DataFrameReader
 import com.softwood.worksheet.io.ReaderRegistry
+import com.softwood.worksheet.io.csv.CsvReadOptions
+import com.softwood.worksheet.io.csv.CsvReader
 
 
 File inp = new File ("testDataFile.csv")
 
-ReaderRegistry registry = new ReaderRegistry()
+CsvReader csv = new CsvReader()
 
-registry.registerExtension("csv", new CsvFileReader())
-registry.registerOptions(new CsvOptionsType(), new CsvFileReader())
+
+
 DataFrameReader reader = new DataFrameReader ()
+
+reader.csv ("testDataFile.csv")
+
 reader.file ("testDataFile.csv")
 
 System.exit(0)

@@ -2,6 +2,8 @@ package com.softwood.worksheet.io
 
 import com.softwood.worksheet.Table
 import com.softwood.worksheet.TableHashMapImpl
+import com.softwood.worksheet.io.csv.CsvReadOptions
+import com.softwood.worksheet.io.csv.CsvReader
 
 class DataFrameReader {
 
@@ -22,10 +24,28 @@ class DataFrameReader {
         return reader.read(options)
     }
 
-    static Table csv (String dataFilename) {
-
+    ///csv reading options
+    Table csv (String dataFileName) {
+        return csv(CsvReadOptions.builder(dataFileName))
     }
 
+    Table csv(InputStream stream) {
+        return csv(CsvReadOptions.builder(stream))
+    }
+
+    Table csv(Reader reader) {
+        return csv(CsvReadOptions.builder(reader))
+    }
+
+    public Table csv(CsvReadOptions.Builder options) {
+        return csv(options.build())
+    }
+
+    public Table csv(CsvReadOptions options)  {
+        return new CsvReader().read(options)
+    }
+
+    ///todo general file reading options
     static Table file (String dataFileName) {
         assert dataFileName
         InputStream inp = DataFrameReader.class.getClassLoader().getResourceAsStream(dataFileName)

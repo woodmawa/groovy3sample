@@ -1,6 +1,7 @@
 package com.softwood.worksheet.io.csv
 
 import com.softwood.worksheet.io.ReadOptions
+import com.softwood.worksheet.io.Source
 import groovy.transform.InheritConstructors
 
 class CsvReadOptions extends ReadOptions {
@@ -27,6 +28,48 @@ class CsvReadOptions extends ReadOptions {
         lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled
         //sampleSize = builder.sampleSize
     }
+
+    static Builder builder(Source source) {
+        return new Builder(source)
+    }
+
+    static Builder builder(InputStream stream) {
+        return new Builder(stream)
+    }
+
+    public static Builder builder(Reader reader) {
+        return new Builder(reader)
+    }
+
+    public static Builder builder(InputStreamReader reader) {
+        return new Builder(reader)
+    }
+
+    static Builder builder(File file) {
+        return new Builder(file).tableName(file.getName())
+    }
+
+    static Builder builder(String fileName) {
+        return new Builder(new File(fileName))
+    }
+
+    static Builder builder(URL url)  {
+        return new Builder(url)
+    }
+
+    static Builder builderFromFile(String fileName) {
+        return new Builder(new File(fileName))
+    }
+
+    static Builder builderFromString(String contents) {
+        return new Builder(new StringReader(contents))
+    }
+
+    static Builder builderFromUrl(String url) {
+        return new Builder(new URL(url))
+    }
+
+
 
     @InheritConstructors
     public static class Builder extends ReadOptions.Builder {

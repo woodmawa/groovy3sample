@@ -29,8 +29,6 @@ interface Table {
     Optional<Worksheet> getWorksheet()
     boolean hasHeaders()
 
-    ReaderRegistry getDefaultReaderRegistry ()
-
     void clearError()
 
     Stream<Cell> stream()
