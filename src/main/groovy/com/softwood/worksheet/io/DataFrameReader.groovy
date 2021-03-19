@@ -24,7 +24,11 @@ class DataFrameReader {
         return reader.read(options)
     }
 
-    ///csv reading options
+    ///csv reading options - fall through cascade into csv(CsvReadOptions option)
+    Table csv (Source source) {
+        return csv(CsvReadOptions.builder(source))
+    }
+
     Table csv (String dataFileName) {
         return csv(CsvReadOptions.builder(dataFileName))
     }
@@ -38,9 +42,10 @@ class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions.Builder options) {
-        return csv(options.build())
+        return csv(options.build()) // generate the option instance
     }
 
+    //last in chain - does the hard work
     public Table csv(CsvReadOptions options)  {
         return new CsvReader().read(options)
     }
@@ -78,7 +83,7 @@ class DataFrameReader {
         //dataFileUri.
     }
 
-    static Table file (InputStreamReader dataFileReader) {
+    static Table file (InputStreamReader dataStreamReader) {
         assert InputStreamReader
 
         String[] colEntries
@@ -88,7 +93,7 @@ class DataFrameReader {
         ArrayList parsedLines = []
         def lineNumber = 0
 
-        dataFileReader.eachLine() {String line ->
+        dataStreamReader.eachLine() {String line ->
             def pline =  lineParser.parse(line)
             parsedLines << pline
 

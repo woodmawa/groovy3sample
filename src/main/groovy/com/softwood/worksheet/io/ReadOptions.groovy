@@ -6,12 +6,14 @@ class ReadOptions {
     protected String tableName
     protected boolean headers
     protected Locale locale
+    protected String defaultFileExtension
 
     protected ReadOptions(ReadOptions.Builder builder) {
         source = builder.source
         tableName = builder.tableName
         headers = builder.headers
         locale = builder.locale
+        defaultFileExtension = builder.defaultFileExtension
         //allowDuplicateColumnNames = builder.allowDuplicateColumnNames
 
     }
@@ -24,6 +26,11 @@ class ReadOptions {
         protected String tableName
         protected boolean headers = true
         protected Locale locale = Locale.default
+        protected String defaultFileExtension= ""
+
+        Builder () {
+            this
+        }
 
         protected Builder (Source source) {
             this.source = source
@@ -31,7 +38,9 @@ class ReadOptions {
 
         protected Builder(File file) {
             this.source = new Source(file)
-            this.tableName = file.getName()
+            String fileName = file.getName()
+            String[] parts = fileName.tokenize('.')
+            this.tableName = parts [0]
         }
 
         protected Builder(URL url) {
@@ -51,8 +60,14 @@ class ReadOptions {
             this.source = new Source(reader)
         }
 
+        //configuration methods to be called on builder instance
         public Builder tableName(String tableName) {
             this.tableName = tableName
+            return this
+        }
+
+        public Builder fileExtension(String extension) {
+            this.defaultFileExtension = extension
             return this
         }
 

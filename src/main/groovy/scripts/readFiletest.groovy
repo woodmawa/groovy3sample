@@ -8,6 +8,9 @@ import com.softwood.worksheet.io.csv.CsvReader
 
 File inp = new File ("testDataFile.csv")
 
+CsvReadOptions.Builder builder = CsvReadOptions.builder()
+//builder.fileExtension(".com")
+
 CsvReader csv = new CsvReader()
 
 

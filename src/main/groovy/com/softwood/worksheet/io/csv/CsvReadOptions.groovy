@@ -7,12 +7,12 @@ import groovy.transform.InheritConstructors
 class CsvReadOptions extends ReadOptions {
 
     //private final ColumnType[] columnTypes;
-    private final Character separator
+    private final String[] separator
     private final Character quoteChar
     private final Character escapeChar
     private final String lineEnding
     private final Integer maxNumberOfColumns
-    private final Character commentPrefix
+    private final String[] commentPrefixList
     private final boolean lineSeparatorDetectionEnabled
 
     //private constructor
@@ -24,9 +24,14 @@ class CsvReadOptions extends ReadOptions {
         escapeChar = builder.escapeChar
         lineEnding = builder.lineEnding
         //maxNumberOfColumns = builder.maxNumberOfColumns
-        commentPrefix = builder.commentPrefix
+        commentPrefixList = builder.commentPrefixList
         lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled
         //sampleSize = builder.sampleSize
+    }
+
+    //static methods to provide an initial builder object to work with
+    static Builder builder() {
+        return new Builder()
     }
 
     static Builder builder(Source source) {
@@ -46,7 +51,10 @@ class CsvReadOptions extends ReadOptions {
     }
 
     static Builder builder(File file) {
-        return new Builder(file).tableName(file.getName())
+        String fileName = file.getName()
+        //remove file extension if present
+        String[] parts = fileName.tokenize('.')
+        return new Builder(file).tableName(parts[0])
     }
 
     static Builder builder(String fileName) {
@@ -74,15 +82,26 @@ class CsvReadOptions extends ReadOptions {
     @InheritConstructors
     public static class Builder extends ReadOptions.Builder {
 
-        private Character separator
+        private String[] separator
         private Character quoteChar
         private Character escapeChar
         private String lineEnding
         //private ColumnType[] columnTypes
         //private Integer maxNumberOfColumns = 10_000
-        private Character commentPrefix
+        private String[] commentPrefixList
         private boolean lineSeparatorDetectionEnabled = true
         //private int sampleSize = -1
+
+        //default constructor - sets the default file extension
+        Builder () {
+            defaultFileExtension = "csv"
+            separator = ['\t', '|', ',']  //default separators
+            quoteChar = Character.valueOf ('"' as char)
+            escapeChar = Character.valueOf('\\' as char)
+            lineEnding = "\n"
+            commentPrefixList = ['!', '#', '//']
+        }
+
 
         Builder separator(Character separator) {
             this.separator = separator
@@ -99,8 +118,8 @@ class CsvReadOptions extends ReadOptions {
             return this
         }
 
-        Builder commentPrefix(Character commentPrefix) {
-            this.commentPrefix = commentPrefix
+        Builder commentPrefix(String[] commentPrefix) {
+            this.commentPrefixList = commentPrefix
             return this
         }
 
