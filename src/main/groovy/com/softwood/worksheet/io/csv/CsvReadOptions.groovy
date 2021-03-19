@@ -2,12 +2,11 @@ package com.softwood.worksheet.io.csv
 
 import com.softwood.worksheet.io.ReadOptions
 import com.softwood.worksheet.io.Source
-import groovy.transform.InheritConstructors
 
 class CsvReadOptions extends ReadOptions {
 
-    //private final ColumnType[] columnTypes;
-    private final String[] separator
+    //private final DataValueType[] columnTypes;
+    private final String[] delimiters
     private final Character quoteChar
     private final Character escapeChar
     private final String lineEnding
@@ -15,11 +14,16 @@ class CsvReadOptions extends ReadOptions {
     private final String[] commentPrefixList
     private final boolean lineSeparatorDetectionEnabled
 
+    String getDelimiters () {delimiters}
+    Character getQuoteChar () {quoteChar}
+    Character getEscapeChar () {escapeChar}
+    String[] getCommentPrefixList () {commentPrefixList }
+
     //private constructor
     private CsvReadOptions(CsvReadOptions.Builder builder) {
         super(builder)
         //columnTypes = builder.columnTypes
-        separator = builder.separator
+        delimiters = builder.delimiters
         quoteChar = builder.quoteChar
         escapeChar = builder.escapeChar
         lineEnding = builder.lineEnding
@@ -31,71 +35,71 @@ class CsvReadOptions extends ReadOptions {
 
     //static methods to provide an initial builder object to work with
     static Builder builder() {
-        return new Builder()
+        return new CsvReadOptions.Builder()
     }
 
     static Builder builder(Source source) {
-        return new Builder(source)
+        return new CsvReadOptions.Builder(source)
     }
 
     static Builder builder(InputStream stream) {
-        return new Builder(stream)
+        return new CsvReadOptions.Builder(stream)
     }
 
     public static Builder builder(Reader reader) {
-        return new Builder(reader)
+        return new CsvReadOptions.Builder(reader)
     }
 
     public static Builder builder(InputStreamReader reader) {
-        return new Builder(reader)
+        return new CsvReadOptions.Builder(reader)
     }
 
     static Builder builder(File file) {
-        String fileName = file.getName()
-        //remove file extension if present
-        String[] parts = fileName.tokenize('.')
-        return new Builder(file).tableName(parts[0])
+        return new CsvReadOptions.Builder(file)
     }
 
     static Builder builder(String fileName) {
-        return new Builder(new File(fileName))
+        File file = new File(fileName)
+        builder(file)  //call above to handle
     }
 
     static Builder builder(URL url)  {
-        return new Builder(url)
+        return new CsvReadOptions.Builder(url)
     }
 
     static Builder builderFromFile(String fileName) {
-        return new Builder(new File(fileName))
+        return new CsvReadOptions.Builder(new File(fileName))
     }
 
     static Builder builderFromString(String contents) {
-        return new Builder(new StringReader(contents))
+        return new CsvReadOptions.Builder(new StringReader(contents))
     }
 
     static Builder builderFromUrl(String url) {
-        return new Builder(new URL(url))
+        return new CsvReadOptions.Builder(new URL(url))
     }
 
 
 
-    @InheritConstructors
+    //@InheritConstructors
     public static class Builder extends ReadOptions.Builder {
 
-        private String[] separator
+        private String[] delimiters
         private Character quoteChar
         private Character escapeChar
         private String lineEnding
-        //private ColumnType[] columnTypes
+        //private DataValueType[] columnTypes
         //private Integer maxNumberOfColumns = 10_000
         private String[] commentPrefixList
         private boolean lineSeparatorDetectionEnabled = true
         //private int sampleSize = -1
 
         //default constructor - sets the default file extension
-        Builder () {
+        //when called invokes the parent ReadOption constructor and the finalises initialisation for this
+        Builder (arg) {
+            super(arg)
             defaultFileExtension = "csv"
-            separator = ['\t', '|', ',']  //default separators
+            delimiters = ['\t', '|', ',']  //default separators
             quoteChar = Character.valueOf ('"' as char)
             escapeChar = Character.valueOf('\\' as char)
             lineEnding = "\n"
@@ -104,7 +108,7 @@ class CsvReadOptions extends ReadOptions {
 
 
         Builder separator(Character separator) {
-            this.separator = separator
+            this.delimiters = separator
             return this
         }
 

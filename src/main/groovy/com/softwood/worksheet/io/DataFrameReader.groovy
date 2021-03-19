@@ -26,27 +26,32 @@ class DataFrameReader {
 
     ///csv reading options - fall through cascade into csv(CsvReadOptions option)
     Table csv (Source source) {
-        return csv(CsvReadOptions.builder(source))
+        def builder = CsvReadOptions.builder(source)
+        return csv(builder)
     }
 
     Table csv (String dataFileName) {
-        return csv(CsvReadOptions.builder(dataFileName))
+        def builder = CsvReadOptions.builder(dataFileName)
+        return csv(builder)
     }
 
     Table csv(InputStream stream) {
-        return csv(CsvReadOptions.builder(stream))
+        def builder = CsvReadOptions.builder(stream)
+        return csv(builder)
     }
 
     Table csv(Reader reader) {
-        return csv(CsvReadOptions.builder(reader))
+        def builder = CsvReadOptions.builder(reader)
+        return csv(builder)
     }
 
-    public Table csv(CsvReadOptions.Builder options) {
-        return csv(options.build()) // generate the option instance
+    Table csv(CsvReadOptions.Builder builder) {
+        CsvReadOptions options = builder.build()
+        return csv(options) // generate the option instance
     }
 
     //last in chain - does the hard work
-    public Table csv(CsvReadOptions options)  {
+    Table csv(CsvReadOptions options)  {
         return new CsvReader().read(options)
     }
 

@@ -100,6 +100,11 @@ class TableHashMapImpl implements Table {
         name.orElse("--UnNamed Table--")
     }
 
+    //add whole new column if non exists to column map
+    void addColumnToTable (final DatasetColumn col) {
+        columns.putIfAbsent (col.getColumnNumber(), col)
+    }
+
     void setColumnName (final long colNumber, final String name) {
 
         DatasetColumn col = columns?.get (colNumber)

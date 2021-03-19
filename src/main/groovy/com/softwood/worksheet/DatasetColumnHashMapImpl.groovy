@@ -1,5 +1,7 @@
 package com.softwood.worksheet
 
+import com.softwood.worksheet.io.DataValueType
+
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Stream
 
@@ -8,6 +10,7 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     Optional<String> name = Optional.empty()
     long columnNumber
     ConcurrentHashMap columnCells = new ConcurrentHashMap<Long, Cell> ()
+    Optional<DataValueType> type = Optional.empty()
 
     @Override
     int size() {
@@ -22,6 +25,18 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     String getName() {
         //returns value if present of the default otherwise
         name.orElse( "--UnNamed Column--")
+    }
+
+    long getColumnNumber () {
+        columnNumber
+    }
+
+    DataValueType getType () {
+        type.orElse (DataValueType.UNDEFINED)
+    }
+
+    void setType (DataValueType dataType) {
+        type = Optional.ofNullable(dataType)
     }
 
     @Override

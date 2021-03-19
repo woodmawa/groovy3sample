@@ -33,10 +33,12 @@ class ReadOptions {
         }
 
         protected Builder (Source source) {
+            super()
             this.source = source
         }
 
         protected Builder(File file) {
+            super()
             this.source = new Source(file)
             String fileName = file.getName()
             String[] parts = fileName.tokenize('.')
@@ -44,19 +46,23 @@ class ReadOptions {
         }
 
         protected Builder(URL url) {
+            super()
             this.source = new Source(url.openStream())
             this.tableName = url.toString()
         }
 
         protected Builder(InputStream stream) {
+            super()
             this.source = new Source(stream)
         }
 
         protected Builder(InputStreamReader reader) {
+            super()
             this.source = new Source(reader)
         }
 
         protected Builder(Reader reader) {
+            super()
             this.source = new Source(reader)
         }
 

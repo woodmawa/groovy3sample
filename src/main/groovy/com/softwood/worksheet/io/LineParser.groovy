@@ -5,9 +5,10 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.regex.Pattern
 
-enum ColumnType {
-    LONG,NUMBER,DATE,TIME,DATETIME,TEXT,UNKNOWN
+enum DataValueType {
+    LONG,NUMBER,DATE,TIME,DATETIME,TEXT,UNKNOWN,UNDEFINED
 }
+
 /**
  * parses a line of text and tries to read typed values from tokenised string
  *
@@ -15,7 +16,7 @@ enum ColumnType {
  */
 class LineParser {
 
-    final String delimeters = "\t,|"
+    final String delimiters = "\t,|"
     final static Pattern isoDateTimePattern = Pattern.compile (/ (((2000|2400|2800|((19|2[0-9])(0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))T([01][0-9]|[2][0-3]):[0-5][0-9]:[0-5][0-9]\.[0-9]{3}Z /)
     final static Pattern datePattern = Pattern.compile (/(\d*)[-.\/]([a-z]*[A-Z]*\d*)[-.\/](\d*)/)
     final static Pattern timePattern = Pattern.compile (/(\d{1,2}):(\d{1,2}):(\d{1,2}).(\d*)/)
@@ -25,38 +26,43 @@ class LineParser {
         this
     }
 
+    LineParser (String delimiters) {
+        this.delimiters = delimiters
+        this
+    }
+
     class ColumnItem {
-        ColumnType type
+        DataValueType type
         Long column
         def value
 
         String toString() {
-            "ColumnItem : type: $type, value: $value"
+            "ColumnItem (type: $type, value: $value)"
         }
     }
 
     HashMap parse (String line ) {
         def row = new LinkedHashMap()
 
-        String[] items = line.tokenize(delimeters).collect{it.replace("\"", "").trim()}
+        String[] items = line.tokenize(delimiters).collect{it.replace("\"", "").trim()}
 
         def item
         for (column in 0..items.size() - 1) {
             item = items[column]
             if (item.isLong())
-                row << [(column) : new ColumnItem (type: ColumnType.LONG, value: Long.valueOf(item), column: column)]
+                row << [(column) : new ColumnItem (type: DataValueType.LONG, value: Long.valueOf(item), column: column)]
             else if (item.isNumber())
-                row << [(column) : new ColumnItem (type:ColumnType.NUMBER, value: new BigDecimal(item), column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.NUMBER, value: new BigDecimal(item), column: column)]
             else if (datePattern.matcher (item).matches() )
-                row << [(column) : new ColumnItem (type:ColumnType.DATE, value: buildDate (item), column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.DATE, value: buildDate (item), column: column)]
             else if (timePattern.matcher (item).matches())
-                row << [(column) : new ColumnItem (type:ColumnType.TIME, value: buildTime (item), column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.TIME, value: buildTime (item), column: column)]
             else if (isoDateTimePattern.matcher(item).matches())
-                row << [(column) : new ColumnItem (type:ColumnType.DATETIME, value: buildTime (item), column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.DATETIME, value: buildTime (item), column: column)]
             else if (textPattern.matcher(item).matches())
-                row << [(column) : new ColumnItem (type:ColumnType.TEXT, value: item, column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.TEXT, value: item, column: column)]
             else
-                row << [(column) : new ColumnItem (type:ColumnType.UNKNOWN, value: item, column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.UNKNOWN, value: item, column: column)]
 
         }
         row
