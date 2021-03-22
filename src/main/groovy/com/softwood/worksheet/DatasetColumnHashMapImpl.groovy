@@ -10,7 +10,7 @@ class DatasetColumnHashMapImpl implements DatasetColumn {
     Optional<String> name = Optional.empty()
     long columnNumber
     ConcurrentHashMap columnCells = new ConcurrentHashMap<Long, Cell> ()
-    Optional<DataValueType> type = Optional.empty()
+    Optional<DataValueType> type = Optional.of (DataValueType.UNDEFINED)
 
     @Override
     int size() {

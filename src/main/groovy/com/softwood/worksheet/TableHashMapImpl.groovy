@@ -3,6 +3,7 @@ package com.softwood.worksheet
 import com.softwood.worksheet.io.DataFrameReader
 import com.softwood.worksheet.io.ReaderRegistry
 import groovy.transform.EqualsAndHashCode
+import org.apache.groovy.util.concurrent.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Stream
@@ -46,10 +47,9 @@ class TableHashMapImpl implements Table {
 
 
     private Optional<String> name = Optional.empty()
-    private ConcurrentHashMap rows = new ConcurrentHashMap<long, DatasetRow>()
-    private ConcurrentHashMap columns = new ConcurrentHashMap<long, DatasetColumn>()
+    private Map rows = new ConcurrentHashMap<long, DatasetRow>()
+    private Map columns = new ConcurrentHashMap<long, DatasetColumn>()
     private Optional<Worksheet> currentWorksheet = Optional.of (WorksheetDequeueImpl.defaultMasterWorksheet)
-    private Map<Long,Metadata> columnMetadata = new ConcurrentHashMap<Long, Metadata>()
     private boolean hasColumnHeaders = false
 
     //look at jigsaw table to help here
@@ -83,8 +83,12 @@ class TableHashMapImpl implements Table {
         currentWorksheet
     }
 
+    void setHeaders (boolean hasHeaders) {
+        hasColumnHeaders = hasHeaders
+    }
+
     boolean hasHeaders () {
-        return columnMetadata.size() > 0
+        return hasColumnHeaders
     }
 
     void clearError() {hasError = false}
@@ -104,6 +108,13 @@ class TableHashMapImpl implements Table {
     void addColumnToTable (final DatasetColumn col) {
         columns.putIfAbsent (col.getColumnNumber(), col)
     }
+
+    //add whole new column if non exists to column map
+    Table insertColumn (final int index, final DatasetColumn col) {
+        columns.putIfAbsent (col.getColumnNumber(), col)
+        this
+    }
+
 
     void setColumnName (final long colNumber, final String name) {
 

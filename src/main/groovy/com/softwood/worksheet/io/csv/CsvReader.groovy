@@ -6,6 +6,7 @@ import com.softwood.worksheet.DatasetColumnHashMapImpl
 import com.softwood.worksheet.Table
 import com.softwood.worksheet.TableHashMapImpl
 import com.softwood.worksheet.io.DataReader
+import com.softwood.worksheet.io.DataValueType
 import com.softwood.worksheet.io.FileReaderBase
 import com.softwood.worksheet.io.LineParser
 import com.softwood.worksheet.io.ReaderRegistry
@@ -44,45 +45,62 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
 
         LineParser lineParser = new LineParser (options.delimiters)
 
-        ArrayList tempParsedLines = []
-        def lineNumber = 0
+         def lineNumber = 0
 
        InputStreamReader stream = options.source.createReader ()
 
-        if (options.headers) {
-            //process the first row for names of the columns
-            String headerLine = stream.readLine()
-            Map rowOfColumns = lineParser.parse (headerLine)
-            for (i in 0..<rowOfColumns.size()) {
-                DatasetColumn col = new DatasetColumnHashMapImpl()
-                col.columnNumber = i
-                col.name = (rowOfColumns[i] as com.softwood.worksheet.io.LineParser.ColumnItem).value
-                table.addColumnToTable(col)
-            }
-        }
-
         //now process the data lines themselves, first readLine seems to clear row[0]
+
         int rowNumber
-        stream?.eachLine() {String line ->
-            if (line == "")
-                return
-            String[] commentPrefix = options.getCommentPrefixList()
+        def isReady = stream?.ready()
+        def enc = stream?.getEncoding()
+
+        String line
+        String[] commentPrefix = options.getCommentPrefixList()
+
+        while (stream?.ready()) {
+            line = stream.readLine()
+            if (line == "") {
+               continue  //skip this line
+            }
             for (i in 0..<commentPrefix.size()) {
-                if (line.startsWith (commentPrefix[i]))
-                    return  //skip this line
+                if (line.startsWith (commentPrefix[i])) {
+                    continue  //skip this line
+                }
+            }
+
+            if (options.headers && rowNumber == 0 ) {
+                //process the first row for names of the columns
+                Map rowOfColumns = lineParser.parse (line)
+                table.setHeaders (true)
+                for (i in 0..<rowOfColumns.size()) {
+                    DatasetColumn col = new DatasetColumnHashMapImpl()
+                    col.columnNumber = i
+                    col.name = (rowOfColumns[i] as LineParser.ColumnItem).value
+                    table.insertColumn(i, col)
+                }
+                rowNumber++
+                continue
             }
 
             def row =  lineParser.parse(line)
             for (col in 0..<row.size()) {
-                if (table.getColumn(0).setType (row[col] as LineParser.ColumnItem).getType())
-                def cell = new Cell([col, rowNumber], (row[col] as LineParser.ColumnItem).value )
+                Cell cell
+                //if column is undefined then set the column type first time
+                DataValueType type = (row[col] as LineParser.ColumnItem).type
+                if (table.getColumn(0).type == DataValueType.UNDEFINED) {
+                    table.getColumn(0).type = type
+                }
+                cell = new Cell([col, rowNumber], (row[col] as LineParser.ColumnItem).value )
+                cell.valueType = type
                 table.setCell(cell)
             }
-            tempParsedLines << row
-            rowNumber++
-        }
 
-        //println ">> $tempParsedLines"
+            rowNumber++
+
+        }
+        stream.close()
+
         table
     }
 

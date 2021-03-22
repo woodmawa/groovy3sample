@@ -1,5 +1,6 @@
 package com.softwood.worksheet
 
+import com.softwood.worksheet.io.DataValueType
 import groovy.beans.Bindable
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.MapConstructor
@@ -18,6 +19,7 @@ class Cell {
     private CellCoOrdinate cellReference
     static String BLANK_STRING = ""
     private Closure function = {args -> }  //null function
+    private DataValueType valueType = DataValueType.UNKNOWN
 
     //sends property change events to subscribers on cell values
     @Bindable def value
@@ -45,6 +47,15 @@ class Cell {
 
     String getName () {
         name.orElse("--UnNamed Cell--")
+    }
+
+    DataValueType getValueType () {
+        valueType
+    }
+
+    void setValueType (DataValueType type) {
+        assert type
+        valueType = type
     }
 
     CellCoOrdinate getCoOrdinate () {

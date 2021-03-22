@@ -9,6 +9,8 @@ interface Table {
     String getName ()
     void setColumnName (long colNumber, final String name)
     void setRowName (long rowNumber, final String name)
+    void setHeaders (boolean hasHeaders)
+    Table insertColumn (final int index, final DatasetColumn col)
     DatasetColumn getColumn (long colNumber)
     DatasetColumn getColumn (final String colName)
     DatasetRow getRow (long rowNumber)

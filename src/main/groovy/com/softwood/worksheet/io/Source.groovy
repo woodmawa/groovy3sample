@@ -80,9 +80,9 @@ class Source {
             InputStream is = Source.class.getClassLoader().getResourceAsStream(path)
             isr = new InputStreamReader(is, charset)
         } else if (inputStreamReader.isPresent()) {
-            isr = inputStreamReader.get()
+            isr = new InputStreamReader (inputStreamReader.get())
         } else if (reader.isPresent()) {
-            isr = reader.get() as InputStreamReader //try a caste
+            isr = new InputStreamReader (reader.get())  //try a caste
         }
         //todo what to do is ISR should be null
         return isr
