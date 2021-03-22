@@ -26,6 +26,7 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
         register(registry)
     }
 
+    //register this singleton in the reader registry
     public static void register(ReaderRegistry registry) {
         registry.registerExtension("csv", instance)
         registry.registerMimeType("text/csv", instance)
@@ -37,7 +38,7 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
         return read(options, headerOnly)
     }
 
-    //not sure i really want this
+    //not sure i really want this, surely i'll always read all the entries ?
     Table read (CsvReadOptions options, boolean headerOnly) {
 
         String[] colEntries
@@ -53,16 +54,13 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
 
         int rowNumber
         int dataRowNumber
-        def isReady = stream?.ready()
-        def enc = stream?.getEncoding()
-
         String line
         String[] commentPrefix = options.getCommentPrefixList()
 
         while (stream?.ready()) {
             line = stream.readLine()
             if (line == "") {
-               continue  //skip this line
+               continue  //for some reason the stream reads an entype line for each \n, so skip this line
             }
             for (i in 0..<commentPrefix.size()) {
                 if (line.startsWith (commentPrefix[i])) {
