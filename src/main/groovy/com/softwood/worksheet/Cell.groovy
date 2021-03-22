@@ -118,7 +118,7 @@ class Cell {
     }
 
     String toString () {
-        "cell @{$cellReference : $value}"
+        "cell @{$cellReference : $value (${valueType})}"
     }
 
 }

@@ -6,7 +6,14 @@ import java.time.LocalTime
 import java.util.regex.Pattern
 
 enum DataValueType {
-    LONG,NUMBER,DATE,TIME,DATETIME,TEXT,UNKNOWN,UNDEFINED
+    NUMBER,     //whole numbers integers or longs, BigInteger etc
+    DECIMAL,    //fractional numbers, floats, doubles, BigDecimal
+    DATE,       // held as LocalDate
+    TIME,       //held as LocalTime
+    DATETIME,   //held as LocalDateTime
+    TEXT,       //CharBuffer, String, Gstring, etc
+    UNKNOWN,    //cant figure out what this is
+    UNDEFINED   //starting condition - type is not yet defined
 }
 
 /**
@@ -50,9 +57,9 @@ class LineParser {
         for (column in 0..items.size() - 1) {
             item = items[column]
             if (item.isLong())
-                row << [(column) : new ColumnItem (type: DataValueType.LONG, value: Long.valueOf(item), column: column)]
+                row << [(column) : new ColumnItem (type: DataValueType.NUMBER, value: Long.valueOf(item), column: column)]
             else if (item.isNumber())
-                row << [(column) : new ColumnItem (type:DataValueType.NUMBER, value: new BigDecimal(item), column: column)]
+                row << [(column) : new ColumnItem (type:DataValueType.DECIMAL, value: new BigDecimal(item), column: column)]
             else if (datePattern.matcher (item).matches() )
                 row << [(column) : new ColumnItem (type:DataValueType.DATE, value: buildDate (item), column: column)]
             else if (timePattern.matcher (item).matches())
