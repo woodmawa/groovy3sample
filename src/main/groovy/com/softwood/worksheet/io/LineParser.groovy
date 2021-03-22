@@ -5,6 +5,9 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.regex.Pattern
 
+/**
+ * basic analysed type for data being stored in a cell
+ */
 enum DataValueType {
     NUMBER,     //whole numbers integers or longs, BigInteger etc
     DECIMAL,    //fractional numbers, floats, doubles, BigDecimal
@@ -12,6 +15,7 @@ enum DataValueType {
     TIME,       //held as LocalTime
     DATETIME,   //held as LocalDateTime
     TEXT,       //CharBuffer, String, Gstring, etc
+    OBJECT,     //parsed and mapped into some class form
     UNKNOWN,    //cant figure out what this is
     UNDEFINED   //starting condition - type is not yet defined
 }
@@ -68,6 +72,7 @@ class LineParser {
                 row << [(column) : new ColumnItem (type:DataValueType.DATETIME, value: buildTime (item), column: column)]
             else if (textPattern.matcher(item).matches())
                 row << [(column) : new ColumnItem (type:DataValueType.TEXT, value: item, column: column)]
+            //todo - else if (text pattern for an object and parse into instance 
             else
                 row << [(column) : new ColumnItem (type:DataValueType.UNKNOWN, value: item, column: column)]
 
