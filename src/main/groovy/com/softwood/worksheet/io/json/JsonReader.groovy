@@ -99,6 +99,6 @@ class JsonReader implements FileReaderBase,  DataReader<JsonReadOptions> {
 
 
     Table read(Source source) throws IOException {
-        return read(CsvReadOptions.builder(source).build())
+        return read(JsonReadOptions.builder(source).build())
     }
 }
