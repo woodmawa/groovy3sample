@@ -52,6 +52,7 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
         //now process the data lines themselves, first readLine seems to clear row[0]
 
         int rowNumber
+        int dataRowNumber
         def isReady = stream?.ready()
         def enc = stream?.getEncoding()
 
@@ -91,11 +92,12 @@ class CsvReader implements FileReaderBase,  DataReader<CsvReadOptions> {
                 if (table.getColumn(0).type == DataValueType.UNDEFINED) {
                     table.getColumn(0).type = type
                 }
-                cell = new Cell([col, rowNumber], (row[col] as LineParser.ColumnItem).value )
+                cell = new Cell([col, dataRowNumber ], (row[col] as LineParser.ColumnItem).value )
                 cell.valueType = type
                 table.setCell(cell)
             }
 
+            dataRowNumber++
             rowNumber++
 
         }
