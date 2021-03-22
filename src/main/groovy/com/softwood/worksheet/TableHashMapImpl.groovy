@@ -351,6 +351,6 @@ class TableHashMapImpl implements Table {
     }
 
     String toString() {
-        "Table ($name)"
+        "Table (${getName()}"
     }
 }

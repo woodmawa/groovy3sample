@@ -24,7 +24,7 @@ class DataFrameReader {
         return reader.read(options)
     }
 
-    ///csv reading options - fall through cascade into csv(CsvReadOptions option)
+    ///csv reading options - fall through cascade into csv(JsonReadOptions option)
     Table csv (Source source) {
         def builder = CsvReadOptions.builder(source)
         return csv(builder)
@@ -74,6 +74,8 @@ class DataFrameReader {
             Scanner scanner = new Scanner(source)
 
             while (scanner.hasNext()) {
+
+                //todo - incomplete need to decide what to do with this
                 String line = scanner.nextLine()
                 println ">> $line"
             }

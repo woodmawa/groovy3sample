@@ -1,9 +1,9 @@
-package com.softwood.worksheet.io.csv
+package com.softwood.worksheet.io.json
 
 import com.softwood.worksheet.io.ReadOptions
 import com.softwood.worksheet.io.Source
 
-class CsvReadOptions extends ReadOptions {
+class JsonReadOptions extends ReadOptions {
 
     //private final DataValueType[] columnTypes;
     private final String[] delimiters
@@ -20,13 +20,11 @@ class CsvReadOptions extends ReadOptions {
     String[] getCommentPrefixList () {commentPrefixList }
 
     //private constructor
-    private CsvReadOptions(CsvReadOptions.Builder builder) {
+    private JsonReadOptions(JsonReadOptions.Builder builder) {
         super(builder)
         //columnTypes = builder.columnTypes
-        delimiters = builder.delimiters
         quoteChar = builder.quoteChar
         escapeChar = builder.escapeChar
-        lineEnding = builder.lineEnding
         //maxNumberOfColumns = builder.maxNumberOfColumns
         commentPrefixList = builder.commentPrefixList
         lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled
@@ -35,27 +33,27 @@ class CsvReadOptions extends ReadOptions {
 
     //static methods to provide an initial builder object to work with
     static Builder builder() {
-        return new CsvReadOptions.Builder()
+        return new JsonReadOptions.Builder()
     }
 
     static Builder builder(Source source) {
-        return new CsvReadOptions.Builder(source)
+        return new JsonReadOptions.Builder(source)
     }
 
     static Builder builder(InputStream stream) {
-        return new CsvReadOptions.Builder(stream)
+        return new JsonReadOptions.Builder(stream)
     }
 
     public static Builder builder(Reader reader) {
-        return new CsvReadOptions.Builder(reader)
+        return new JsonReadOptions.Builder(reader)
     }
 
     public static Builder builder(InputStreamReader reader) {
-        return new CsvReadOptions.Builder(reader)
+        return new JsonReadOptions.Builder(reader)
     }
 
     static Builder builder(File file) {
-        return new CsvReadOptions.Builder(file)
+        return new JsonReadOptions.Builder(file)
     }
 
     static Builder builder(String fileName) {
@@ -64,19 +62,19 @@ class CsvReadOptions extends ReadOptions {
     }
 
     static Builder builder(URL url)  {
-        return new CsvReadOptions.Builder(url)
+        return new JsonReadOptions.Builder(url)
     }
 
     static Builder builderFromFile(String fileName) {
-        return new CsvReadOptions.Builder(new File(fileName))
+        return new JsonReadOptions.Builder(new File(fileName))
     }
 
     static Builder builderFromString(String contents) {
-        return new CsvReadOptions.Builder(new StringReader(contents))
+        return new JsonReadOptions.Builder(new StringReader(contents))
     }
 
     static Builder builderFromUrl(String url) {
-        return new CsvReadOptions.Builder(new URL(url))
+        return new JsonReadOptions.Builder(new URL(url))
     }
 
 
@@ -84,12 +82,8 @@ class CsvReadOptions extends ReadOptions {
     //@InheritConstructors
     public static class Builder extends ReadOptions.Builder {
 
-        private String[] delimiters
         private Character quoteChar
         private Character escapeChar
-        private String lineEnding
-        //private DataValueType[] columnTypes
-        //private Integer maxNumberOfColumns = 10_000
         private String[] commentPrefixList
         private boolean lineSeparatorDetectionEnabled = true
         //private int sampleSize = -1
@@ -98,18 +92,10 @@ class CsvReadOptions extends ReadOptions {
         //when called invokes the parent ReadOption constructor and the finalises initialisation for this
         Builder (arg) {
             super(arg)
-            defaultFileExtension = "csv"
-            delimiters = ['\t', '|', ',']  //default separators
+            defaultFileExtension = "json"
             quoteChar = Character.valueOf ('"' as char)
             escapeChar = Character.valueOf('\\' as char)
-            lineEnding = "\n"
             commentPrefixList = ['!', '#', '//']
-        }
-
-
-        Builder separator(Character separator) {
-            this.delimiters = separator
-            return this
         }
 
         Builder quoteChar(Character quoteChar) {
@@ -127,15 +113,9 @@ class CsvReadOptions extends ReadOptions {
             return this
         }
 
-        public Builder lineEnding(String lineEnding) {
-            this.lineEnding = lineEnding
-            this.lineSeparatorDetectionEnabled = false
-            return this
-        }
-
-        //last function in chain to return the validated JsonReadOptions
-        CsvReadOptions build() {
-            return new CsvReadOptions(this)
+         //last function in chain to return the validated JsonReadOptions
+        JsonReadOptions build() {
+            return new JsonReadOptions(this)
         }
 
     }
