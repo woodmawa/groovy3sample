@@ -25,9 +25,12 @@ List getPathList (String filename) {
     List paths = []
     if (hasClassPath) {
         String cleanedFile = (filename - "classpath:").trim()
-        paths << projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
-        paths << projectRoot.concat("build${File.separator}classes${File.separator}groovy${File.separator}$cleanedFile")
-        paths << projectRoot.concat("build${File.separator}classes${File.separator}java${File.separator}$cleanedFile")
+        if (new File (projectRoot.concat("build${File.separator}resources${File.separator}main")).exists() )
+            paths << projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
+        if (new File (projectRoot.concat("build${File.separator}classes${File.separator}groovy")).exists() )
+            paths << projectRoot.concat("build${File.separator}classes${File.separator}groovy${File.separator}main${File.separator}$cleanedFile")
+        if (new File (projectRoot.concat("build${File.separator}classes${File.separator}java")).exists() )
+            paths << projectRoot.concat("build${File.separator}classes${File.separator}java${File.separator}main${File.separator}$cleanedFile")
 
     } else {
         String cleanedFile = filename.trim()
