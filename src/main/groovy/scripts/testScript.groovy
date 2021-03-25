@@ -14,6 +14,50 @@ println "hello".tr ("e", "f")
 def res = Stream.of("hello").map(s -> s::concat(" Will")).collect(Collectors.toList())
 println res
 
+
+List getClassPathList (String filename) {
+    filename.replaceAll("\\/", File.separator)
+    String projectRoot = System.getProperty("user.dir")
+    def split = projectRoot.split("src")
+    projectRoot = split?[0]
+    def hasClassPath = filename.startsWith("classpath:")
+    List paths = []
+    if (hasClassPath) {
+        String cleanedFile = (filename - "classpath:").trim()
+        paths << projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
+        paths << projectRoot.concat("build${File.separator}classes${File.separator}groovy${File.separator}$cleanedFile")
+        paths << projectRoot.concat("build${File.separator}classes${File.separator}java${File.separator}$cleanedFile")
+
+    } else {
+        String cleanedFile = filename.trim()
+        paths << System.getProperty("user.dir")+File.separator+cleanedFile
+    }
+    paths
+}
+
+File getFileForResource (String filename){
+    filename.replaceAll("\\/", File.separator)
+    String projectRoot = System.getProperty("user.dir")
+    def split = projectRoot.split("src")
+    projectRoot = split?[0]
+    def hasClassPath = filename.startsWith("resource:")
+    if (hasClassPath) {
+        String cleanedFile = (filename - "resource:").trim()
+        String name = projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}${cleanedFile}")
+        println "looking in resources for $name"
+        new File(name)
+    } else {
+        String cleanedFile = filename.trim()
+        new File(cleanedFile)
+    }
+}
+
+def paths = getClassPathList ("classpath:testDataFile.csv")
+def file = getFileForResource ("resource:testDataFile.csv")
+def name = file.canonicalPath
+def exists = file.exists()
+
+
 def start = System.nanoTime()
 new File("D:\\OneDrive\\wills-sync\\Tech M\\VF UK OpCo Systems and programmes\\TM for VF design council\\UK Data Lake and monitisation\\companies data\\BasicCompanyDataAsOneFile-2019-09-01.csv".toString()).withInputStream { inps ->
     inps.eachLine { line ->
