@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit
 
 import static java.util.stream.Collectors.*
 
-println "hello"
+//replace one char sub seq with another char sequence
+println "hello".tr ("e", "f")
 
 def res = Stream.of("hello").map(s -> s::concat(" Will")).collect(Collectors.toList())
 println res
