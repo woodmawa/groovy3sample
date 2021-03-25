@@ -1,6 +1,7 @@
 package scripts
 
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -15,7 +16,7 @@ def res = Stream.of("hello").map(s -> s::concat(" Will")).collect(Collectors.toL
 println res
 
 
-List getClassPathList (String filename) {
+List getPathList (String filename) {
     filename.replaceAll("\\/", File.separator)
     String projectRoot = System.getProperty("user.dir")
     def split = projectRoot.split("src")
@@ -52,7 +53,7 @@ File getFileForResource (String filename){
     }
 }
 
-def paths = getClassPathList ("classpath:testDataFile.csv")
+def paths = getPathList ("classpath:testDataFile.csv")
 def file = getFileForResource ("resource:testDataFile.csv")
 def name = file.canonicalPath
 def exists = file.exists()
