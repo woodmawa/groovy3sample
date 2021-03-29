@@ -10,7 +10,7 @@ import java.nio.file.Paths
  */
 class FileUtilities {
 
-    static List<String> getPathList (String filename) {
+    static List<String> getPathAsList (String filename) {
         filename.replaceAll("\\/", File.separator)
         String projectRoot = System.getProperty("user.dir")
         def split = projectRoot.split("${File.separator}src")

@@ -27,7 +27,7 @@ class TestFileUtilities extends Specification {
     def "test paths list " () {
         given :
 
-        List<String> paths = FileUtilities.getPathList("classpath:testDataFile.csv")
+        List<String> paths = FileUtilities.getPathAsList("classpath:testDataFile.csv")
 
         expect:
         paths.size () == 2
