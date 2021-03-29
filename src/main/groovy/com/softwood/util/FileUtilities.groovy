@@ -10,31 +10,33 @@ import java.nio.file.Paths
  */
 class FileUtilities {
 
-    static List getPathList (String filename) {
+    static List<String> getPathList (String filename) {
         filename.replaceAll("\\/", File.separator)
         String projectRoot = System.getProperty("user.dir")
-        def split = projectRoot.split("src")
+        def split = projectRoot.split("${File.separator}src")
         projectRoot = split?[0]
         def hasClassPath = filename.trim().startsWith("classpath:")
         def hasTestClassPath = filename.trim().startsWith("testClasspath:")
 
         List paths = []
-        String cleanedFile = (filename.trim() - "classpath:").trim()
+        String cleanedFile = ""
         if (hasClassPath) {
-            if (new File (projectRoot.concat("build${File.separator}resources${File.separator}main")).exists() )
-                paths << projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
-            if (new File (projectRoot.concat("build${File.separator}classes${File.separator}groovy")).exists() )
-                paths << projectRoot.concat("build${File.separator}classes${File.separator}groovy${File.separator}main${File.separator}$cleanedFile")
-            if (new File (projectRoot.concat("build${File.separator}classes${File.separator}java")).exists() )
-                paths << projectRoot.concat("build${File.separator}classes${File.separator}java${File.separator}main${File.separator}$cleanedFile")
+            cleanedFile = (filename.trim() - "classpath:").trim()
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}resources${File.separator}main")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}groovy")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}groovy${File.separator}main${File.separator}$cleanedFile")
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}java")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}java${File.separator}main${File.separator}$cleanedFile")
 
         } else if (hasTestClassPath) {
-            if (new File (projectRoot.concat("build${File.separator}resources${File.separator}main")).exists() )
-                paths << projectRoot.concat("build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
-            if (new File (projectRoot.concat("build${File.separator}classes${File.separator}groovy")).exists() )
-                paths << projectRoot.concat("build${File.separator}classes${File.separator}groovy${File.separator}test${File.separator}$cleanedFile")
-            if (new File (projectRoot.concat("build${File.separator}classes${File.separator}java")).exists() )
-                paths << projectRoot.concat("build${File.separator}classes${File.separator}java${File.separator}test${File.separator}$cleanedFile")
+            cleanedFile = (filename.trim() - "testClasspath:").trim()
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}resources${File.separator}main")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}resources${File.separator}main${File.separator}$cleanedFile")
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}groovy")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}groovy${File.separator}test${File.separator}$cleanedFile")
+            if (new File (projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}java")).exists() )
+                paths << projectRoot.concat("${File.separator}build${File.separator}classes${File.separator}java${File.separator}test${File.separator}$cleanedFile")
 
 
         }
