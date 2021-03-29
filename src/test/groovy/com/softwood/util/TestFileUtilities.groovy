@@ -2,6 +2,9 @@ package com.softwood.util
 
 import spock.lang.Specification
 
+import java.nio.file.Files
+import java.nio.file.Path
+
 class TestFileUtilities extends Specification {
 
     def "test file with resources: " () {
@@ -12,9 +15,12 @@ class TestFileUtilities extends Specification {
         String canPath = testF.getCanonicalPath()
         String projCanonicalPath = projF.getCanonicalPath()
 
+        Path projPath = FileUtilities.getPathForResource("resource:testDataFile.csv")
+
         expect:
         projF.exists()
         testF.exists()
+        Files.exists(projPath)
 
     }
 }
