@@ -16,6 +16,3 @@ CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> " there"
 
 
 
-println future.get()
-
-println (future >> future2).get()

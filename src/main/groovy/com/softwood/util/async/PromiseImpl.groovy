@@ -6,8 +6,9 @@ import java.util.function.Function
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 
-class PromiseImpl<T> extends CompletableFuture implements Promise<T> {
+class PromiseImpl<T>  implements Promise<T> {
 
+    @Delegate
     CompletableFuture promise
 
     PromiseImpl (Supplier callable) {
@@ -15,7 +16,7 @@ class PromiseImpl<T> extends CompletableFuture implements Promise<T> {
     }
 
     PromiseImpl (CompletableFuture future) {
-        promise = future.copy()
+        promise = future
     }
 
     static from (Supplier callable) {
@@ -24,15 +25,16 @@ class PromiseImpl<T> extends CompletableFuture implements Promise<T> {
 
     Promise<T> rightShift (PromiseImpl composable) {
         CompletableFuture future = composable.promise
-        CompletableFuture fut = this.thenCombine(future, (first,second) -> first + second)
+        CompletableFuture combinedFuture = this.thenCombineAsync(future, (first,second) -> first + second)
         //CompletableFuture fut = promise.thenComposeAsync((res) -> res + future.get())
-        new PromiseImpl (fut)
+        new PromiseImpl (combinedFuture)
     }
 
     Promise<T> apply (Promise<T> transform) {
         promise.thenApplyAsync(transform)
     }
 
+ /*
     @Override
     T get() {
         return promise.get()
@@ -42,7 +44,7 @@ class PromiseImpl<T> extends CompletableFuture implements Promise<T> {
     T get(long timeout, TimeUnit unit) {
         return promise.get(timeout, unit)
     }
-
+*/
     @Override
     Promise<T> onComplete(Function callable) {
         return promise.completeAsync(callable)
@@ -57,4 +59,5 @@ class PromiseImpl<T> extends CompletableFuture implements Promise<T> {
     Promise<T> then(Function callable) {
         return null
     }
+
 }
