@@ -1,12 +1,15 @@
 package scripts
 
-import com.softwood.util.async.PromiseImpl
+import com.softwood.util.async.Promise
+import com.softwood.util.async.PromiseFuture
 
 import java.util.concurrent.CompletableFuture
 
-println 'hello'
+Promise prom =  new PromiseFuture() << () -> "hello"
 
-PromiseImpl<String> p = new PromiseImpl (() -> "new promise") >> new PromiseImpl (() -> " and then another promise")
+println prom.get()
+
+PromiseFuture<String> p = new PromiseFuture (() -> "new promise") >> new PromiseFuture (() -> " and then another promise")
 println p.get()
 
 

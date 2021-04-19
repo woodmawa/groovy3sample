@@ -1,34 +1,55 @@
 package com.softwood.util.async
 
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
+
+import java.util.function.BiFunction
 import java.util.function.Function
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 
-class PromiseImpl<T>  implements Promise<T> {
+class PromiseFuture<T>  implements Promise<T> {
 
     @Delegate
     CompletableFuture promise
 
-    PromiseImpl (Supplier callable) {
+    PromiseFuture() {}
+
+    PromiseFuture(Supplier callable) {
         promise = CompletableFuture.supplyAsync(callable)
     }
 
-    PromiseImpl (CompletableFuture future) {
+    PromiseFuture(CompletableFuture future) {
         promise = future
     }
 
     static from (Supplier callable) {
-        def p = PromiseImpl::new (callable)
+        assert callable
+        def p = PromiseFuture::new (callable)
     }
 
-    Promise<T> rightShift (PromiseImpl composable) {
-        CompletableFuture future = composable.promise
-        CompletableFuture combinedFuture = this.thenCombineAsync(future, (first,second) -> first + second)
-        //CompletableFuture fut = promise.thenComposeAsync((res) -> res + future.get())
-        new PromiseImpl (combinedFuture)
+    CompletableFuture asFuture () {
+        promise
     }
+
+    Promise<T> rightShift (Promise composable) {
+        CompletableFuture future = composable.asFuture()
+        CompletableFuture combinedFuture = this.thenCombineAsync(future, (first,second) -> first + second)
+        new PromiseFuture (combinedFuture)
+    }
+
+    Promise<T> rightShift (Promise composable, BiFunction composeLogic) {
+        assert composeLogic
+        CompletableFuture future = composable.asFuture()
+        CompletableFuture combinedFuture = this.thenCombineAsync(future, composeLogic)
+        new PromiseFuture (combinedFuture)
+    }
+
+
+    Promise<T> leftShift (Supplier<T> callable) {
+        assert callable
+        promise = CompletableFuture.supplyAsync(callable)
+        this
+    }
+
 
     Promise<T> apply (Promise<T> transform) {
         promise.thenApplyAsync(transform)

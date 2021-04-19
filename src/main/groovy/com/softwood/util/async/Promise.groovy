@@ -1,6 +1,8 @@
 package com.softwood.util.async
 
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
+import java.util.function.BiFunction
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -11,5 +13,8 @@ interface Promise<T> extends CompletionStage {
     Promise<T> onComplete (Function callable)
     Promise<T> onError (Function callable)
     Promise<T> then (Function callable)
-
+    Promise<T> rightShift (Promise<T> combinePromise)
+    Promise<T> rightShift (Promise<T> combinePromise, BiFunction combineFunction)
+    Promise<T> leftShift (Supplier<T> calculation)
+    CompletableFuture asFuture ()
 }
