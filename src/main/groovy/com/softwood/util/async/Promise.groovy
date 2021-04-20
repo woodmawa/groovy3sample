@@ -11,10 +11,11 @@ interface Promise<T> extends CompletionStage {
     T get()
     T get (long timeout, java.util.concurrent.TimeUnit units)
     Promise<T> onComplete (Function callable)
-    Promise<T> onError (Function callable)
+    Promise<T> onError (BiFunction callable)
     Promise<T> then (Function callable)
+    Promise<T> rightShift (Function nextFunctionWithResult)
     Promise<T> rightShift (Promise<T> combinePromise)
-    Promise<T> rightShift (Promise<T> combinePromise, BiFunction combineFunction)
+    Promise<T> rightShift (Promise<T> combinePromise, BiFunction composeFunction)
     Promise<T> leftShift (Supplier<T> calculation)
     CompletableFuture asFuture ()
 }
