@@ -102,21 +102,7 @@ class PromiseFuture<T>  implements Promise<T>  {
         PromiseFuture promise = new PromiseFuture (composedFuture)
         promise
     }
-
-    /**
-     * just runs an action atthe end of chain, action does not receive result of this
-     * @param endAction
-     * @return
-     */
-    /*Promise<Void> rightShift (Runnable endAction) {
-        //takes the output of this when complete and invokes FuncNext with it
-        //assumes func isn't returning another completableFuture
-        println "\t\t >> called with runnable $endAction"
-
-        CompletableFuture composedFuture = promise.thenRunAsync(endAction)
-        PromiseFuture<Void> promise = new PromiseFuture (composedFuture)
-        promise
-    }*/
+    
 
     /**
      * uses the combine method to pass both results to the compose logic
