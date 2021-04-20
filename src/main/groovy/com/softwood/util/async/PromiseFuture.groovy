@@ -2,6 +2,7 @@ package com.softwood.util.async
 
 import java.util.concurrent.Future
 import java.util.function.BiFunction
+import java.util.function.Consumer
 import java.util.function.Function
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
@@ -83,6 +84,26 @@ class PromiseFuture<T>  implements Promise<T>  {
         promise
     }
 
+    Promise<T> rightShift (Consumer finishWithFunction) {
+        //takes the output of this when complete and invokes FuncNext with it
+        //assumes func isn't returning another completableFuture
+        CompletableFuture composedFuture = this.thenAcceptAsync(funcNext)
+        PromiseFuture promise = new PromiseFuture (composedFuture)
+        promise
+    }
+
+    /**
+     * just runs an action atthe end of chain, action does not receive result of this
+     * @param endAction
+     * @return
+     */
+    Promise<Void> rightShift (Runnable endAction) {
+        //takes the output of this when complete and invokes FuncNext with it
+        //assumes func isn't returning another completableFuture
+        CompletableFuture composedFuture = this.thenRunAsync(endAction)
+        PromiseFuture<Void> promise = new PromiseFuture (composedFuture)
+        promise
+    }
 
     /**
      * uses the combine method to pass both results to the compose logic
