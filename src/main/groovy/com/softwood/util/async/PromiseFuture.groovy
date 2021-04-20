@@ -13,14 +13,16 @@ class PromiseFuture<T>  implements Promise<T>  {
     @Delegate
     CompletableFuture promise
 
-    PromiseFuture() {}
+    PromiseFuture() {this}
 
     PromiseFuture(Supplier callable) {
         promise = CompletableFuture.supplyAsync(callable)
+        this
     }
 
     PromiseFuture(CompletableFuture future) {
         promise = future
+        this
     }
 
     static from (Supplier callable) {
@@ -67,7 +69,7 @@ class PromiseFuture<T>  implements Promise<T>  {
     Promise<T> rightShift (Promise composable, BiFunction composeLogic) {
         assert composeLogic
         CompletableFuture future = composable.asFuture()
-        CompletableFuture combinedFuture = this.thenCombineAsync(future, composeLogic)
+        CompletableFuture combinedFuture = promise.thenCombineAsync(future, composeLogic)
         new PromiseFuture (combinedFuture)
     }
 
@@ -80,15 +82,23 @@ class PromiseFuture<T>  implements Promise<T>  {
     Promise<T> rightShift (Function funcNext) {
         //takes the output of this when complete and invokes FuncNext with it
         //assumes func isn't returning another completableFuture
-        CompletableFuture composedFuture = this.thenApplyAsync(funcNext)
+        CompletableFuture composedFuture = promise.thenApplyAsync(funcNext)
         PromiseFuture promise = new PromiseFuture (composedFuture)
         promise
     }
 
-    Promise<T> rightShift (Consumer finishWithFunction) {
+    Promise<T> rightShift (Closure clos) {
         //takes the output of this when complete and invokes FuncNext with it
         //assumes func isn't returning another completableFuture
-        CompletableFuture composedFuture = this.thenAcceptAsync(funcNext)
+        CompletableFuture composedFuture = promise.thenApplyAsync(clos)
+        PromiseFuture promise = new PromiseFuture (composedFuture)
+        promise
+    }
+
+     Promise<Void> rightShift (Consumer finishWithFunction) {
+        //takes the output of this when complete and invokes FuncNext with it
+        //assumes func isn't returning another completableFuture
+        CompletableFuture composedFuture = promise.thenAcceptAsync(finishWithFunction)
         PromiseFuture promise = new PromiseFuture (composedFuture)
         promise
     }
@@ -98,13 +108,15 @@ class PromiseFuture<T>  implements Promise<T>  {
      * @param endAction
      * @return
      */
-    Promise<Void> rightShift (Runnable endAction) {
+    /*Promise<Void> rightShift (Runnable endAction) {
         //takes the output of this when complete and invokes FuncNext with it
         //assumes func isn't returning another completableFuture
-        CompletableFuture composedFuture = this.thenRunAsync(endAction)
+        println "\t\t >> called with runnable $endAction"
+
+        CompletableFuture composedFuture = promise.thenRunAsync(endAction)
         PromiseFuture<Void> promise = new PromiseFuture (composedFuture)
         promise
-    }
+    }*/
 
     /**
      * uses the combine method to pass both results to the compose logic
@@ -117,9 +129,9 @@ class PromiseFuture<T>  implements Promise<T>  {
         CompletableFuture future = composable.asFuture()
         CompletableFuture combinedFuture
         if (composeLogic)
-            combinedFuture = this.thenCombineAsync(future, composeLogic)
+            combinedFuture = promise.thenCombineAsync(future, composeLogic)
         else
-            combinedFuture = this.thenCombineAsync(future, {first, second ->
+            combinedFuture = promise.thenCombineAsync(future, {first, second ->
                 if (first.respondsTo('plus')) {
                     (first + second)
                 } else {
@@ -130,9 +142,9 @@ class PromiseFuture<T>  implements Promise<T>  {
         new PromiseFuture (combinedFuture)
     }
 
-    Promise<T> leftShift (Supplier<T> callable) {
-        assert callable
-        promise = CompletableFuture.supplyAsync(callable)
+    Promise<T> leftShift (Supplier<T> supplier) {
+        assert supplier
+        promise = CompletableFuture.supplyAsync(supplier)
         this
     }
 

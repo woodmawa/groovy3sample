@@ -6,6 +6,11 @@ import com.softwood.util.async.PromiseFuture
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 
+//this works
+/*CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> "future hello")
+CompletableFuture<String> chained = future2.thenApplyAsync( (res) -> "$res plus one chain ").thenApplyAsync((res) -> "$res and finally".toString())
+println chained.get() */
+
 Promise prom =  new PromiseFuture() << ()-> "hello"
 
 println "left shift gives : "+ prom.get()
@@ -15,18 +20,18 @@ PromiseFuture<String> p = new PromiseFuture (() -> "new promise") >>> new Promis
 println "combine 2 futures gives : " +p.get()
 
 //this should take output of first and pass as input this
-p = new PromiseFuture (() -> "new promise").then {res -> "'$res with .then".toString()}
-Promise p2 = p >> { res ->
-    "'$res' right shifted "
-}
-println p.get()
-p.onComplete({res, ex ->
-    println "all done, got '$res'"})
+p = new PromiseFuture (() -> "new promise") >> {res -> "'$res with >>(clos) ".toString()} >> (res)-> "'$res with >>(lambda) ".toString()
+println "p result : " + p.get()
 
-println p2.get()
-CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "future hello")
-CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> " there")
-//def future3 = future.thenAcceptBoth(future2, (s1,s2) -> println s1 + s2 )
+//def px = p >> {res -> "'$res with >> ".toString()}
+//println "px : " + px.get()
 
+Promise p2 = p.then (  (res) -> "'$res' with .then " )
+
+
+//p.onComplete({res, ex -> println "all done, got '$res'"})
+
+
+println "p2 result : "+ p2.get()
 
 
