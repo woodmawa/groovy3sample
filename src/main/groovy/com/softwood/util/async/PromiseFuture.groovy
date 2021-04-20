@@ -1,6 +1,7 @@
 package com.softwood.util.async
 
 import java.util.concurrent.Future
+import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Consumer
 import java.util.function.Function
@@ -135,14 +136,12 @@ class PromiseFuture<T>  implements Promise<T>  {
         this
     }
 
-
-    Promise<T> apply (Promise<T> transform) {
-        promise.thenApplyAsync(transform)
-    }
-
     @Override
-    Promise<T> onComplete(Function callable) {
-        return promise.whenCompleteAsync(callable)
+    /**
+     * expects a BiConsumer<?super T>, ? super Throwable
+     */
+    Promise<T> onComplete(BiConsumer action) {
+        return new PromiseFuture (promise.whenCompleteAsync(action ))
     }
 
     @Override
