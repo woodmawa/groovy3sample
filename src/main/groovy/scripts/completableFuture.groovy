@@ -29,13 +29,10 @@ println "combine 2 futures gives : " +p.get()
 p = new PromiseFuture (() -> "new promise") >> {res -> "'$res with >>(clos) ".toString()} >> (res)-> "'$res with >>(lambda) ".toString()
 println "p result : " + p.get()
 
-//def px = p >> {res -> "'$res with >> ".toString()}
-//println "px : " + px.get()
-
 Promise p2 = p.then (  (res) -> "'$res' with .then " )
 
 
-//p.onComplete({res, ex -> println "all done, got '$res'"})
+p.onComplete({res, ex -> println "\tonComplete: all done, got '$res'"}).get()
 
 
 println "p2 result : "+ p2.get()
