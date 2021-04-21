@@ -15,6 +15,11 @@ Promise prom =  new PromiseFuture() << ()-> "hello"
 
 println "left shift gives : "+ prom.get()
 
+//prom = PromiseFuture.task ({ "async task : $it"}, 'hello')
+//println "future task result  : " + prom.get()
+
+//prom = Promise.fromTask ({ "async task : $it"}, 'hello')
+
 //this combines the result of both promises and calls BiFunction to process both results
 PromiseFuture<String> p = new PromiseFuture (() -> "new promise") >>> new PromiseFuture (() -> " and then another promise")
 println "combine 2 futures gives : " +p.get()

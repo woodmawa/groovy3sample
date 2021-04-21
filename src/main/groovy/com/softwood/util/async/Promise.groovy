@@ -2,6 +2,7 @@ package com.softwood.util.async
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
+import java.util.concurrent.TimeUnit
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Consumer
@@ -11,7 +12,7 @@ import java.util.function.Supplier
 interface Promise<T> extends CompletionStage {
 
     T get()
-    T get (long timeout, java.util.concurrent.TimeUnit units)
+    T get (long timeout, TimeUnit units)
     Promise<T> onComplete (BiConsumer action)
     Promise<T> onError (BiFunction error)
     Promise<T> then (Function callable)
@@ -22,4 +23,8 @@ interface Promise<T> extends CompletionStage {
     Promise<T> rightShift (Promise<T> combinePromise, BiFunction composeFunction)
     Promise<T> leftShift (Supplier<T> calculation)
     CompletableFuture asFuture ()
+
+    /*default Promise<T> fromTask (Function function, arg) {
+        PromiseFuture.task(function, arg)
+    }*/
 }

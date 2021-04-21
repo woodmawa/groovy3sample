@@ -1,5 +1,9 @@
 package com.softwood.util.async
 
+import java.util.concurrent.CompletionStage
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
@@ -25,9 +29,24 @@ class PromiseFuture<T>  implements Promise<T>  {
         this
     }
 
+    PromiseFuture(Future future) {
+        promise = future as CompletableFuture
+        this
+    }
+
     static from (Supplier callable) {
         assert callable
         def p = PromiseFuture::new (callable)
+    }
+
+    static task (Function function, arg=null) {
+        assert function
+
+       // Function interface can only one take one Object arg
+        Closure functionWithParam = { function.apply(arg) }
+
+        def promise = PromiseFuture::new (functionWithParam)
+        promise
     }
 
     CompletableFuture asFuture () {
@@ -102,7 +121,7 @@ class PromiseFuture<T>  implements Promise<T>  {
         PromiseFuture promise = new PromiseFuture (composedFuture)
         promise
     }
-    
+
 
     /**
      * uses the combine method to pass both results to the compose logic
