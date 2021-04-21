@@ -24,7 +24,8 @@ interface Promise<T> extends CompletionStage {
     Promise<T> leftShift (Supplier<T> calculation)
     CompletableFuture asFuture ()
 
-    /*default Promise<T> fromTask (Function function, arg) {
+    /* doesnt work in groovy 3.0.7 and neither does static methods
+    default Promise<T> fromTask (Function function, arg) {
         PromiseFuture.task(function, arg)
     }*/
 }
