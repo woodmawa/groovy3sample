@@ -21,6 +21,9 @@ interface Promise<T> extends CompletionStage {
     //Promise<Void> rightShift (Runnable lastAction)
     Promise<T> rightShift (Promise<T> combinePromise)
     Promise<T> rightShift (Promise<T> combinePromise, BiFunction composeFunction)
+    Promise<T> rightShiftUnsigned (Promise<T> combinePromise)
+    Promise<T> rightShiftUnsigned (Promise<T> combinePromise, BiFunction composeFunction)
+
     Promise<T> leftShift (Supplier<T> calculation)
     CompletableFuture asFuture ()
 
