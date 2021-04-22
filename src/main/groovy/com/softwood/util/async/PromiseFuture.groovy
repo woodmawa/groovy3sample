@@ -1,10 +1,8 @@
 package com.softwood.util.async
 
 import groovy.transform.EqualsAndHashCode
-import org.codehaus.groovy.runtime.MethodClosure
 
 import java.util.concurrent.Callable
-import java.util.concurrent.CompletionStage
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
@@ -21,9 +19,9 @@ import java.util.function.Supplier
 // cludge: just using closure doesnt seem to return the result when scheduled to run in future -
 // so have to wrap the closure in class that implements Callable!
 class ClosureCallable<T>  implements Callable {
-    Closure work
+    Closure<T> work
 
-    ClosureCallable (Closure clos) {
+    ClosureCallable (Closure<T> clos) {
         work = clos.clone()
     }
 
@@ -60,6 +58,11 @@ class PromiseFuture<T>  implements Promise<T>  {
         PromiseFuture::new (callable)
     }
 
+    static from (Callable callable) {
+        assert callable
+        PromiseFuture::new (callable)
+    }
+
     static task (arg, Closure function) {
         assert function
         assert function.maximumNumberOfParameters == 1
@@ -86,17 +89,19 @@ class PromiseFuture<T>  implements Promise<T>  {
 
         if (closureListSize == 0) {
             functionWithParam = function
-        } else if (argListSize < closureListSize) {
-            //pad arglist to exact size with nulls
-            for (i in argListSize..<closureListSize) {
-                argList.add (null)
+        } else {
+            if (argListSize < closureListSize) {
+                //pad arglist to exact size with nulls
+                for (i in argListSize..<closureListSize) {
+                    argList.add(null)
+                }
+            } else if (argListSize > closureListSize) {
+                argList = argList.subList(0, argListSize - 1)
             }
-        } else if (argListSize > closureListSize) {
-            argList = argList.subList(0, argListSize - 1)
-        }
 
-        //wrap function as Supplier<T> form for the Promise
-        functionWithParam = {function.call(*argList)}
+            //wrap function as Supplier<T> form for the Promise
+            functionWithParam = { function.call(*argList) }
+        }
 
         def promise = PromiseFuture::new (functionWithParam)
         promise
@@ -285,7 +290,7 @@ class PromiseFuture<T>  implements Promise<T>  {
     }
 
     static Promise whenAll (Promise... promises) {
-        Void done = CompletableFuture.allOf(*promises.promise)
+        def done = CompletableFuture.allOf(*promises.promise)
 
         new PromiseFuture (done)
     }
