@@ -4,6 +4,8 @@ import com.softwood.util.async.Promise
 import com.softwood.util.async.PromiseFuture
 
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import java.util.function.Supplier
 
 //this works
@@ -11,9 +13,24 @@ import java.util.function.Supplier
 CompletableFuture<String> chained = future2.thenApplyAsync( (res) -> "$res plus one chain ").thenApplyAsync((res) -> "$res and finally".toString())
 println chained.get() */
 
+
+Promise anyOf = PromiseFuture.selectAndCancelRest(new PromiseFuture ({sleep(1); "one"}),
+        new PromiseFuture ({sleep(2); "two"}),
+        new PromiseFuture ({sleep(3); "three"})
+)
+println "first to complete was : " + anyOf.get()
+
+ScheduledFuture in5Secs = PromiseFuture.deferredTask(5, TimeUnit.SECONDS) {"deferred just called!"}
+def result = in5Secs.get()
+def done = in5Secs.isDone()
+
 Promise prom =  new PromiseFuture() << ()-> "hello"
 
-println "left shift gives : "+ prom.get()
+println "left shift gives : "+ prom.join()
+
+PromiseFuture promFut = new PromiseFuture() << ()-> sleep(1); "hello"
+promFut.complete(10)
+println "forced complete task result  : " + promFut.get()
 
 //arglist as a single parameter List, of all arg values
 prom = PromiseFuture.task (['hello', 1, "there"]) { one,two, three -> "argList async task : $one, $two, $three"}

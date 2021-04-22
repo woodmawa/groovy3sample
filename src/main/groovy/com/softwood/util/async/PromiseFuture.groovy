@@ -1,6 +1,15 @@
 package com.softwood.util.async
 
+import groovy.transform.EqualsAndHashCode
+import org.codehaus.groovy.runtime.MethodClosure
+
+import java.util.concurrent.Callable
+import java.util.concurrent.CompletionStage
+import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Consumer
@@ -8,7 +17,23 @@ import java.util.function.Function
 import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 
+
+
+@EqualsAndHashCode (includeFields = true)
 class PromiseFuture<T>  implements Promise<T>  {
+
+    // just using closure doesnt seem to return the result - so have to wrap the closure in class that implements Callable!
+    private class ClosureCallable<T> implements Callable {
+        Closure work
+
+        ClosureCallable (Closure clos) {
+            work = clos.clone()
+        }
+
+        T call() throws Exception {
+            return work.call()
+        }
+    }
 
     @Delegate
     CompletableFuture promise
@@ -91,6 +116,34 @@ class PromiseFuture<T>  implements Promise<T>  {
         //spread args and use var args method
         task (function, *argList)
 
+    }
+
+    /**
+     * setup a task to run in the future and return scheduleFuture whos get() will return a PromiseFuture
+     * @param delay
+     * @param unit
+     * @param callable
+     * @return ScheduledFuture
+     */
+    static ScheduledFuture deferredTask (long delay, TimeUnit unit, Callable callable) {
+        final ScheduledExecutorService scheduler =
+                Executors.newScheduledThreadPool(1)
+
+        //set up the work to be called at future time
+        Callable deferredPromiseFuture = new ClosureCallable ({ PromiseFuture.from (callable) })
+        ScheduledFuture deferred = scheduler.schedule (deferredPromiseFuture, delay, unit)
+        deferred
+    }
+
+    /**
+     * cancel a scheduled deferredTask 
+     * @param scheduledTask
+     * @return
+     */
+    static ScheduledFuture cancelDeferredTask (ScheduledFuture scheduledTask) {
+        assert scheduledTask
+        scheduledTask.cancel(true)
+        scheduledTask
     }
 
     CompletableFuture asFuture () {
@@ -216,4 +269,24 @@ class PromiseFuture<T>  implements Promise<T>  {
         return rightShift (callable)
     }
 
+    static Promise select (Promise... promises) {
+        def first = CompletableFuture.anyOf (*promises.promise)
+
+        //should i cancel the others?
+        new PromiseFuture (first)
+    }
+
+    static Promise selectAndCancelRest (Promise... promises) {
+        def first = CompletableFuture.anyOf (*promises.promise)
+
+        //should i cancel the others?
+        promises.each {it.promise.cancel(true)}
+        new PromiseFuture (first)
+    }
+
+    static Promise whenAll (Promise... promises) {
+        Void done = CompletableFuture.allOf(*promises.promise)
+
+        new PromiseFuture (done)
+    }
 }

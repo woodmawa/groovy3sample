@@ -11,6 +11,7 @@ import java.util.function.Supplier
 
 interface Promise<T> extends CompletionStage {
 
+    T join()
     T get()
     T get (long timeout, TimeUnit units)
     Promise<T> onComplete (BiConsumer action)
