@@ -18,22 +18,22 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Supplier
 
 
+// cludge: just using closure doesnt seem to return the result when scheduled to run in future -
+// so have to wrap the closure in class that implements Callable!
+class ClosureCallable<T>  implements Callable {
+    Closure work
+
+    ClosureCallable (Closure clos) {
+        work = clos.clone()
+    }
+
+    T call() throws Exception {
+        return work.call()
+    }
+}
 
 @EqualsAndHashCode (includeFields = true)
 class PromiseFuture<T>  implements Promise<T>  {
-
-    // just using closure doesnt seem to return the result - so have to wrap the closure in class that implements Callable!
-    private class ClosureCallable<T> implements Callable {
-        Closure work
-
-        ClosureCallable (Closure clos) {
-            work = clos.clone()
-        }
-
-        T call() throws Exception {
-            return work.call()
-        }
-    }
 
     @Delegate
     CompletableFuture promise
@@ -136,7 +136,7 @@ class PromiseFuture<T>  implements Promise<T>  {
     }
 
     /**
-     * cancel a scheduled deferredTask 
+     * cancel a scheduled deferredTask
      * @param scheduledTask
      * @return
      */
