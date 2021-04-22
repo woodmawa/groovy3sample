@@ -15,7 +15,7 @@ Promise prom =  new PromiseFuture() << ()-> "hello"
 
 println "left shift gives : "+ prom.get()
 
-//arglist as List
+//arglist as a single parameter List, of all arg values 
 prom = PromiseFuture.task (['hello', 1, "there"]) { one,two, three -> "argList async task : $one, $two, $three"}
 println "future task result  : " + prom.get()
 
