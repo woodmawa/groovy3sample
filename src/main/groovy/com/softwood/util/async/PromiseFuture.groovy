@@ -1,11 +1,5 @@
 package com.softwood.util.async
 
-import org.codehaus.groovy.runtime.MethodClosure
-
-import java.util.concurrent.CompletionStage
-import java.util.concurrent.Executor
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
@@ -38,10 +32,10 @@ class PromiseFuture<T>  implements Promise<T>  {
 
     static from (Supplier callable) {
         assert callable
-        def p = PromiseFuture::new (callable)
+        PromiseFuture::new (callable)
     }
 
-    static task (arg, Closure function) {
+    static Promise<T> task (arg, Closure function) {
         assert function
         assert function.maximumNumberOfParameters == 1
 
@@ -57,7 +51,7 @@ class PromiseFuture<T>  implements Promise<T>  {
      * @param function
      * @param args
      */
-    static task (Closure function, Object...args) {
+    static Promise<T> task (Closure function, Object...args) {
         assert function
 
         List argList = args
