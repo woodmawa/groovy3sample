@@ -1,5 +1,7 @@
 package com.softwood.util.async
 
+import org.codehaus.groovy.runtime.MethodClosure
+
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -39,11 +41,76 @@ class PromiseFuture<T>  implements Promise<T>  {
         def p = PromiseFuture::new (callable)
     }
 
-    static task (Function function, arg=null) {
+    static task (arg, Closure function) {
+        assert function
+        assert function.maximumNumberOfParameters == 1
+
+        Closure functionWithParam = {function.call(arg)}
+
+        //wrap function as Supplier<T> form for the Promise
+        def promise = PromiseFuture::new (functionWithParam)
+        promise
+    }
+
+    /**
+     * for form uses varargs to get the args so it must be and the end, after the closure
+     * @param function
+     * @param args
+     */
+    static task (Closure function, Object...args) {
         assert function
 
-       // Function interface can only one take one Object arg
-        Closure functionWithParam = { function.apply(arg) }
+        List argList = args
+        def closureListSize = function.maximumNumberOfParameters
+        def argListSize = args.size()
+        Closure functionWithParam
+
+        if (closureListSize == 0) {
+            functionWithParam = function
+        } else if (argListSize < closureListSize) {
+            //pad arglist to exact size with nulls
+            for (i in argListSize..<closureListSize) {
+                argList.add (null)
+            }
+        } else if (argListSize > closureListSize) {
+            argList = argList.subList(0, argListSize - 1)
+        }
+
+        //wrap function as Supplier<T> form for the Promise
+        functionWithParam = {function.call(*argList)}
+
+        def promise = PromiseFuture::new (functionWithParam)
+        promise
+
+    }
+
+    /**
+     * this form takes a explicit single parameter that must be a list
+     *
+     * @param argList
+     * @param function
+     * @return
+     */
+    static task (List argList, Closure function) {
+        assert function
+
+        def closureListSize = function.maximumNumberOfParameters
+        def argListSize = argList.size()
+        Closure functionWithParam
+
+        if (closureListSize == 0) {
+            functionWithParam = function
+        } else if (argListSize < closureListSize) {
+            //pad arglist to exact size with nulls
+            for (i in argListSize..<closureListSize) {
+                argList.add(null)
+            }
+        } else if (argListSize > closureListSize) {
+            argList = argList.subList(0, argListSize - 1)
+        }
+
+        //wrap function as Supplier<T> form for the Promise
+        functionWithParam = {function.call(*argList)}
 
         def promise = PromiseFuture::new (functionWithParam)
         promise

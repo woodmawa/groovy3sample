@@ -15,8 +15,14 @@ Promise prom =  new PromiseFuture() << ()-> "hello"
 
 println "left shift gives : "+ prom.get()
 
-prom = PromiseFuture.task ({ "async task : $it"}, 'hello')
+//arglist as List
+prom = PromiseFuture.task (['hello', 1, "there"]) { one,two, three -> "argList async task : $one, $two, $three"}
 println "future task result  : " + prom.get()
+
+//args as varargs at end
+prom = PromiseFuture.task ({ one,two, three -> "varargs async task : $one, $two, $three"}, 'hello', 1)
+println "future task result  : " + prom.get()
+
 
 //feature doesnt work on v3.0.7
 //prom = Promise.fromTask ({ "async task : $it"}, 'hello')
