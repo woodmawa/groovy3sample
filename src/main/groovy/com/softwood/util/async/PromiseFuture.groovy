@@ -33,6 +33,9 @@ class ClosureCallable<T>  implements Callable {
 @EqualsAndHashCode (includeFields = true)
 class PromiseFuture<T>  implements Promise<T>  {
 
+    static ScheduledExecutorService scheduler =
+            Executors.newScheduledThreadPool(10)
+
     @Delegate
     CompletableFuture promise
 
@@ -103,6 +106,8 @@ class PromiseFuture<T>  implements Promise<T>  {
             functionWithParam = { function.call(*argList) }
         }
 
+        def result = functionWithParam()
+
         def promise = PromiseFuture::new (functionWithParam)
         promise
 
@@ -123,6 +128,12 @@ class PromiseFuture<T>  implements Promise<T>  {
 
     }
 
+    static withScheduler (long delay, TimeUnit unit, Closure work) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1)
+        scheduler.schedule({work(scheduler)}, delay, unit)
+        scheduler.shutdown()
+    }
+
     /**
      * setup a task to run in the future and return scheduleFuture whos get() will return a PromiseFuture
      * @param delay
@@ -131,11 +142,15 @@ class PromiseFuture<T>  implements Promise<T>  {
      * @return ScheduledFuture
      */
     static ScheduledFuture deferredTask (long delay, TimeUnit unit, Callable callable) {
-        final ScheduledExecutorService scheduler =
-                Executors.newScheduledThreadPool(1)
-
         //set up the work to be called at future time
         Callable deferredPromiseFuture = new ClosureCallable ({ PromiseFuture.from (callable) })
+        ScheduledFuture deferred = scheduler.schedule (deferredPromiseFuture, delay, unit)
+        deferred
+    }
+
+    static ScheduledFuture deferredTask (long delay, TimeUnit unit, Closure function, arg=null) {
+        //set up the work to be called at future time
+        Callable deferredPromiseFuture = new ClosureCallable({ PromiseFuture.task (function, arg)} )
         ScheduledFuture deferred = scheduler.schedule (deferredPromiseFuture, delay, unit)
         deferred
     }

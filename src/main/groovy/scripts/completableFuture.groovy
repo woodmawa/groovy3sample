@@ -20,9 +20,19 @@ Promise anyOf = PromiseFuture.selectAndCancelRest(new PromiseFuture ({sleep(1); 
 )
 println "first to complete was : " + anyOf.get()
 
-ScheduledFuture in5Secs = PromiseFuture.deferredTask(5, TimeUnit.SECONDS) {"deferred just called!"}
-def result = in5Secs.get()
-def done = in5Secs.isDone()
+
+ScheduledFuture in1Secs = PromiseFuture.deferredTask(1, TimeUnit.SECONDS) {"deferred just called!"}
+def result = in1Secs.get()
+println "result : " + result.get()
+def done = in1Secs.isDone()
+
+
+ScheduledFuture in2Secs = PromiseFuture.deferredTask(2, TimeUnit.SECONDS,  {"deferred just called! with $it"}, "william")
+def result2 = in2Secs.get()
+println "result2 : " + result2.get()
+def done2 = in2Secs.isDone()
+
+PromiseFuture.withScheduler(2, TimeUnit.SECONDS, {it -> println "using withSchedular $it"})
 
 Promise prom =  new PromiseFuture() << ()-> "hello"
 
@@ -59,5 +69,7 @@ p.onComplete({res, ex -> println "\tonComplete: all done, got '$res'"}).get()
 
 
 println "p2 result : "+ p2.get()
+
+PromiseFuture.scheduler.shutdown()
 
 
