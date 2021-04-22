@@ -35,7 +35,7 @@ class PromiseFuture<T>  implements Promise<T>  {
         PromiseFuture::new (callable)
     }
 
-    static Promise<T> task (arg, Closure function) {
+    static task (arg, Closure function) {
         assert function
         assert function.maximumNumberOfParameters == 1
 
@@ -51,7 +51,7 @@ class PromiseFuture<T>  implements Promise<T>  {
      * @param function
      * @param args
      */
-    static Promise<T> task (Closure function, Object...args) {
+    static task (Closure function, Object...args) {
         assert function
 
         List argList = args
@@ -88,26 +88,9 @@ class PromiseFuture<T>  implements Promise<T>  {
     static task (List argList, Closure function) {
         assert function
 
-        def closureListSize = function.maximumNumberOfParameters
-        def argListSize = argList.size()
-        Closure functionWithParam
+        //spread args and use var args method
+        task (function, *argList)
 
-        if (closureListSize == 0) {
-            functionWithParam = function
-        } else if (argListSize < closureListSize) {
-            //pad arglist to exact size with nulls
-            for (i in argListSize..<closureListSize) {
-                argList.add(null)
-            }
-        } else if (argListSize > closureListSize) {
-            argList = argList.subList(0, argListSize - 1)
-        }
-
-        //wrap function as Supplier<T> form for the Promise
-        functionWithParam = {function.call(*argList)}
-
-        def promise = PromiseFuture::new (functionWithParam)
-        promise
     }
 
     CompletableFuture asFuture () {
