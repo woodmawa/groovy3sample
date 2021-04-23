@@ -308,6 +308,7 @@ class PromiseFuture<T>  implements Promise<T>  {
     }
 
     static Promise whenAll (Promise... promises) {
+        //returns CompletableFuture<Void>
         def done = CompletableFuture.allOf(*promises.promise)
 
         new PromiseFuture (done)
