@@ -22,7 +22,7 @@ class ClosureCallable<T>  implements Callable {
     Closure<T> work
 
     ClosureCallable (Closure<T> clos) {
-        work = clos.clone()
+        work = (Closure) clos.clone()
     }
 
     T call() throws Exception {
@@ -33,16 +33,17 @@ class ClosureCallable<T>  implements Callable {
 @EqualsAndHashCode (includeFields = true)
 class PromiseFuture<T>  implements Promise<T>  {
 
+
     static ScheduledExecutorService scheduler =
-            Executors.newScheduledThreadPool(10)
+            Executors.newScheduledThreadPool(2)
 
     @Delegate
     CompletableFuture promise
 
     PromiseFuture() {this}
 
-    PromiseFuture(Supplier callable) {
-        promise = CompletableFuture.supplyAsync(callable)
+    PromiseFuture(Supplier supplier) {
+        promise = CompletableFuture.supplyAsync(supplier)
         this
     }
 
@@ -63,7 +64,7 @@ class PromiseFuture<T>  implements Promise<T>  {
 
     static from (Callable callable) {
         assert callable
-        PromiseFuture::new (callable)
+        PromiseFuture::new (callable as Supplier)
     }
 
     static task (arg, Closure function) {
@@ -106,8 +107,6 @@ class PromiseFuture<T>  implements Promise<T>  {
             functionWithParam = { function.call(*argList) }
         }
 
-        def result = functionWithParam()
-
         def promise = PromiseFuture::new (functionWithParam)
         promise
 
@@ -128,21 +127,25 @@ class PromiseFuture<T>  implements Promise<T>  {
 
     }
 
-    static withScheduler (long delay, TimeUnit unit, Closure work) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1)
-        scheduler.schedule({work(scheduler)}, delay, unit)
+    static withScheduler (Closure workClosure) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2)
+
+            //invoke the closure and pass it a scheduler
+            workClosure(scheduler)
+
+        //close down the scheduler
         scheduler.shutdown()
     }
 
     /**
-     * setup a task to run in the future and return scheduleFuture whos get() will return a PromiseFuture
+     * setup a task to run in the future and return scheduleFuture where the get() will return a PromiseFuture
      * @param delay
      * @param unit
      * @param callable
      * @return ScheduledFuture
      */
     static ScheduledFuture deferredTask (long delay, TimeUnit unit, Callable callable) {
-        //set up the work to be called at future time
+        //set up the work to be called at future time, what's returned will be a Promise when deferred task starts
         Callable deferredPromiseFuture = new ClosureCallable ({ PromiseFuture.from (callable) })
         ScheduledFuture deferred = scheduler.schedule (deferredPromiseFuture, delay, unit)
         deferred
