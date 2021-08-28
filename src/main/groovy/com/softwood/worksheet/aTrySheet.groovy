@@ -2,7 +2,7 @@ package com.softwood.worksheet
 
 import java.util.concurrent.ConcurrentHashMap
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.*
 
 CellCoOrdinate origin = new CellCoOrdinate (0,0)
 println origin.hashCode()
